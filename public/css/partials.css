@@ -1,0 +1,322 @@
+/* Root Color Variables */
+:root {
+    --primary-color: #6366f1;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+
+    /* Glass Colors */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+
+    /* Background Gradients */
+    --bg-gradient-1: #1a1a2e;
+    --bg-gradient-2: #16213e;
+    --bg-gradient-3: #0f3460;
+    --bg-gradient-4: #533a7b;
+}
+
+/* Global Dark Theme Override for Dashboard */
+body {
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 25%, var(--bg-gradient-3) 75%, var(--bg-gradient-4) 100%) !important;
+    min-height: 100vh;
+    color: var(--text-primary) !important;
+}
+
+/* Header/Navbar Styles */
+.navbar-dark {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border) !important;
+    box-shadow: 0 4px 20px var(--glass-shadow);
+    position: relative;
+}
+
+.navbar-dark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-color) !important;
+    text-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+}
+
+.navbar-brand small {
+    color: var(--text-muted) !important;
+    font-weight: 400 !important;
+}
+
+.btn-outline-light {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline-light::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-outline-light:hover::before {
+    left: 100%;
+}
+
+.btn-outline-light:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: var(--text-primary) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Sidebar Styles */
+.bg-light {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border) !important;
+    box-shadow: 4px 0 20px var(--glass-shadow);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.bg-light::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.text-secondary::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--info-color));
+    border-radius: 2px;
+}
+
+.nav-link {
+    color: var(--text-muted) !important;
+    padding: 12px 16px !important;
+    border-radius: 10px !important;
+    margin-bottom: 4px !important;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: translateX(4px);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.nav-link:hover::before {
+    background: linear-gradient(180deg, var(--primary-color), var(--info-color));
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+
+.nav-link.active,
+.nav-link[href*="dashboard"]:hover {
+    color: var(--text-primary) !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
+}
+
+.nav-link.active::before,
+.nav-link[href*="dashboard"]:hover::before {
+    background: var(--primary-color);
+}
+
+.nav-link[href*="users"]:hover {
+    background: rgba(16, 185, 129, 0.15) !important;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
+}
+
+.nav-link[href*="users"]:hover::before {
+    background: var(--success-color);
+}
+
+.nav-link[href*="tasks"]:hover {
+    background: rgba(59, 130, 246, 0.15) !important;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
+}
+
+.nav-link[href*="tasks"]:hover::before {
+    background: var(--info-color);
+}
+
+/* Active state for current page */
+.nav-link.active {
+    color: var(--text-primary) !important;
+    background: rgba(99, 102, 241, 0.2) !important;
+    transform: translateX(4px);
+}
+
+/* Footer Styles */
+.bg-dark {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border) !important;
+    box-shadow: 0 -4px 20px var(--glass-shadow);
+    position: relative;
+}
+
+.bg-dark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.text-white {
+    color: var(--text-secondary) !important;
+}
+
+footer small {
+    color: var(--text-muted) !important;
+    font-size: 0.8rem !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Container adjustments for glass effect */
+.container-fluid {
+    position: relative;
+}
+
+/* Sidebar animation on hover */
+.bg-light:hover {
+    box-shadow: 6px 0 25px var(--glass-shadow);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .bg-light {
+        width: 100% !important;
+        position: fixed;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .bg-light.show {
+        transform: translateX(0);
+    }
+
+    .navbar-brand small {
+        display: none !important;
+    }
+}
+
+/* Smooth scrolling for sidebar */
+.nav {
+    overflow-y: auto;
+    max-height: calc(100vh - 120px);
+}
+
+.nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Add subtle animation to all glass elements */
+@keyframes glassGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 20px var(--glass-shadow);
+    }
+
+    50% {
+        box-shadow: 0 4px 25px rgba(99, 102, 241, 0.1);
+    }
+}
+
+.navbar-dark,
+.bg-light,
+.bg-dark {
+    animation: glassGlow 8s ease-in-out infinite;
+}
