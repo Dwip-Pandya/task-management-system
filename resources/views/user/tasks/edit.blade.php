@@ -38,6 +38,19 @@
                     <textarea name="description" class="form-control" rows="4">{{ old('description', $task->description) }}</textarea>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Project</label>
+                    <select name="project_id" class="form-select" required>
+                        <option value="">Select Project</option>
+                        @foreach($projectsList as $p)
+                        <option value="{{ $p->project_id }}" {{ $task->project_id == $p->project_id ? 'selected' : '' }}>
+                            {{ $p->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+
+
                 {{-- Status --}}
                 <div class="mb-3">
                     <label class="form-label">Status</label>

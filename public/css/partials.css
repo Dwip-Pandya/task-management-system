@@ -320,3 +320,7 @@ footer small {
 .bg-dark {
     animation: glassGlow 8s ease-in-out infinite;
 }
+
+.card-1{
+    background: var(--glass-bg) !important;
+}

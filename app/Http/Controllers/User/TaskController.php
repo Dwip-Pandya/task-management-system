@@ -14,20 +14,30 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
+        // Fetch all projects for dropdown filter
+        $projects = DB::table('projects')->get();
+
         $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
-            ->select('tasks.*', 'statuses.name as status_name', 'priorities.name as priority_name')
+            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id') // join projects
+            ->select(
+                'tasks.*',
+                'statuses.name as status_name',
+                'priorities.name as priority_name',
+                'projects.name as project_name'
+            )
             ->where('tasks.assigned_to', $user->user_id)
             ->when($request->status_id, fn($q) => $q->where('tasks.status_id', $request->status_id))
             ->when($request->priority_id, fn($q) => $q->where('tasks.priority_id', $request->priority_id))
             ->when($request->due_date, fn($q) => $q->whereDate('tasks.due_date', $request->due_date))
+            ->when($request->project_id, fn($q) => $q->where('tasks.project_id', $request->project_id)) // <-- filter by project
             ->get();
 
         $statuses   = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
 
-        return view('user.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'request'));
+        return view('user.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'projects', 'request'));
     }
 
     // Show single task
@@ -75,8 +85,9 @@ class TaskController extends Controller
 
         $statuses   = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
+        $projectsList = DB::table('projects')->get();
 
-        return view('user.tasks.edit', compact('task', 'user', 'statuses', 'priorities'));
+        return view('user.tasks.edit', compact('task', 'user', 'statuses', 'priorities', 'projectsList'));
     }
 
     // Update task
@@ -93,7 +104,7 @@ class TaskController extends Controller
             'title'       => $request->title,
             'description' => $request->description,
             'status_id'   => $request->status_id,
-            'priority_id' => $request->priority_id,
+            'project_id'  => $request->project_id,
             'due_date'    => $request->due_date,
         ]);
 
@@ -103,16 +114,7 @@ class TaskController extends Controller
     // Delete task
     public function destroy($task_id)
     {
-        $user = Auth::user();
-
-        $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->user_id)->first();
-        if (!$task) {
-            return redirect()->route('user.tasks.index')->with('error', 'Unauthorized delete.');
-        }
-
-        DB::table('tasks')->where('task_id', $task_id)->delete();
-
-        return redirect()->route('user.tasks.index')->with('success', 'Task deleted.');
+        //
     }
 
     // Update task status (AJAX)

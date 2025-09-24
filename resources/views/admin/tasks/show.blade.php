@@ -34,6 +34,7 @@
                 <input type="hidden" name="task_id" value="{{ $task->task_id }}">
                 <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment..." required></textarea>
                 <button class="btn btn-primary btn-sm">Post Comment</button>
+                <a href="{{ route('tasks.index') }}" class="btn btn-secondary btn-sm">Back to Tasks</a>
             </form>
             @endif
 

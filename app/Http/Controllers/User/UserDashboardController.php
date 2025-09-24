@@ -16,11 +16,18 @@ class UserDashboardController extends Controller
         $tasksQuery = DB::table('tasks')
             ->leftJoin('tbl_user as created_by_user', 'tasks.created_by', '=', 'created_by_user.user_id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
+            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
                 'tasks.*',
                 'created_by_user.name as created_by_name',
-                'statuses.name as status_name'
+                'statuses.name as status_name',
+                'projects.name as project_name'
             );
+
+        // Filter by project if chosen
+        if ($request->project_id) {
+            $tasksQuery->where('tasks.project_id', $request->project_id);
+        }
 
         // Show selected user's tasks (if chosen) otherwise show current user's tasks
         if ($request->assigned_to) {
@@ -40,7 +47,8 @@ class UserDashboardController extends Controller
 
         // Pass users list for the dropdown in the dashboard
         $usersList = DB::table('tbl_user')->get();
+        $projectsList = DB::table('projects')->get();
 
-        return view('user.dashboard', compact('tasksByStatus', 'user', 'usersList', 'request'));
+        return view('user.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
     }
 }

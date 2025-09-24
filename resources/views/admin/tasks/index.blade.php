@@ -64,6 +64,19 @@
                         </select>
                     </div>
 
+                    {{-- Project Filter --}}
+                    <div class="col-md-2">
+                        <select name="project_id" class="form-select">
+                            <option class="text-dark">All Projects</option>
+                            @foreach($projects as $p)
+                            <option class="text-dark" value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
+                                {{ $p->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
                     {{-- Due Date --}}
                     <div class="col-md-2">
                         <input type="date" name="due_date" class="form-control" value="{{ $request->due_date ?? '' }}">
@@ -98,6 +111,10 @@
                     <div class="col-md-4 mb-4">
                         <div class="card shadow {{ $borderClass }}">
                             <div class="card-body">
+                                {{-- Project Capsule --}}
+                                @if($t->project_name)
+                                <span class="badge bg-info text-dark mb-2">{{ $t->project_name }}</span>
+                                @endif
                                 <h5 class="card-title">{{ $t->title }}</h5>
                                 <span class="badge {{ $badgeClass }} mb-2">{{ ucfirst($t->status_name) }}</span>
                                 <p class="card-text">{{ Str::limit($t->description, 100) }}</p>
@@ -150,11 +167,6 @@
                                 <a href="{{ route('tasks.show', $t->task_id) }}" class="btn btn-info btn-sm">Details</a>&nbsp;
                                 <a href="{{ route('tasks.show', $t->task_id) }}" class="btn btn-light btn-sm">comment</a>&nbsp;
                                 <a href="{{ route('tasks.edit', $t->task_id) }}" class="btn btn-warning btn-sm">Edit</a>&nbsp;
-                                <form action="{{ route('tasks.destroy', $t->task_id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this task?')">Delete</button>
-                                </form>
                             </div>
                         </div>
                     </div>

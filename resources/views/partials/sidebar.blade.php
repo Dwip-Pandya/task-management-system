@@ -12,6 +12,12 @@
             <a href="/admin/tasks" class="nav-link">Tasks</a>
         </li>
         <li class="nav-item">
+            <a href="/admin/projects" class="nav-link">Projects</a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/reports" class="nav-link">Reports</a>
+        </li>
+        <li class="nav-item">
             <a href="/admin/calendar" class="nav-link">Calendar</a>
         </li>
         @else
@@ -24,7 +30,7 @@
         <li class="nav-item">
             <a href="/user/calendar" class="nav-link">Calendar</a>
         </li>
-        @endif
 
+        @endif
     </ul>
 </div>

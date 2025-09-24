@@ -20,7 +20,7 @@
 
             <form method="GET" class="row g-2 mb-4">
                 {{-- Status --}}
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <select name="status_id" class="form-select">
                         <option value="">All Statuses</option>
                         @foreach($statuses as $s)
@@ -32,7 +32,7 @@
                 </div>
 
                 {{-- Priority --}}
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <select name="priority_id" class="form-select">
                         <option value="">All Priorities</option>
                         @foreach($priorities as $p)
@@ -43,8 +43,20 @@
                     </select>
                 </div>
 
+                {{-- Project Filter --}}
+                <div class="col-md-2">
+                    <select name="project_id" class="form-select">
+                        <option class="text-dark">All Projects</option>
+                        @foreach($projects as $p)
+                        <option class="text-dark" value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
+                            {{ $p->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 {{-- Due Date --}}
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="date" name="due_date" class="form-control" value="{{ $request->due_date ?? '' }}">
                 </div>
 
@@ -58,6 +70,9 @@
                 <div class="col-md-4 mb-3">
                     <div class="card shadow border-info">
                         <div class="card-body">
+                            @if($t->project_name)
+                            <span class="badge bg-info text-dark mb-1">{{ $t->project_name }}</span>
+                            @endif
                             <h5>{{ $t->title }}</h5>
                             <span class="badge bg-primary">{{ ucfirst($t->status_name) }}</span>
                             <p>{{ Str::limit($t->description, 80) }}</p>
@@ -68,11 +83,6 @@
                             <a href="{{ route('user.tasks.show', $t->task_id) }}" class="btn btn-info btn-sm">View</a>
                             <a href="{{ route('user.tasks.show', $t->task_id) }}" class="btn btn-light btn-sm">Comment</a>
                             <a href="{{ route('user.tasks.edit', $t->task_id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('user.tasks.destroy', $t->task_id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this task?')">Delete</button>
-                            </form>
                         </div>
                     </div>
                 </div>

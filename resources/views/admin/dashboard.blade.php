@@ -34,6 +34,17 @@
                         </option>
                         @endforeach
                     </select>
+
+                    {{-- Project Dropdown --}}
+                    <select name="project_id" class="form-select me-2">
+                        <option value="">All Projects</option>
+                        @foreach($projectsList as $p)
+                        <option value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
+                            {{ $p->name }}
+                        </option>
+                        @endforeach
+                    </select>
+
                     <button type="submit" class="btn btn-primary">Filter</button>
                 </form>
             </div>

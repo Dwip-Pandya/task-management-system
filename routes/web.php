@@ -10,6 +10,8 @@ use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\TaskController as UserTaskController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\ReportController;
 
 
 Route::get('/', function () {
@@ -54,7 +56,19 @@ Route::prefix('admin')->group(function () {
     Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
     Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
+    // Projects
+    Route::resource('projects', ProjectController::class)
+        ->parameters(['projects' => 'id']);
+
+    // Reports
+    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
 });
+
+// Export Reports
+Route::get('admin/reports/export/{format}', [App\Http\Controllers\Admin\ReportController::class, 'export'])
+    ->name('admin.reports.export');
+
+
 
 
 // ========================= USER ROUTES =========================
@@ -68,7 +82,7 @@ Route::prefix('user')->group(function () {
     Route::get('tasks/{id}', [UserTaskController::class, 'show'])->name('user.tasks.show');
     Route::get('tasks/{id}/edit', [UserTaskController::class, 'edit'])->name('user.tasks.edit');
     Route::put('tasks/{id}', [UserTaskController::class, 'update'])->name('user.tasks.update');
-    Route::delete('tasks/{id}', [UserTaskController::class, 'destroy'])->name('user.tasks.destroy');
+
 
     // AJAX for status update
     Route::post('tasks/{id}/update-status', [UserTaskController::class, 'updateStatus'])->name('user.tasks.updateStatus');
