@@ -64,7 +64,7 @@
                             <i class="fas fa-user-plus"></i>
                             Create Account
                         </a>
-                        
+
                     </div>
                     <p style="color: var(--text-muted); font-size: 0.9rem;">
                         <i class="fas fa-lock"></i> Secure authentication •
@@ -157,9 +157,65 @@
                         consistent user experience across all platforms.
                     </p>
                 </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h3 class="feature-title">Project Management</h3>
+                    <p class="feature-description">
+                        Create and manage multiple projects. Assign tasks to specific projects
+                        for better organization and easy tracking of team progress.
+                    </p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3 class="feature-title">Advanced Task Filtering</h3>
+                    <p class="feature-description">
+                        Filter tasks by project, status, priority, tag, assigned user, and date.
+                        Quickly find the tasks you need and prioritize efficiently.
+                    </p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Report Generation</h3>
+                    <p class="feature-description">
+                        Generate Excel, PDF, Word, and PowerPoint reports with customizable filters.
+                        Export data for presentations, audits, or record-keeping in seconds.
+                    </p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Task Deadline Calendar</h3>
+                    <p class="feature-description">
+                        View all task deadlines in an interactive calendar. Easily track due dates,
+                        plan your schedule, and never miss important deadlines.
+                    </p>
+                </div>
+
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Enhanced Admin Dashboard</h3>
+                    <p class="feature-description">
+                        Access all critical metrics, tasks, projects, users, and reports
+                        from a single comprehensive dashboard for faster decision-making.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
+
 
     <!-- How It Works Section -->
     <section class="how-it-works" id="how-it-works">
