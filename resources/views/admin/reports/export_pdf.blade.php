@@ -41,15 +41,15 @@
         <tbody>
             @foreach($tasks as $t)
             <tr>
-                <td>{{ $t->task_id }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $t->title }}</td>
                 <td>{{ $t->project_name ?? '-' }}</td>
                 <td>{{ $t->status_name ?? '-' }}</td>
                 <td>{{ $t->priority_name ?? '-' }}</td>
                 <td>{{ $t->tag_name ?? '-' }}</td>
                 <td>{{ $t->assigned_user_name ?? '-' }}</td>
-                <td>{{ $t->created_at }}</td>
-                <td>{{ $t->due_date ?? '-' }}</td>
+                <td>{{ $t->created_at ? \Carbon\Carbon::parse($t->created_at)->format('d-m-Y') : '-' }}</td>
+                <td>{{ $t->due_date ? \Carbon\Carbon::parse($t->due_date)->format('d-m-Y') : '-' }}</td>
             </tr>
             @endforeach
         </tbody>

@@ -62,7 +62,7 @@
                 <button type="submit" class="btn btn-primary">Filter</button>
                 <a href="{{ route('admin.reports.index') }}" class="btn btn-secondary">Reset</a>
             </form>
-            
+
 
             <!-- Export Buttons -->
             <div class="mb-3">
@@ -101,8 +101,8 @@
                             <td>{{ $t->priority_name ?? '-' }}</td>
                             <td>{{ $t->tag_name ?? '-' }}</td>
                             <td>{{ $t->assigned_user_name ?? '-' }}</td>
-                            <td>{{ $t->created_at }}</td>
-                            <td>{{ $t->due_date ?? '-' }}</td>
+                            <td>{{ $t->created_at ? \Carbon\Carbon::parse($t->created_at)->format('d-m-Y') : '-' }}</td>
+                            <td>{{ $t->due_date ? \Carbon\Carbon::parse($t->due_date)->format('d-m-Y') : '-' }}</td>
                         </tr>
                         @empty
                         <tr>

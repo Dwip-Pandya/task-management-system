@@ -89,13 +89,16 @@ class ReportController extends Controller
                 $spreadsheet = new Spreadsheet();
                 $sheet = $spreadsheet->getActiveSheet();
 
-                // Headings
+                // Headers
                 $headers = ['ID', 'Title', 'Project', 'Status', 'Priority', 'Tag', 'Assigned To', 'Due Date', 'Created At'];
                 $sheet->fromArray($headers, null, 'A1');
 
-                // Data rows
+                // Rows
                 $row = 2;
                 foreach ($tasks as $t) {
+                    $dueDate = $t->due_date ? date('d-m-Y', strtotime($t->due_date)) : '-';
+                    $createdAt = $t->created_at ? date('d-m-Y', strtotime($t->created_at)) : '-';
+
                     $sheet->setCellValue("A$row", $t->task_id);
                     $sheet->setCellValue("B$row", $t->title);
                     $sheet->setCellValue("C$row", $t->project_name ?? '-');
@@ -103,8 +106,8 @@ class ReportController extends Controller
                     $sheet->setCellValue("E$row", $t->priority_name ?? '-');
                     $sheet->setCellValue("F$row", $t->tag_name ?? '-');
                     $sheet->setCellValue("G$row", $t->assigned_user_name ?? '-');
-                    $sheet->setCellValue("H$row", $t->due_date ?? '-');
-                    $sheet->setCellValue("I$row", $t->created_at);
+                    $sheet->setCellValue("H$row", $dueDate);
+                    $sheet->setCellValue("I$row", $createdAt);
                     $row++;
                 }
 
@@ -128,22 +131,26 @@ class ReportController extends Controller
                 $phpWord->addTableStyle('TaskTable', $tableStyle, $firstRowStyle);
 
                 $table = $section->addTable('TaskTable');
-                $headers = ['ID', 'Title', 'Project', 'Status', 'Priority', 'Assigned To', 'Due Date'];
+                $headers = ['ID', 'Title', 'Project', 'Status', 'Priority', 'Assigned To', 'Due Date', 'Created At'];
                 $table->addRow();
                 foreach ($headers as $h) {
                     $table->addCell(2000)->addText($h, ['bold' => true]);
                 }
 
                 foreach ($tasks as $index => $t) {
+                    $dueDate = $t->due_date ? date('d-m-Y', strtotime($t->due_date)) : '-';
+                    $createdAt = $t->created_at ? date('d-m-Y', strtotime($t->created_at)) : '-';
+
                     $table->addRow();
                     $bgColor = $index % 2 === 0 ? 'EEEEEE' : 'FFFFFF';
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->task_id);
+                    $table->addCell(1000, ['bgColor' => $bgColor])->addText($t->task_id);
                     $table->addCell(3000, ['bgColor' => $bgColor])->addText($t->title);
                     $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->project_name ?? '-');
                     $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->status_name ?? '-');
                     $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->priority_name ?? '-');
                     $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->assigned_user_name ?? '-');
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->due_date ?? '-');
+                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($dueDate);
+                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($createdAt);
                 }
 
                 $file = storage_path('tasks_report.docx');
@@ -154,24 +161,42 @@ class ReportController extends Controller
                 $ppt = new PhpPresentation();
                 $slide = $ppt->getActiveSlide();
 
+                // Title
                 $titleShape = $slide->createRichTextShape()
-                    ->setHeight(50)->setWidth(700)->setOffsetX(50)->setOffsetY(20);
+                    ->setHeight(50)->setWidth(900)->setOffsetX(20)->setOffsetY(20);
+                $titleShape->getActiveParagraph()->getAlignment()->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
                 $titleRun = $titleShape->createTextRun('Tasks Report');
-                $titleRun->getFont()->setBold(true)->setSize(20)->setColor(new Color('0000FF'));
+                $titleRun->getFont()->setBold(true)->setSize(22)->setColor(new Color('0000FF'));
 
-                $y = 100;
+                // Header background rectangle with text
+                $headerBox = $slide->createRichTextShape()
+                    ->setHeight(30)->setWidth(1000)->setOffsetX(20)->setOffsetY(80);
+                $headerBox->getFill()->setFillType(Fill::FILL_SOLID)->setStartColor(new Color('CCCCCC'));
+                $headerBox->getActiveParagraph()->getAlignment()->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
+
+                $headerText = $headerBox->createTextRun("ID | Title | Project | Status | Priority | Assigned To | Due Date | Created At");
+                $headerText->getFont()->setBold(true)->setSize(14)->setColor(new Color('000000'));
+
+                // Data rows
+                $y = 120;
                 foreach ($tasks as $index => $t) {
-                    $shape = $slide->createRichTextShape()->setHeight(40)->setWidth(700)->setOffsetX(50)->setOffsetY($y);
-                    $textRun = $shape->createTextRun(
-                        "{$t->task_id} | {$t->title} | {$t->project_name} | {$t->status_name} | {$t->priority_name} | {$t->assigned_user_name}"
-                    );
-                    $textRun->getFont()->setSize(14)->setColor(new Color('333333'));
-                    $shape->getFill()->setFillType(Fill::FILL_SOLID)
-                        ->setStartColor(new Color($index % 2 === 0 ? 'DDDDDD' : 'FFFFFF'));
-                    $y += 50;
+                    $dueDate = $t->due_date ? date('d-m-Y', strtotime($t->due_date)) : '-';
+                    $createdAt = $t->created_at ? date('d-m-Y', strtotime($t->created_at)) : '-';
+
+                    $rowShape = $slide->createRichTextShape()
+                        ->setHeight(25)->setWidth(1000)->setOffsetX(20)->setOffsetY($y);
+                    $rowText = "{$t->task_id} | {$t->title} | {$t->project_name} | {$t->status_name} | {$t->priority_name} | {$t->assigned_user_name} | $dueDate | $createdAt";
+                    $rowRun = $rowShape->createTextRun($rowText);
+                    $rowRun->getFont()->setSize(12)->setColor(new Color('333333'));
+
+                    // alternating background
+                    $rowShape->getFill()->setFillType(Fill::FILL_SOLID)
+                        ->setStartColor(new Color($index % 2 === 0 ? 'F5F5F5' : 'FFFFFF'));
+
+                    $y += 30;
                 }
 
-                $file = storage_path('tasks_report.pptx');
+                $file = storage_path('tasks_report_rectangle.pptx');
                 $writer = IOFactory::createWriter($ppt, 'PowerPoint2007');
                 $writer->save($file);
 
