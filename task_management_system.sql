@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 19, 2025 at 10:30 PM
+-- Generation Time: Sep 24, 2025 at 09:10 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -67,7 +67,14 @@ CREATE TABLE `comments` (
 
 INSERT INTO `comments` (`comment_id`, `task_id`, `user_id`, `message`, `parent_id`, `created_at`, `updated_at`) VALUES
 (1, 1, 3, 'This should be done by the weekend.', NULL, '2025-09-19 13:04:11', '2025-09-19 13:04:11'),
-(2, 1, 5, 'Ma\'am, i am currently Occupied by another task with high priority, please try to hand-over this task to another developer.', 1, '2025-09-19 13:06:19', '2025-09-19 13:06:19');
+(2, 1, 5, 'Ma\'am, i am currently Occupied by another task with high priority, please try to hand-over this task to another developer.', 1, '2025-09-19 13:06:19', '2025-09-19 13:06:19'),
+(3, 7, 1, 'Work Done.', NULL, '2025-09-19 23:41:30', '2025-09-19 23:41:30'),
+(4, 6, 3, 'I want this task done by weekend.', NULL, '2025-09-19 23:58:50', '2025-09-19 23:58:50'),
+(5, 2, 1, 'Complete.', NULL, '2025-09-20 00:01:37', '2025-09-20 00:01:37'),
+(6, 2, 3, 'Well done.', 5, '2025-09-20 00:02:52', '2025-09-20 00:02:52'),
+(7, 13, 3, 'Should be done on weekend.', NULL, '2025-09-20 00:04:18', '2025-09-20 00:04:18'),
+(8, 14, 3, 'This should be done on weekend.', NULL, '2025-09-20 00:14:31', '2025-09-20 00:14:31'),
+(9, 14, 1, 'Sure ma\'am', 8, '2025-09-20 00:17:44', '2025-09-20 00:17:44');
 
 -- --------------------------------------------------------
 
@@ -147,7 +154,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2025_09_19_105419_create_tags_table', 3),
 (9, '2025_09_19_113927_create_comments_table', 4),
 (10, '2025_09_19_115223_create_task_records_table', 5),
-(11, '2025_09_19_124854_add_replied_to_comments_table', 6);
+(11, '2025_09_19_124854_add_replied_to_comments_table', 6),
+(12, '2025_09_23_101028_create_projects_table', 7);
 
 -- --------------------------------------------------------
 
@@ -187,6 +195,29 @@ INSERT INTO `priorities` (`priority_id`, `name`, `created_at`, `updated_at`) VAL
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `projects`
+--
+
+CREATE TABLE `projects` (
+  `project_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `projects`
+--
+
+INSERT INTO `projects` (`project_id`, `name`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'Default Project', 'This project contains all existing tasks & for new tasks you can assign the tasks as you want.', '2025-09-23 04:46:38', '2025-09-23 07:18:29'),
+(2, 'Viaansh', 'Viaansh Project', '2025-09-23 07:11:15', '2025-09-23 07:11:15'),
+(3, 'Ajay Steel', 'end to end Website Development.', '2025-09-23 07:52:05', '2025-09-23 07:52:05');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sessions`
 --
 
@@ -204,7 +235,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('vzwqZNLMH0RAAkvUt4d36sVH8SOwPzb09efoblSD', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoib3RMdllzbGRoaTV2TGZaNGoxMk1HbnM2ZGNodzliSjVZOGVKeU80SSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC91c2VyL2Rhc2hib2FyZCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NDoidXNlciI7TzoxNToiQXBwXE1vZGVsc1xVc2VyIjozNTp7czoxMzoiACoAY29ubmVjdGlvbiI7czo1OiJteXNxbCI7czo4OiIAKgB0YWJsZSI7czo4OiJ0YmxfdXNlciI7czoxMzoiACoAcHJpbWFyeUtleSI7czo3OiJ1c2VyX2lkIjtzOjEwOiIAKgBrZXlUeXBlIjtzOjM6ImludCI7czoxMjoiaW5jcmVtZW50aW5nIjtiOjE7czo3OiIAKgB3aXRoIjthOjA6e31zOjEyOiIAKgB3aXRoQ291bnQiO2E6MDp7fXM6MTk6InByZXZlbnRzTGF6eUxvYWRpbmciO2I6MDtzOjEwOiIAKgBwZXJQYWdlIjtpOjE1O3M6NjoiZXhpc3RzIjtiOjE7czoxODoid2FzUmVjZW50bHlDcmVhdGVkIjtiOjA7czoyODoiACoAZXNjYXBlV2hlbkNhc3RpbmdUb1N0cmluZyI7YjowO3M6MTM6IgAqAGF0dHJpYnV0ZXMiO2E6ODp7czo3OiJ1c2VyX2lkIjtpOjE7czo0OiJuYW1lIjtzOjExOiJQYW5keWEgRHdpcCI7czo1OiJlbWFpbCI7czoyMDoiYXlkbmFwZHdpcEBnbWFpbC5jb20iO3M6ODoicGFzc3dvcmQiO3M6MjI4OiJleUpwZGlJNklucE1RbU5pZHk5SVZWRTVNR3gxSzBwWk9GQXlNVkU5UFNJc0luWmhiSFZsSWpvaVJsRkJUSEowYUdkaFNtODVURUo0VlRWbmFFMW5ZV1l6Y0ZCbk4zSjFURFZxYzNaWlRYQldNVVJ4VFQwaUxDSnRZV01pT2lKbE16aG1aRGt5WXpCaU5XUXlOekkzWVRNeU1UVmhOV0U0WVdZMU1qWmxOelUxWkdFM05UQmlOemhqWWpKaU9HVTBNRGc1TTJNeVlXTTVNbUppTnprM0lpd2lkR0ZuSWpvaUluMD0iO3M6NDoicm9sZSI7czo0OiJ1c2VyIjtzOjk6Imdvb2dsZV9pZCI7czoyMToiMTE2ODk4MzU0ODQ4ODY1Nzk4NjEzIjtzOjEwOiJjcmVhdGVkX2F0IjtzOjE5OiIyMDI1LTA5LTE5IDE3OjM5OjE3IjtzOjEwOiJ1cGRhdGVkX2F0IjtzOjE5OiIyMDI1LTA5LTE5IDE3OjM5OjE3Ijt9czoxMToiACoAb3JpZ2luYWwiO2E6ODp7czo3OiJ1c2VyX2lkIjtpOjE7czo0OiJuYW1lIjtzOjExOiJQYW5keWEgRHdpcCI7czo1OiJlbWFpbCI7czoyMDoiYXlkbmFwZHdpcEBnbWFpbC5jb20iO3M6ODoicGFzc3dvcmQiO3M6MjI4OiJleUpwZGlJNklucE1RbU5pZHk5SVZWRTVNR3gxSzBwWk9GQXlNVkU5UFNJc0luWmhiSFZsSWpvaVJsRkJUSEowYUdkaFNtODVURUo0VlRWbmFFMW5ZV1l6Y0ZCbk4zSjFURFZxYzNaWlRYQldNVVJ4VFQwaUxDSnRZV01pT2lKbE16aG1aRGt5WXpCaU5XUXlOekkzWVRNeU1UVmhOV0U0WVdZMU1qWmxOelUxWkdFM05UQmlOemhqWWpKaU9HVTBNRGc1TTJNeVlXTTVNbUppTnprM0lpd2lkR0ZuSWpvaUluMD0iO3M6NDoicm9sZSI7czo0OiJ1c2VyIjtzOjk6Imdvb2dsZV9pZCI7czoyMToiMTE2ODk4MzU0ODQ4ODY1Nzk4NjEzIjtzOjEwOiJjcmVhdGVkX2F0IjtzOjE5OiIyMDI1LTA5LTE5IDE3OjM5OjE3IjtzOjEwOiJ1cGRhdGVkX2F0IjtzOjE5OiIyMDI1LTA5LTE5IDE3OjM5OjE3Ijt9czoxMDoiACoAY2hhbmdlcyI7YTowOnt9czoxMToiACoAcHJldmlvdXMiO2E6MDp7fXM6ODoiACoAY2FzdHMiO2E6MDp7fXM6MTc6IgAqAGNsYXNzQ2FzdENhY2hlIjthOjA6e31zOjIxOiIAKgBhdHRyaWJ1dGVDYXN0Q2FjaGUiO2E6MDp7fXM6MTM6IgAqAGRhdGVGb3JtYXQiO047czoxMDoiACoAYXBwZW5kcyI7YTowOnt9czoxOToiACoAZGlzcGF0Y2hlc0V2ZW50cyI7YTowOnt9czoxNDoiACoAb2JzZXJ2YWJsZXMiO2E6MDp7fXM6MTI6IgAqAHJlbGF0aW9ucyI7YTowOnt9czoxMDoiACoAdG91Y2hlcyI7YTowOnt9czoyNzoiACoAcmVsYXRpb25BdXRvbG9hZENhbGxiYWNrIjtOO3M6MjY6IgAqAHJlbGF0aW9uQXV0b2xvYWRDb250ZXh0IjtOO3M6MTA6InRpbWVzdGFtcHMiO2I6MTtzOjEzOiJ1c2VzVW5pcXVlSWRzIjtiOjA7czo5OiIAKgBoaWRkZW4iO2E6MTp7aTowO3M6ODoicGFzc3dvcmQiO31zOjEwOiIAKgB2aXNpYmxlIjthOjA6e31zOjExOiIAKgBmaWxsYWJsZSI7YTo1OntpOjA7czo0OiJuYW1lIjtpOjE7czo1OiJlbWFpbCI7aToyO3M6ODoicGFzc3dvcmQiO2k6MztzOjQ6InJvbGUiO2k6NDtzOjk6Imdvb2dsZV9pZCI7fXM6MTA6IgAqAGd1YXJkZWQiO2E6MTp7aTowO3M6MToiKiI7fXM6MTk6IgAqAGF1dGhQYXNzd29yZE5hbWUiO3M6ODoicGFzc3dvcmQiO3M6MjA6IgAqAHJlbWVtYmVyVG9rZW5OYW1lIjtzOjE0OiJyZW1lbWJlcl90b2tlbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1758313783);
+('CPsqo9N25c4cLWsw30ipWGqMMMtc9Go2Tjj6Cb83', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibjJtTTNWMkRqUnc4SVVlUjRhU21wQk9HdXVzRWh6RnBod1JNVkM0eCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTozO30=', 1758696893);
 
 -- --------------------------------------------------------
 
@@ -277,6 +308,7 @@ CREATE TABLE `tasks` (
   `created_by` bigint(20) UNSIGNED NOT NULL,
   `status_id` bigint(20) UNSIGNED NOT NULL,
   `priority_id` bigint(20) UNSIGNED NOT NULL,
+  `project_id` bigint(20) UNSIGNED DEFAULT NULL,
   `tag_id` bigint(20) UNSIGNED DEFAULT NULL,
   `due_date` datetime DEFAULT NULL,
   `completed_at` datetime DEFAULT NULL,
@@ -288,18 +320,23 @@ CREATE TABLE `tasks` (
 -- Dumping data for table `tasks`
 --
 
-INSERT INTO `tasks` (`task_id`, `title`, `description`, `assigned_to`, `created_by`, `status_id`, `priority_id`, `tag_id`, `due_date`, `completed_at`, `created_at`, `updated_at`) VALUES
-(1, 'Symphony Infra.com', 'Require Gathering for the real estate website features.', 5, 3, 4, 1, 14, '2025-09-26 00:00:00', NULL, '2025-09-19 12:20:01', '2025-09-19 14:26:35'),
-(2, 'Project Kickoff Meeting', 'Conduct an initial meeting with stakeholders to align on goals, deliverables, and timelines.', 1, 3, 2, 2, 1, '2025-09-25 00:00:00', NULL, '2025-09-19 14:47:03', '2025-09-19 14:47:03'),
-(3, 'Fix Login Page Error', 'Resolve the issue where users cannot log in due to invalid session handling.', 6, 3, 2, 3, 2, '2025-09-19 00:00:00', NULL, '2025-09-19 14:47:46', '2025-09-19 14:47:46'),
-(4, 'Add Dark Mode Feature', 'Implement a dark mode toggle for better user experience in low-light environments.', 4, 3, 2, 3, 3, '2025-09-21 00:00:00', NULL, '2025-09-19 14:48:31', '2025-09-19 14:48:31'),
-(5, 'Server Patch Update', 'Apply the latest security patches to the production servers.', 2, 3, 2, 4, 4, '2025-09-20 00:00:00', NULL, '2025-09-19 14:49:05', '2025-09-19 14:49:05'),
-(6, 'Dashboard Redesign', 'Create new wireframes and UI components to improve the dashboard’s usability.', 4, 3, 1, 2, 5, '2025-09-23 00:00:00', NULL, '2025-09-19 14:49:40', '2025-09-19 14:49:40'),
-(7, 'Regression Testing Cycle', 'Execute regression test cases to ensure no new bugs were introduced after the last release.', 1, 3, 3, 2, 6, '2025-09-20 00:00:00', NULL, '2025-09-19 14:50:19', '2025-09-19 14:50:19'),
-(8, 'Write API Documentation', 'Document all available API endpoints with request/response examples for developers.', 1, 3, 4, 1, 7, '2025-09-28 00:00:00', NULL, '2025-09-19 14:50:50', '2025-09-19 14:50:50'),
-(9, 'Competitor Analysis', 'Research competitor products and prepare a comparison report highlighting gaps and opportunities.', 1, 3, 2, 2, 8, '2025-09-24 00:00:00', NULL, '2025-09-19 14:51:33', '2025-09-19 14:51:33'),
-(10, 'Deploy Extension Version 2.3', 'Deploy the new build to the staging environment and verify configurations.', 5, 3, 2, 2, 9, '2025-09-27 00:00:00', NULL, '2025-09-19 14:52:35', '2025-09-19 14:52:35'),
-(11, 'Customer Support Ticket #4521', 'Assist the customer facing an issue with data export functionality.', 1, 3, 3, 4, 10, '2025-09-20 00:00:00', NULL, '2025-09-19 14:54:13', '2025-09-19 14:54:13');
+INSERT INTO `tasks` (`task_id`, `title`, `description`, `assigned_to`, `created_by`, `status_id`, `priority_id`, `project_id`, `tag_id`, `due_date`, `completed_at`, `created_at`, `updated_at`) VALUES
+(1, 'Symphony Infra.com', 'Require Gathering for the real estate website features.', 5, 3, 4, 1, 1, 14, '2025-09-26 00:00:00', NULL, '2025-09-19 12:20:01', '2025-09-19 14:26:35'),
+(2, 'Project Kickoff Meeting', 'Conduct an initial meeting with stakeholders to align on goals, deliverables, and timelines.', 1, 3, 2, 2, 1, 1, '2025-09-24 00:00:00', NULL, '2025-09-19 14:47:03', '2025-09-19 14:47:03'),
+(3, 'Fix Login Page Error', 'Resolve the issue where users cannot log in due to invalid session handling.', 6, 3, 2, 3, 1, 2, '2025-09-19 00:00:00', NULL, '2025-09-19 14:47:46', '2025-09-19 14:47:46'),
+(4, 'Add Dark Mode Feature', 'Implement a dark mode toggle for better user experience in low-light environments.', 4, 3, 2, 3, 1, 3, '2025-09-21 00:00:00', NULL, '2025-09-19 14:48:31', '2025-09-19 14:48:31'),
+(5, 'Server Patch Update', 'Apply the latest security patches to the production servers.', 2, 3, 2, 4, 1, 4, '2025-09-20 00:00:00', NULL, '2025-09-19 14:49:05', '2025-09-19 14:49:05'),
+(6, 'Dashboard Redesign', 'Create new wireframes and UI components to improve the dashboard’s usability.', 4, 3, 1, 2, 1, 5, '2025-09-23 00:00:00', NULL, '2025-09-19 14:49:40', '2025-09-19 14:49:40'),
+(7, 'Regression Testing Cycle', 'Execute regression test cases to ensure no new bugs were introduced after the last release.', 1, 3, 3, 2, 1, 6, '2025-09-20 00:00:00', NULL, '2025-09-19 14:50:19', '2025-09-19 14:50:19'),
+(8, 'Write API Documentation', 'Document all available API endpoints with request/response examples for developers.', 1, 3, 4, 1, 1, 7, '2025-09-28 00:00:00', NULL, '2025-09-19 14:50:50', '2025-09-19 14:50:50'),
+(9, 'Competitor Analysis', 'Research competitor products and prepare a comparison report highlighting gaps and opportunities.', 1, 3, 2, 2, 1, 8, '2025-09-24 00:00:00', NULL, '2025-09-19 14:51:33', '2025-09-19 14:51:33'),
+(10, 'Deploy Extension Version 2.3', 'Deploy the new build to the staging environment and verify configurations.', 5, 3, 2, 2, 1, 9, '2025-09-27 00:00:00', NULL, '2025-09-19 14:52:35', '2025-09-19 14:52:35'),
+(11, 'Customer Support Ticket #4521', 'Assist the customer facing an issue with data export functionality.', 1, 3, 3, 4, 1, 10, '2025-09-20 00:00:00', NULL, '2025-09-19 14:54:13', '2025-09-19 14:54:13'),
+(12, 'Performance Analysis', 'Team Analysis', 1, 3, 1, 4, 1, 1, '2025-09-21 00:00:00', NULL, '2025-09-19 23:34:28', '2025-09-19 23:34:28'),
+(15, 'Home Page Design', '5 section home page for an IT company', 1, 3, 2, 2, 2, 5, '2025-09-27 00:00:00', NULL, '2025-09-23 07:16:23', '2025-09-23 07:16:23'),
+(16, 'Website UI/UX', 'Ajay Steel Website UI/UX.', 4, 3, 2, 2, 3, 5, '2025-09-30 00:00:00', NULL, '2025-09-23 07:53:16', '2025-09-23 07:53:16'),
+(17, 'Frontend Development.', '6 Section Website of Ajay Steel.', 6, 3, 2, 2, 3, 14, NULL, NULL, '2025-09-23 07:54:15', '2025-09-23 07:57:05'),
+(18, 'Resource Gathering', 'Getting all the info of Ajay Steel.', 1, 3, 2, 3, 3, 1, '2025-09-28 00:00:00', NULL, '2025-09-23 07:55:00', '2025-09-23 07:55:00');
 
 -- --------------------------------------------------------
 
@@ -328,7 +365,8 @@ INSERT INTO `tbl_user` (`user_id`, `name`, `email`, `password`, `role`, `google_
 (3, 'Trupti Pandya', 'trupti007@gmail.com', '$2y$12$phkqIXjGB/d01Wx0rc7W0ecxfn/1kX.pmKmm3fLhDRoWbBFryP/8e', 'admin', NULL, '2025-09-19 12:12:25', '2025-09-19 12:12:25'),
 (4, 'Vaishali Vala', 'vaishali@gmail.com', '$2y$12$dHLEKweSpo9KRZPjR8BQa.RSpzTCiZD6OyjrkaS1JYxCddL/uDHhG', 'user', NULL, '2025-09-19 12:14:44', '2025-09-19 12:15:30'),
 (5, 'Hardik Pandya', 'hardik@gmail.com', '$2y$12$NqXo7Bd5O.1Npj7Sod6BAea3Sm.B09fnf1G7cEK4rKdFcQ6pqnd4W', 'user', NULL, '2025-09-19 12:17:52', '2025-09-19 12:17:52'),
-(6, 'Sahil Sharma', 'sahilsharma@gmail.com', '$2y$12$I9PIcweivuezxp0qcMID.ePoRw2mgEPfVBGTh9d4zY9/g0Jh44f6a', 'user', NULL, '2025-09-19 14:46:01', '2025-09-19 14:46:01');
+(6, 'Sahil Sharma', 'sahilsharma@gmail.com', '$2y$12$I9PIcweivuezxp0qcMID.ePoRw2mgEPfVBGTh9d4zY9/g0Jh44f6a', 'user', NULL, '2025-09-19 14:46:01', '2025-09-19 14:46:01'),
+(9, 'Atul', 'atul007@gmail.com', '$2y$12$VGswUr5zrzF2VZN.nXIVg.5h2DDcJ6e.5ORHkF8D3pVNH7bduwheO', 'admin', NULL, '2025-09-20 00:12:27', '2025-09-20 00:12:49');
 
 -- --------------------------------------------------------
 
@@ -408,6 +446,12 @@ ALTER TABLE `priorities`
   ADD PRIMARY KEY (`priority_id`);
 
 --
+-- Indexes for table `projects`
+--
+ALTER TABLE `projects`
+  ADD PRIMARY KEY (`project_id`);
+
+--
 -- Indexes for table `sessions`
 --
 ALTER TABLE `sessions`
@@ -456,7 +500,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -474,13 +518,19 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `priorities`
 --
 ALTER TABLE `priorities`
   MODIFY `priority_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `projects`
+--
+ALTER TABLE `projects`
+  MODIFY `project_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `statuses`
@@ -498,13 +548,13 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `task_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `task_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
