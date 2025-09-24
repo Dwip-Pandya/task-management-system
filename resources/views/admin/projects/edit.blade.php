@@ -18,7 +18,7 @@
         <div class="container mt-4">
             <h2>Edit Project</h2>
 
-            <form action="{{ route('projects.update', $project->project_id) }}" method="POST">
+            <form action="{{ route('projects.update', $project) }}" method="POST">
                 @csrf
                 @method('PUT')
 

@@ -58,7 +58,7 @@ Route::prefix('admin')->group(function () {
     Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
     // Projects
     Route::resource('projects', ProjectController::class)
-        ->parameters(['projects' => 'id']);
+        ->parameters(['projects' => 'project']);
 
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
