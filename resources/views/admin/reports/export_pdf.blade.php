@@ -27,29 +27,25 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Project</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Tag</th>
-                <th>Assigned To</th>
-                <th>Created At</th>
-                <th>Due Date</th>
+                <th>#</th>
+                @foreach($selectedColumns as $col)
+                <th>{{ $allColumns[$col] }}</th>
+                @endforeach
             </tr>
         </thead>
         <tbody>
             @foreach($tasks as $t)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $t->title }}</td>
-                <td>{{ $t->project_name ?? '-' }}</td>
-                <td>{{ $t->status_name ?? '-' }}</td>
-                <td>{{ $t->priority_name ?? '-' }}</td>
-                <td>{{ $t->tag_name ?? '-' }}</td>
-                <td>{{ $t->assigned_user_name ?? '-' }}</td>
-                <td>{{ $t->created_at ? \Carbon\Carbon::parse($t->created_at)->format('d-m-Y') : '-' }}</td>
-                <td>{{ $t->due_date ? \Carbon\Carbon::parse($t->due_date)->format('d-m-Y') : '-' }}</td>
+                @foreach($selectedColumns as $col)
+                <td>
+                    @if(in_array($col, ['created_at', 'due_date']) && $t->$col)
+                    {{ \Carbon\Carbon::parse($t->$col)->format('d-m-Y') }}
+                    @else
+                    {{ $t->$col ?? '-' }}
+                    @endif
+                </td>
+                @endforeach
             </tr>
             @endforeach
         </tbody>

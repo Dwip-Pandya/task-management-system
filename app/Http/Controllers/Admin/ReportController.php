@@ -18,6 +18,19 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
+    protected $allColumns = [
+        'task_id' => 'Task ID',
+        'title' => 'Title',
+        'description' => 'Description',
+        'project_name' => 'Project',
+        'status_name' => 'Status',
+        'priority_name' => 'Priority',
+        'tag_name' => 'Tag',
+        'assigned_user_name' => 'Assigned To',
+        'created_at' => 'Created At',
+        'due_date' => 'Due Date',
+    ];
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -51,7 +64,19 @@ class ReportController extends Controller
         $priorities = DB::table('priorities')->select('priority_id', 'name')->get();
         $users = DB::table('tbl_user')->select('user_id', 'name')->get();
 
-        return view('admin.reports.index', compact('user', 'tasks', 'projects', 'statuses', 'priorities', 'users'));
+        // Columns selected by user (default: all)
+        $selectedColumns = $request->input('columns', array_keys($this->allColumns));
+
+        return view('admin.reports.index', [
+            'user' => $user,
+            'tasks' => $tasks,
+            'projects' => $projects,
+            'statuses' => $statuses,
+            'priorities' => $priorities,
+            'users' => $users,
+            'allColumns' => $this->allColumns,
+            'selectedColumns' => $selectedColumns,
+        ]);
     }
 
     public function export(Request $request, $format)
@@ -80,39 +105,42 @@ class ReportController extends Controller
 
         $tasks = $query->get();
 
+        $allColumns = $this->allColumns;
+        $columns = $request->input('columns', array_keys($allColumns));
+
         switch ($format) {
             case 'pdf':
-                return Pdf::loadView('admin.reports.export_pdf', compact('tasks'))
-                    ->download('tasks_report.pdf');
+                return Pdf::loadView('admin.reports.export_pdf', [
+                    'tasks' => $tasks,
+                    'selectedColumns' => $columns,
+                    'allColumns' => $allColumns
+                ])->download('tasks_report.pdf');
+
 
             case 'excel':
                 $spreadsheet = new Spreadsheet();
                 $sheet = $spreadsheet->getActiveSheet();
 
                 // Headers
-                $headers = ['ID', 'Title', 'Project', 'Status', 'Priority', 'Tag', 'Assigned To', 'Due Date', 'Created At'];
+                $headers = array_map(fn($c) => $allColumns[$c], $columns);
                 $sheet->fromArray($headers, null, 'A1');
 
                 // Rows
                 $row = 2;
                 foreach ($tasks as $t) {
-                    $dueDate = $t->due_date ? date('d-m-Y', strtotime($t->due_date)) : '-';
-                    $createdAt = $t->created_at ? date('d-m-Y', strtotime($t->created_at)) : '-';
-
-                    $sheet->setCellValue("A$row", $t->task_id);
-                    $sheet->setCellValue("B$row", $t->title);
-                    $sheet->setCellValue("C$row", $t->project_name ?? '-');
-                    $sheet->setCellValue("D$row", $t->status_name ?? '-');
-                    $sheet->setCellValue("E$row", $t->priority_name ?? '-');
-                    $sheet->setCellValue("F$row", $t->tag_name ?? '-');
-                    $sheet->setCellValue("G$row", $t->assigned_user_name ?? '-');
-                    $sheet->setCellValue("H$row", $dueDate);
-                    $sheet->setCellValue("I$row", $createdAt);
+                    $data = [];
+                    foreach ($columns as $col) {
+                        $value = $t->$col ?? '-';
+                        if (in_array($col, ['due_date', 'created_at'])) {
+                            $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                        }
+                        $data[] = $value;
+                    }
+                    $sheet->fromArray($data, null, "A$row");
                     $row++;
                 }
 
-                // Auto size columns
-                foreach (range('A', 'I') as $col) {
+                foreach (range('A', 'Z') as $col) {
                     $sheet->getColumnDimension($col)->setAutoSize(true);
                 }
 
@@ -131,26 +159,21 @@ class ReportController extends Controller
                 $phpWord->addTableStyle('TaskTable', $tableStyle, $firstRowStyle);
 
                 $table = $section->addTable('TaskTable');
-                $headers = ['ID', 'Title', 'Project', 'Status', 'Priority', 'Assigned To', 'Due Date', 'Created At'];
+
                 $table->addRow();
-                foreach ($headers as $h) {
-                    $table->addCell(2000)->addText($h, ['bold' => true]);
+                foreach ($columns as $col) {
+                    $table->addCell(2000)->addText($allColumns[$col], ['bold' => true]);
                 }
 
                 foreach ($tasks as $index => $t) {
-                    $dueDate = $t->due_date ? date('d-m-Y', strtotime($t->due_date)) : '-';
-                    $createdAt = $t->created_at ? date('d-m-Y', strtotime($t->created_at)) : '-';
-
                     $table->addRow();
-                    $bgColor = $index % 2 === 0 ? 'EEEEEE' : 'FFFFFF';
-                    $table->addCell(1000, ['bgColor' => $bgColor])->addText($t->task_id);
-                    $table->addCell(3000, ['bgColor' => $bgColor])->addText($t->title);
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->project_name ?? '-');
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->status_name ?? '-');
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->priority_name ?? '-');
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($t->assigned_user_name ?? '-');
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($dueDate);
-                    $table->addCell(2000, ['bgColor' => $bgColor])->addText($createdAt);
+                    foreach ($columns as $col) {
+                        $value = $t->$col ?? '-';
+                        if (in_array($col, ['due_date', 'created_at'])) {
+                            $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                        }
+                        $table->addCell(2000)->addText($value);
+                    }
                 }
 
                 $file = storage_path('tasks_report.docx');
@@ -174,20 +197,25 @@ class ReportController extends Controller
                 $headerBox->getFill()->setFillType(Fill::FILL_SOLID)->setStartColor(new Color('CCCCCC'));
                 $headerBox->getActiveParagraph()->getAlignment()->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
 
-                $headerText = $headerBox->createTextRun("ID | Title | Project | Status | Priority | Assigned To | Due Date | Created At");
+                $headerText = $headerBox->createTextRun(implode(' | ', array_map(fn($c) => $allColumns[$c], $columns)));
                 $headerText->getFont()->setBold(true)->setSize(14)->setColor(new Color('000000'));
 
                 // Data rows
                 $y = 120;
                 foreach ($tasks as $index => $t) {
-                    $dueDate = $t->due_date ? date('d-m-Y', strtotime($t->due_date)) : '-';
-                    $createdAt = $t->created_at ? date('d-m-Y', strtotime($t->created_at)) : '-';
+                    $rowData = [];
+                    foreach ($columns as $col) {
+                        $value = $t->$col ?? '-';
+                        if (in_array($col, ['due_date', 'created_at'])) {
+                            $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                        }
+                        $rowData[] = $value;
+                    }
+                    $rowText = implode(' | ', $rowData);
 
                     $rowShape = $slide->createRichTextShape()
                         ->setHeight(25)->setWidth(1000)->setOffsetX(20)->setOffsetY($y);
-                    $rowText = "{$t->task_id} | {$t->title} | {$t->project_name} | {$t->status_name} | {$t->priority_name} | {$t->assigned_user_name} | $dueDate | $createdAt";
-                    $rowRun = $rowShape->createTextRun($rowText);
-                    $rowRun->getFont()->setSize(12)->setColor(new Color('333333'));
+                    $rowShape->createTextRun($rowText)->getFont()->setSize(12)->setColor(new Color('333333'));
 
                     // alternating background
                     $rowShape->getFill()->setFillType(Fill::FILL_SOLID)
@@ -196,7 +224,7 @@ class ReportController extends Controller
                     $y += 30;
                 }
 
-                $file = storage_path('tasks_report_rectangle.pptx');
+                $file = storage_path('tasks_report.pptx');
                 $writer = IOFactory::createWriter($ppt, 'PowerPoint2007');
                 $writer->save($file);
 

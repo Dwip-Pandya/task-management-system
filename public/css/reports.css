@@ -211,3 +211,118 @@
     background: var(--info-color);
     color: #fff;
 }
+
+/* Column Selection Styling */
+.report-filters .mt-3 {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px !important;
+    box-shadow: 0 4px 16px var(--glass-shadow);
+}
+
+.report-filters .mt-3 strong {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.report-filters .mt-3 label {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 4px 8px 4px 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+}
+
+.report-filters .mt-3 label:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--glass-border);
+    transform: translateY(-1px);
+}
+
+.report-filters .mt-3 input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--glass-border);
+    border-radius: 4px;
+    margin-right: 8px;
+    background: var(--glass-bg);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.report-filters .mt-3 input[type="checkbox"]:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+}
+
+.report-filters .mt-3 input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+}
+
+.report-filters .mt-3 input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.report-filters .mt-3 label:has(input[type="checkbox"]:checked) {
+    color: var(--text-primary);
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary-color);
+}
+
+/* Responsive adjustments for column selector */
+@media (max-width: 768px) {
+    .report-filters .mt-3 {
+        padding: 16px;
+    }
+
+    .report-filters .mt-3 label {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+        margin: 2px 6px 2px 0;
+    }
+
+    .report-filters .mt-3 input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-right: 6px;
+    }
+}
+
+@media (max-width: 576px) {
+    .report-filters .mt-3 label {
+        display: flex;
+        width: 100%;
+        margin: 2px 0;
+    }
+}

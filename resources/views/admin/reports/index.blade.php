@@ -59,6 +59,19 @@
                 <input type="date" name="from_date" value="{{ request('from_date') }}">
                 <input type="date" name="to_date" value="{{ request('to_date') }}">
 
+                <!-- Column Selection -->
+                <div class="mt-3 mb-2">
+                    <strong>Select Columns:</strong><br>
+                    @foreach($allColumns as $key => $label)
+                    <label class="me-3">
+                        <input type="checkbox" name="columns[]" value="{{ $key }}"
+                            {{ in_array($key, $selectedColumns) ? 'checked' : '' }}
+                            onchange="this.form.submit()">
+                        {{ $label }}
+                    </label>
+                    @endforeach
+                </div>
+
                 <button type="submit" class="btn btn-primary">Filter</button>
                 <a href="{{ route('admin.reports.index') }}" class="btn btn-secondary">Reset</a>
             </form>
@@ -71,42 +84,34 @@
                 <a href="{{ route('admin.reports.export', ['format' => 'word'] + request()->query()) }}" class="btn btn-primary">Export Word</a>
                 <a href="{{ route('admin.reports.export', ['format' => 'ppt'] + request()->query()) }}" class="btn btn-warning">Export PPT</a>
             </div>
-
-
-
+            
             <div class="table-responsive">
                 <table class="reports-table table table-bordered table-striped align-middle">
                     <thead>
                         <tr>
-                            <th>Sr. No</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Project</th>
-                            <th>Status</th>
-                            <th>Priority</th>
-                            <th>Tag</th>
-                            <th>Assigned To</th>
-                            <th>Created At</th>
-                            <th>Due Date</th>
+                            <th>#</th>
+                            @foreach($selectedColumns as $col)
+                            <th>{{ $allColumns[$col] }}</th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($tasks as $t)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $t->title }}</td>
-                            <td>{{ $t->description }}</td>
-                            <td>{{ $t->project_name ?? '-' }}</td>
-                            <td>{{ $t->status_name ?? '-' }}</td>
-                            <td>{{ $t->priority_name ?? '-' }}</td>
-                            <td>{{ $t->tag_name ?? '-' }}</td>
-                            <td>{{ $t->assigned_user_name ?? '-' }}</td>
-                            <td>{{ $t->created_at ? \Carbon\Carbon::parse($t->created_at)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $t->due_date ? \Carbon\Carbon::parse($t->due_date)->format('d-m-Y') : '-' }}</td>
+                            @foreach($selectedColumns as $col)
+                            <td>
+                                @if(in_array($col, ['created_at', 'due_date']) && $t->$col)
+                                {{ \Carbon\Carbon::parse($t->$col)->format('d-m-Y') }}
+                                @else
+                                {{ $t->$col ?? '-' }}
+                                @endif
+                            </td>
+                            @endforeach
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="10" class="text-center text-muted">No tasks found</td>
+                            <td colspan="{{ count($selectedColumns) + 1 }}" class="text-center text-muted">No tasks found</td>
                         </tr>
                         @endforelse
                     </tbody>
