@@ -46,7 +46,7 @@
                 <div class="mb-3">
                     <label for="project_id" class="form-label">Project</label>
                     <select name="project_id" id="project_id" class="form-select" required>
-                        <option value="">-- Select Project --</option>
+                        <option class="text-dark" value="">-- Select Project --</option>
                         @foreach($projects as $project)
                         <option value="{{ $project->project_id }}"
                             {{ $task->project_id == $project->project_id ? 'selected' : '' }}>
@@ -82,7 +82,7 @@
                 <div class="mb-3">
                     <label class="form-label">Tag</label>
                     <select name="tag_id" class="form-select">
-                        <option value="">-- None --</option>
+                        <option class="text-dark" value="">-- None --</option>
                         @foreach($tags as $t)
                         <option class="text-dark" value="{{ $t->tag_id }}" {{ $task->tag_id == $t->tag_id ? 'selected' : '' }}>
                             {{ ucfirst($t->name) }}
