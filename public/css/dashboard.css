@@ -338,3 +338,207 @@
         height: 300px;
     }
 }
+
+
+/* forced change password */
+/* Password Modal Glassmorphism Styles */
+:root {
+    --primary-color: #6366f1;
+    --danger-color: #ef4444;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+}
+
+/* Modal Backdrop */
+#forcePasswordModal {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal Dialog */
+#forcePasswordModal .modal-dialog {
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Content - Glass Effect */
+#forcePasswordModal .modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    overflow: hidden;
+    position: relative;
+}
+
+#forcePasswordModal .modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    z-index: 1;
+}
+
+/* Modal Header */
+#forcePasswordModal .modal-header {
+    padding: 1.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    background: none;
+}
+
+#forcePasswordModal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--danger-color), #f87171);
+    opacity: 0.15;
+    z-index: 0;
+}
+
+#forcePasswordModal .modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Modal Body */
+#forcePasswordModal .modal-body {
+    padding: 1.5rem;
+    position: relative;
+}
+
+#forcePasswordModal .modal-body p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+
+/* Form Controls */
+#forcePasswordModal .form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+#forcePasswordModal .form-control::placeholder {
+    color: var(--text-muted);
+}
+
+#forcePasswordModal .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
+    color: var(--text-primary);
+}
+
+#forcePasswordModal .form-control:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+#forcePasswordModal .mb-2 {
+    margin-bottom: 0.75rem;
+}
+
+/* Modal Footer */
+#forcePasswordModal .modal-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: none;
+    justify-content: center;
+}
+
+/* Primary Button - Glass Style */
+#forcePasswordModal .btn-primary {
+    background: rgba(99, 102, 241, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.5);
+    color: var(--text-primary);
+    padding: 0.65rem 2rem;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#forcePasswordModal .btn-primary:hover {
+    background: rgba(99, 102, 241, 0.5);
+    border-color: rgba(99, 102, 241, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+#forcePasswordModal .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    #forcePasswordModal .modal-dialog {
+        margin: 1rem;
+    }
+
+    #forcePasswordModal .modal-header,
+    #forcePasswordModal .modal-body,
+    #forcePasswordModal .modal-footer {
+        padding: 1.25rem;
+    }
+
+    #forcePasswordModal .modal-title {
+        font-size: 1.1rem;
+    }
+
+    #forcePasswordModal .btn-primary {
+        width: 100%;
+    }
+}

@@ -35,24 +35,21 @@ Route::get('/auth/google-callback', [GoogleController::class, 'googleauthenticat
 
 
 // ========================= ADMIN ROUTES =========================
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\ForceChangePassword::class])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-    // Bulk delete (must be above resource)
-    Route::post('users/bulk-delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulk-delete');
+    // Update default password
+    Route::post('/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.updatePassword');
 
-    // User Management
+    // User management
     Route::resource('users', UserManagementController::class);
-
-    // Toggle role
+    Route::post('users/bulk-delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulk-delete');
     Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
-
-    // Restore user
     Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
 
-    // Task Management
+    // Task management
     Route::resource('tasks', TaskManagementController::class);
     Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->name('tasks.updateStatus');
     Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->name('tasks.updatePriority');
@@ -64,6 +61,7 @@ Route::prefix('admin')->group(function () {
     Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
     Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
+
     // Projects
     Route::resource('projects', ProjectController::class)
         ->parameters(['projects' => 'project']);
@@ -71,6 +69,7 @@ Route::prefix('admin')->group(function () {
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
 });
+
 
 // Export Reports
 Route::get('admin/reports/export/{format}', [App\Http\Controllers\Admin\ReportController::class, 'export'])

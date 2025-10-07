@@ -122,4 +122,20 @@ class UserManagementController extends Controller
         User::whereIn('id', $ids)->delete(); // Soft delete
         return redirect()->route('users.index')->with('success', 'Selected users deleted successfully.');
     }
+
+    // Force update password for default admin
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::findOrFail(Auth::id());
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        session()->forget('force_password_change');
+
+        return redirect()->back()->with('success', 'Password updated successfully!');
+    }
 }
