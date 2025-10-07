@@ -21,54 +21,34 @@ class GoogleController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Step 1: Check if user exists by Google ID (including soft deleted)
-            $userByGoogleId = User::withTrashed()
+            // Step 1: Check if BOTH google_id and email exist together
+            $user = User::withTrashed()
                 ->where('google_id', $googleUser->getId())
-                ->first();
-
-            if ($userByGoogleId) {
-                // If user was soft deleted, restore
-                if ($userByGoogleId->trashed()) {
-                    $userByGoogleId->restore();
-                }
-
-                Auth::login($userByGoogleId);
-                session(['user' => $userByGoogleId]);
-
-                return $userByGoogleId->role_id === 1
-                    ? redirect()->route('admin.dashboard')
-                    : redirect()->route('user.dashboard');
-            }
-
-            // Step 2: Check if user exists by email
-            $userByEmail = User::withTrashed()
                 ->where('email', $googleUser->getEmail())
                 ->first();
 
-            if ($userByEmail) {
-                if ($userByEmail->trashed()) {
-                    $userByEmail->restore();
+            if ($user) {
+                // Restore if soft deleted
+                if ($user->trashed()) {
+                    $user->restore();
                 }
 
-                // Assign Google ID to existing user
-                $userByEmail->google_id = $googleUser->getId();
-                $userByEmail->save();
+                // Login and set session
+                Auth::login($user);
+                session(['user' => $user]);
 
-                Auth::login($userByEmail);
-                session(['user' => $userByEmail]);
-
-                return $userByEmail->role_id === 1
+                return $user->role_id === 1
                     ? redirect()->route('admin.dashboard')
                     : redirect()->route('user.dashboard');
             }
 
-            // Step 3: Create new user
+            // Step 2: Create new user
             $newUser = User::create([
                 'name'      => $googleUser->getName(),
                 'email'     => $googleUser->getEmail(),
                 'password'  => bcrypt('password@123'),
                 'google_id' => $googleUser->getId(),
-                'role_id'   => 2, // default user
+                'role_id'   => 2,
             ]);
 
             Auth::login($newUser);
