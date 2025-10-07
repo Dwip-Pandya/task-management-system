@@ -1,67 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.main')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Calendar</title>
+@section('title', 'Task Calendar')
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+@push('styles')
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
-    <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+<!-- Page-Specific CSS -->
+<link href="{{ asset('css/calendar.css') }}" rel="stylesheet">
+@endpush
 
-    <!-- Custom CSS -->
-    <link href="{{ asset('css/partials.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/calendar.css') }}" rel="stylesheet">
-</head>
+@section('content')
+<div class="main-content p-4 w-100">
+    <h3>Task Calendar</h3>
+    <div id="calendar"></div>
+</div>
+@endsection
 
-<body class="d-flex flex-column" style="min-height: 100vh;">
+@push('scripts')
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    <!-- Header -->
-    @include('partials.header', ['user' => $user])
-
-    <div class="d-flex flex-grow-1">
-        <!-- Sidebar -->
-        @include('partials.sidebar', ['user' => $user])
-
-        <!-- Main Content -->
-        <div class="main-content p-4">
-            <h3>Task Calendar</h3>
-            <div id="calendar"></div>
-        </div>
-
-    </div>
-
-    <!-- Footer -->
-    @include('partials.footer')
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- FullCalendar JS -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                height: 'auto',
-                events: '{{ route("calendar.events") }}', // AJAX source
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
-                },
-                eventClick: function(info) {
-                    alert('Task: ' + info.event.title + '\nDue: ' + info.event.startStr);
-                }
-            });
-            calendar.render();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            height: 'auto',
+            events: '{{ route("calendar.events") }}', // AJAX source
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,dayGridWeek,dayGridDay'
+            },
+            eventClick: function(info) {
+                alert('Task: ' + info.event.title + '\nDue: ' + info.event.startStr);
+            }
         });
-    </script>
-</body>
-
-</html>
+        calendar.render();
+    });
+</script>
+@endpush
