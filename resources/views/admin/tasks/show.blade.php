@@ -28,7 +28,7 @@
             <h5>Comments</h5>
 
             {{-- Comment Form --}}
-            @if($user->role_id === 1 || $user->user_id == $task->assigned_to)
+            @if($user->role_id === 1 || $user->id == $task->assigned_to)
             <form action="{{ route('comments.store') }}" method="POST" class="mb-3">
                 @csrf
                 <input type="hidden" name="task_id" value="{{ $task->task_id }}">
@@ -79,7 +79,7 @@
                     <div class="ms-4 mt-2">
                         @foreach($comment->replies as $reply)
                         <div class="card mb-1 p-2">
-                            <p><strong>{{ $reply->name }} ({{ ucfirst($reply->role) }})</strong>
+                            <p><strong>{{ $reply->name }} ({{ ucfirst($reply->role_name) }})</strong>
                                 <small class="text-muted">{{ $reply->created_at }}</small>
                             </p>
                             <p>{{ $reply->message }}</p>

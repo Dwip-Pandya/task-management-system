@@ -21,7 +21,7 @@ return new class extends Migration
 
             // Foreign keys
             $table->foreign('task_id')->references('task_id')->on('tasks')->onDelete('cascade');
-            $table->foreign('user_id')->references('user_id')->on('tbl_user')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -32,7 +32,7 @@ return new class extends Migration
     {
         Schema::table('comments', function (Blueprint $table) {
             $table->dropForeign(['task_id']);
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['id']);
         });
 
         Schema::dropIfExists('comments');

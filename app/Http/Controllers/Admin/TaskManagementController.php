@@ -21,7 +21,7 @@ class TaskManagementController extends Controller
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('tags', 'tasks.tag_id', '=', 'tags.tag_id')
-            ->leftJoin('tbl_user as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.user_id')
+            ->leftJoin('users as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.id')
             ->leftJoin('roles as assigned_role', 'assigned_user.role_id', '=', 'assigned_role.id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
@@ -40,8 +40,7 @@ class TaskManagementController extends Controller
                 $tasksQuery->where('tasks.assigned_to', $request->assigned_to);
             }
         } else {
-            // Regular user: show own tasks by default
-            $tasksQuery->where('tasks.assigned_to', $request->assigned_to ?? $user->user_id);
+            $tasksQuery->where('tasks.assigned_to', $request->assigned_to ?? $user->id);
         }
 
         // Filters
@@ -61,9 +60,9 @@ class TaskManagementController extends Controller
         $tasks = $tasksQuery->get();
 
         // Users with role
-        $usersList = DB::table('tbl_user')
-            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
-            ->select('tbl_user.*', 'roles.name as role_name')
+        $usersList = DB::table('users')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->select('users.*', 'roles.name as role_name')
             ->get();
 
         $statuses = DB::table('statuses')->get();
@@ -84,9 +83,9 @@ class TaskManagementController extends Controller
         $priorities = DB::table('priorities')->get();
         $tags = DB::table('tags')->get();
 
-        $users = DB::table('tbl_user')
-            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
-            ->select('tbl_user.*', 'roles.name as role_name')
+        $users = DB::table('users')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->select('users.*', 'roles.name as role_name')
             ->get();
 
         $projects = DB::table('projects')->get();
@@ -123,7 +122,7 @@ class TaskManagementController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $request->assigned_to,
-            'created_by' => $user->user_id,
+            'created_by' => $user->id,
             'status_id' => $request->status_id,
             'priority_id' => $request->priority_id,
             'tag_id' => $request->tag_id,
@@ -148,9 +147,9 @@ class TaskManagementController extends Controller
         $priorities = DB::table('priorities')->get();
         $tags = DB::table('tags')->get();
 
-        $users = DB::table('tbl_user')
-            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
-            ->select('tbl_user.*', 'roles.name as role_name')
+        $users = DB::table('users')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->select('users.*', 'roles.name as role_name')
             ->get();
 
         $projects = DB::table('projects')->get();
@@ -175,9 +174,9 @@ class TaskManagementController extends Controller
         $user = Auth::user();
 
         $task = DB::table('tasks')
-            ->leftJoin('tbl_user as created_by_user', 'tasks.created_by', '=', 'created_by_user.user_id')
+            ->leftJoin('users as created_by_user', 'tasks.created_by', '=', 'created_by_user.id')
             ->leftJoin('roles as created_role', 'created_by_user.role_id', '=', 'created_role.id')
-            ->leftJoin('tbl_user as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.user_id')
+            ->leftJoin('users as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.id')
             ->leftJoin('roles as assigned_role', 'assigned_user.role_id', '=', 'assigned_role.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
@@ -201,11 +200,11 @@ class TaskManagementController extends Controller
 
         // Fetch all comments
         $comments = DB::table('comments')
-            ->leftJoin('tbl_user', 'comments.user_id', '=', 'tbl_user.user_id')
-            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
+            ->leftJoin('users', 'comments.user_id', '=', 'users.id')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->where('comments.task_id', $task->task_id)
             ->orderBy('comments.created_at', 'asc')
-            ->select('comments.*', 'tbl_user.name', 'roles.name as role_name')
+            ->select('comments.*', 'users.name', 'roles.name as role_name')
             ->get();
 
         return view('admin.tasks.show', compact('task', 'user', 'comments'));

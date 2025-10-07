@@ -40,14 +40,14 @@ class ReportController extends Controller
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('tags', 'tasks.tag_id', '=', 'tags.tag_id')
-            ->leftJoin('tbl_user', 'tasks.assigned_to', '=', 'tbl_user.user_id')
+            ->leftJoin('users', 'tasks.assigned_to', '=', 'users.id')
             ->select(
                 'tasks.*',
                 'projects.name as project_name',
                 'statuses.name as status_name',
                 'priorities.name as priority_name',
                 'tags.name as tag_name',
-                'tbl_user.name as assigned_user_name'
+                'users.name as assigned_user_name'
             );
 
         if ($request->filled('project_id')) $query->where('tasks.project_id', $request->project_id);
@@ -62,7 +62,7 @@ class ReportController extends Controller
         $projects = DB::table('projects')->select('project_id', 'name')->get();
         $statuses = DB::table('statuses')->select('status_id', 'name')->get();
         $priorities = DB::table('priorities')->select('priority_id', 'name')->get();
-        $users = DB::table('tbl_user')->select('user_id', 'name')->get();
+        $users = DB::table('users')->select('id', 'name')->get();
 
         // Columns selected by user (default: all)
         $selectedColumns = $request->input('columns', array_keys($this->allColumns));
@@ -86,14 +86,14 @@ class ReportController extends Controller
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('tags', 'tasks.tag_id', '=', 'tags.tag_id')
-            ->leftJoin('tbl_user', 'tasks.assigned_to', '=', 'tbl_user.user_id')
+            ->leftJoin('users', 'tasks.assigned_to', '=', 'users.id')
             ->select(
                 'tasks.*',
                 'projects.name as project_name',
                 'statuses.name as status_name',
                 'priorities.name as priority_name',
                 'tags.name as tag_name',
-                'tbl_user.name as assigned_user_name'
+                'users.name as assigned_user_name'
             );
 
         if ($request->filled('project_id')) $query->where('tasks.project_id', $request->project_id);
@@ -134,8 +134,8 @@ class ReportController extends Controller
                 }
 
                 if ($request->filled('assigned_to')) {
-                    $filterDetails['Assigned To'] = DB::table('tbl_user')
-                        ->where('user_id', $request->assigned_to)
+                    $filterDetails['Assigned To'] = DB::table('users')
+                        ->where('id', $request->assigned_to)
                         ->value('name');
                 }
 
@@ -268,8 +268,8 @@ class ReportController extends Controller
                 }
 
                 if ($request->filled('assigned_to')) {
-                    $filterDetails['Assigned To'] = DB::table('tbl_user')
-                        ->where('user_id', $request->assigned_to)
+                    $filterDetails['Assigned To'] = DB::table('users')
+                        ->where('id', $request->assigned_to)
                         ->value('name');
                 }
 

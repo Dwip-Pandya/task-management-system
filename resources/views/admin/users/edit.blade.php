@@ -17,7 +17,7 @@
 
         <div class="flex-grow-1 p-4">
             <h2>Edit User</h2>
-            <form action="{{ route('users.update', $editUser->user_id) }}" method="POST">
+            <form action="{{ route('users.update', $editUser->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 

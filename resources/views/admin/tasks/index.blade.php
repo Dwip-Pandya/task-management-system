@@ -24,20 +24,20 @@
 
             <form method="GET" class="row g-2 mb-4">
 
-                {{-- User Select (Admin only) --}}
+                {{-- Admin User Filter --}}
                 @if($user->role_id === 1)
                 <div class="col-md-2">
                     <select name="assigned_to" class="form-select">
                         <option value="">All Users</option>
                         @foreach($usersList as $u)
-                        <option class="text-dark" value="{{ $u->user_id }}" {{ $request->assigned_to == $u->user_id ? 'selected' : '' }}>
+                        <option class="text-dark" value="{{ $u->id }}" {{ $request->assigned_to == $u->id ? 'selected' : '' }}>
                             {{ $u->name }}
                         </option>
                         @endforeach
                     </select>
                 </div>
                 @else
-                <input type="hidden" name="assigned_to" value="{{ $user->user_id }}">
+                <input type="hidden" name="assigned_to" value="{{ $user->id }}">
                 @endif
 
                 {{-- Status --}}
@@ -121,11 +121,11 @@
 
                             <!-- Assigned User -->
                             <p><strong>Assigned To:</strong>
-                                <select class="form-select form-select-sm change-assigned"
-                                    data-id="{{ $t->task_id }}">
+                                {{-- Assigned User dropdown in cards --}}
+                                <select class="form-select form-select-sm change-assigned" data-id="{{ $t->task_id }}">
                                     <option class="text-dark" value="">Unassigned</option>
                                     @foreach ($usersList as $u)
-                                    <option class="text-dark" value="{{ $u->user_id }}" {{ $u->user_id == $t->assigned_to ? 'selected' : '' }}>
+                                    <option class="text-dark" value="{{ $u->id }}" {{ $u->id == $t->assigned_to ? 'selected' : '' }}>
                                         {{ $u->name }} ({{ $u->role_name }})
                                     </option>
                                     @endforeach

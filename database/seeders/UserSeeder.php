@@ -15,10 +15,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('tbl_user')->insert([
+        DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin123'), // encrypt password
+            'password' => Hash::make('admin123'), // encrypted
             'role_id' => 1, // admin role
             'google_id' => null,
             'created_at' => Carbon::now(),

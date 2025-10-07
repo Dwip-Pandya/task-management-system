@@ -18,12 +18,12 @@ class DashboardController extends Controller
 
         // Base query for tasks
         $tasksQuery = DB::table('tasks')
-            ->leftJoin('tbl_user', 'tasks.assigned_to', '=', 'tbl_user.user_id')
+            ->leftJoin('users', 'tasks.assigned_to', '=', 'users.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id') // join projects
             ->select(
                 'tasks.*',
-                'tbl_user.name as assigned_user_name',
+                'users.name as assigned_user_name',
                 'statuses.name as status_name',
                 'projects.name as project_name'
             );
@@ -49,7 +49,7 @@ class DashboardController extends Controller
         ];
 
         // Get all users for dropdown
-        $usersList = DB::table('tbl_user')->get();
+        $usersList = DB::table('users')->get();
 
         return view('admin.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
     }

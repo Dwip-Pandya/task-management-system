@@ -128,7 +128,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>Sr No.</th>
                     @foreach($selectedColumns as $col)
                     <th>{{ $allColumns[$col] }}</th>
                     @endforeach

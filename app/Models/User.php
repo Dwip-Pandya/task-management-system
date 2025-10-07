@@ -9,8 +9,8 @@ class User extends Authenticatable
 {
     use SoftDeletes;
 
-    protected $table = 'tbl_user';
-    protected $primaryKey = 'user_id';
+    protected $table = 'users';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'name',
@@ -22,6 +22,7 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     protected $dates = ['deleted_at'];

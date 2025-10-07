@@ -29,7 +29,7 @@
                     <select name="assigned_to" class="form-select me-2">
                         <option value="">All Users</option>
                         @foreach($usersList as $u)
-                        <option value="{{ $u->user_id }}" {{ $request->assigned_to == $u->user_id ? 'selected' : '' }}>
+                        <option value="{{ $u->id }}" {{ $request->assigned_to == $u->id ? 'selected' : '' }}>
                             {{ $u->name }}
                         </option>
                         @endforeach

@@ -26,13 +26,13 @@ class CommentController extends Controller
             return back()->with('error', 'Task not found.');
         }
 
-        if ($user->role_id != 1 && $task->assigned_to != $user->user_id) {
+        if ($user->role_id != 1 && $task->assigned_to != $user->id) {
             return back()->with('error', 'You cannot comment on this task.');
         }
 
         DB::table('comments')->insert([
             'task_id' => $request->task_id,
-            'user_id' => $user->user_id,
+            'user_id' => $user->id,
             'message' => $request->message,
             'parent_id' => $request->parent_id ?? null,
             'created_at' => now(),
@@ -46,11 +46,11 @@ class CommentController extends Controller
     public function getComments($task_id)
     {
         $comments = DB::table('comments')
-            ->leftJoin('tbl_user', 'comments.user_id', '=', 'tbl_user.user_id')
-            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
+            ->leftJoin('users', 'comments.user_id', '=', 'users.id')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->where('comments.task_id', $task_id)
             ->orderBy('comments.created_at', 'asc')
-            ->select('comments.*', 'tbl_user.name', 'roles.name as role_name')
+            ->select('comments.*', 'users.name', 'roles.name as role_name')
             ->get();
 
         return $comments;
@@ -63,7 +63,7 @@ class CommentController extends Controller
         $user = Auth::user();
 
         $comment = DB::table('comments')->where('comment_id', $comment_id)->first();
-        if (!$comment || ($user->role !== 'admin' && $comment->user_id != $user->user_id)) {
+        if (!$comment || ($user->role_id != 1 && $comment->user_id != $user->id)) {
             return back()->with('error', 'You cannot edit this comment.');
         }
 
@@ -81,7 +81,7 @@ class CommentController extends Controller
         $user = Auth::user();
 
         $comment = DB::table('comments')->where('comment_id', $comment_id)->first();
-        if (!$comment || ($user->role !== 'admin' && $comment->user_id != $user->user_id)) {
+        if (!$comment || ($user->role_id != 1 && $comment->user_id != $user->id)) {
             return back()->with('error', 'You cannot delete this comment.');
         }
 

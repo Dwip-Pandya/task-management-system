@@ -50,8 +50,8 @@
                         @forelse ($users as $u)
                         <tr>
                             <td>
-                                @if($u->user_id !== $user->user_id)
-                                <input type="checkbox" name="user_ids[]" value="{{ $u->user_id }}">
+                                @if($u->id !== $user->id)
+                                <input type="checkbox" name="user_ids[]" value="{{ $u->id }}">
                                 @endif
                             </td>
                             <td>{{ $loop->iteration }}</td>
@@ -59,9 +59,9 @@
                             <td>{{ $u->email }}</td>
                             <td>{{ ucfirst($u->role->name ?? 'N/A') }}</td>
                             <td>
-                                <a href="{{ route('users.edit', $u->user_id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                @if($u->user_id !== $user->user_id)
-                                <form action="{{ route('users.destroy', $u->user_id) }}" method="POST" class="d-inline">
+                                <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                @if($u->id !== $user->id)
+                                <form action="{{ route('users.destroy', $u->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?')">Delete</button>
@@ -93,14 +93,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse (\App\Models\User::onlyTrashed()->with('role')->get() as $deletedUser)
+                    @forelse ($deletedUsers as $deletedUser)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $deletedUser->name }}</td>
                         <td>{{ $deletedUser->email }}</td>
                         <td>{{ ucfirst($deletedUser->role->name ?? 'N/A') }}</td>
                         <td>
-                            <form action="{{ route('users.restore', $deletedUser->user_id) }}" method="POST" class="d-inline">
+                            <form action="{{ route('users.restore', $deletedUser->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Restore this user?')">Restore</button>
                             </form>
@@ -116,10 +116,10 @@
         </div>
     </div>
 
+    {{-- Select All Checkbox Script --}}
     <script>
-        // Select / Deselect All Checkboxes
-        document.getElementById('selectAll').addEventListener('click', function() {
-            let checkboxes = document.querySelectorAll('input[name="user_ids[]"]');
+        document.getElementById('selectAll')?.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[name="user_ids[]"]');
             checkboxes.forEach(cb => cb.checked = this.checked);
         });
     </script>

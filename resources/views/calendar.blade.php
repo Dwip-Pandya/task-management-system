@@ -27,7 +27,8 @@
         @include('partials.sidebar', ['user' => $user])
 
         <!-- Main Content -->
-        <div class="main-content">
+        <div class="main-content p-4">
+            <h3>Task Calendar</h3>
             <div id="calendar"></div>
         </div>
 
@@ -42,7 +43,6 @@
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    <!-- Your Original Script (unchanged) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -56,7 +56,7 @@
                     right: 'dayGridMonth,dayGridWeek,dayGridDay'
                 },
                 eventClick: function(info) {
-                    alert('Task: ' + info.event.title + '\nDue: ' + info.event.start.toISOString().split('T')[0]);
+                    alert('Task: ' + info.event.title + '\nDue: ' + info.event.startStr);
                 }
             });
             calendar.render();

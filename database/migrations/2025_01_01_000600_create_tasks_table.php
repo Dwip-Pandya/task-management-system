@@ -30,8 +30,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign keys
-            $table->foreign('assigned_to')->references('user_id')->on('tbl_user')->onDelete('set null');
-            $table->foreign('created_by')->references('user_id')->on('tbl_user')->onDelete('cascade');
+            $table->foreign('assigned_to')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('status_id')->references('status_id')->on('statuses')->onDelete('cascade');
             $table->foreign('priority_id')->references('priority_id')->on('priorities')->onDelete('cascade');
             $table->foreign('tag_id')->references('tag_id')->on('tags')->onDelete('set null');

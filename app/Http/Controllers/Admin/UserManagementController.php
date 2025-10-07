@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserManagementController extends Controller
 {
-    // Display all users and deleted users
+    // Display all users
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -22,7 +22,9 @@ class UserManagementController extends Controller
                 ->orWhere('email', 'like', "%$search%"))
             ->get();
 
-        return view('admin.users.index', compact('users', 'user', 'search'));
+        $deletedUsers = User::onlyTrashed()->with('role')->get();
+
+        return view('admin.users.index', compact('users', 'user', 'search', 'deletedUsers'));
     }
 
     // Show create form
@@ -37,10 +39,10 @@ class UserManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'    => 'required|max:100',
-            'email'   => 'required|email|unique:tbl_user,email',
+            'name'     => 'required|max:100',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role_id' => 'required|exists:roles,id',
+            'role_id'  => 'required|exists:roles,id',
         ]);
 
         User::create([
@@ -70,7 +72,7 @@ class UserManagementController extends Controller
 
         $request->validate([
             'name'    => 'required|max:100',
-            'email'   => 'required|email|unique:tbl_user,email,' . $editUser->user_id . ',user_id',
+            'email'   => 'required|email|unique:users,email,' . $editUser->id,
             'role_id' => 'required|exists:roles,id',
         ]);
 
@@ -87,14 +89,14 @@ class UserManagementController extends Controller
     // Soft delete user
     public function destroy($id)
     {
-        $authUser = Auth::user();
+        $user = Auth::user();
         $deleteUser = User::findOrFail($id);
 
-        if ($deleteUser->user_id == $authUser->user_id) {
+        if ($deleteUser->id == $user->id) {
             return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');
         }
 
-        $deleteUser->delete();
+        $deleteUser->delete(); // Soft delete
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
@@ -110,14 +112,14 @@ class UserManagementController extends Controller
     // Bulk delete
     public function bulkDelete(Request $request)
     {
-        $authUser = Auth::user();
+        $user = Auth::user();
         $ids = $request->input('user_ids', []);
 
-        if (in_array($authUser->user_id, $ids)) {
+        if (in_array($user->id, $ids)) {
             return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');
         }
 
-        User::whereIn('user_id', $ids)->delete(); // Soft delete
+        User::whereIn('id', $ids)->delete(); // Soft delete
         return redirect()->route('users.index')->with('success', 'Selected users deleted successfully.');
     }
 }

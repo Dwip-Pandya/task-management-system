@@ -20,14 +20,17 @@ class CalendarController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role === 'admin') {
+        // Admin sees all tasks
+        if ($user->role_id === 1) {
             $tasks = DB::table('tasks')
                 ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
+                ->leftJoin('tbl_user as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.user_id')
                 ->select(
                     'tasks.task_id',
                     'tasks.title',
                     'tasks.due_date',
-                    'statuses.name as status_name'
+                    'statuses.name as status_name',
+                    'assigned_user.name as assigned_to_name'
                 )
                 ->get();
         } else {

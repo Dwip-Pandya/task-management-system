@@ -35,7 +35,7 @@
                     <select name="assigned_to" class="form-select">
                         <option value="">-- Select User --</option>
                         @foreach($users as $u)
-                        <option class="text-dark" value="{{ $u->user_id }}">{{ $u->name }} ({{ $u->role_name }})</option>
+                        <option class="text-dark" value="{{ $u->id }}">{{ $u->name }} ({{ $u->role_name }})</option>
                         @endforeach
                     </select>
                 </div>
