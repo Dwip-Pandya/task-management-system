@@ -23,6 +23,13 @@
                     <h4 class="card-title">{{ $project->name }}</h4>
                     <p class="card-text"><strong>Description:</strong> {{ $project->description }}</p>
                     <p class="card-text"><strong>Created At:</strong> {{ $project->created_at->format('d M, Y H:i') }}</p>
+
+                    {{-- Display creator info --}}
+                    @if($creator)
+                    <p class="card-text"><strong>Created By:</strong> {{ $creator->name }}
+                        ({{ $creator->role_id == 1 ? 'Admin' : 'Project Manager' }})</p>
+                    @endif
+
                     <a href="{{ route('projects.index') }}" class="btn btn-secondary">Back</a>
                 </div>
             </div>

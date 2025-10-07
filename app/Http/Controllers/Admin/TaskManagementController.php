@@ -251,21 +251,48 @@ class TaskManagementController extends Controller
     }
 
     // Update status, priority, assigned user (AJAX)
-    public function updateStatus(Request $request, $id)
-    {
-        DB::table('tasks')->where('task_id', $id)->update(['status_id' => $request->status_id]);
-        return response()->json(['success' => true]);
-    }
-
-    public function updatePriority(Request $request, $id)
-    {
-        DB::table('tasks')->where('task_id', $id)->update(['priority_id' => $request->priority_id]);
-        return response()->json(['success' => true]);
-    }
-
+    // Update Assigned User
     public function updateAssigned(Request $request, $id)
     {
-        DB::table('tasks')->where('task_id', $id)->update(['assigned_to' => $request->assigned_to]);
+        $request->validate([
+            'assigned_to' => 'nullable|integer|exists:tbl_user,user_id',
+        ]);
+
+        DB::table('tasks')->where('task_id', $id)->update([
+            'assigned_to' => $request->assigned_to,
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    // Update Status
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status_id' => 'required|integer|exists:statuses,status_id',
+        ]);
+
+        DB::table('tasks')->where('task_id', $id)->update([
+            'status_id' => $request->status_id,
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    // Update Priority
+    public function updatePriority(Request $request, $id)
+    {
+        $request->validate([
+            'priority_id' => 'required|integer|exists:priorities,priority_id',
+        ]);
+
+        DB::table('tasks')->where('task_id', $id)->update([
+            'priority_id' => $request->priority_id,
+            'updated_at' => now(),
+        ]);
+
         return response()->json(['success' => true]);
     }
 }

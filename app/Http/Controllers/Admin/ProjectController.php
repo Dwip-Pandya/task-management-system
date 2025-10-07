@@ -6,18 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use illuminiate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        $projects = Project::all();
-        return view('admin.projects.index', compact('projects', 'user'));
+        // Base query with creator info
+        $projectsQuery = Project::leftJoin('users as creators', 'projects.created_by', '=', 'creators.id')
+            ->select('projects.*', 'creators.name as creator_name', 'creators.role_id as creator_role_id');
+
+        // Apply filter if creator_role is selected
+        if ($request->filled('creator_role')) {
+            $projectsQuery->where('creators.role_id', $request->creator_role);
+        }
+
+        $projects = $projectsQuery->orderBy('projects.created_at', 'desc')->get();
+
+        return view('admin.projects.index', compact('projects', 'user', 'request'));
     }
 
     /**
@@ -38,23 +49,36 @@ class ProjectController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
-        Project::create($request->all());
+        Project::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'created_by' => $user->id, // make sure this column is fillable
+        ]);
 
-        return redirect()->route('projects.index', compact('user'))->with('success', 'Project created successfully.');
+        return redirect()->route('projects.index')
+            ->with('success', 'Project created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Project $project)
     {
         $user = Auth::user();
-        $project = Project::findOrFail($id);
-        return view('admin.projects.show', compact('project', 'user'));
+
+        // Get creator info
+        $creator = \DB::table('users')
+            ->select('name', 'role_id')
+            ->where('id', $project->created_by)
+            ->first();
+
+        return view('admin.projects.show', compact('project', 'user', 'creator'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -73,10 +97,14 @@ class ProjectController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
-        $project->update($request->all());
+        $project->update([
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
 
         return redirect()->route('projects.index', compact('user'))
             ->with('success', 'Project updated successfully.');

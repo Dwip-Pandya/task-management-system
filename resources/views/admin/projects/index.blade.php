@@ -21,6 +21,20 @@
                 <a href="{{ route('projects.create') }}" class="btn btn-primary">+ New Project</a>
             </div>
 
+            {{-- Filter by Creator Role --}}
+            <form method="GET" class="mb-4 row g-2 align-items-center">
+                <div class="col-auto">
+                    <select name="creator_role" class="form-select">
+                        <option value="">All Creators</option>
+                        <option class="text-dark" value="1" {{ $request->creator_role == 1 ? 'selected' : '' }}>Admin</option>
+                        <option class="text-dark" value="2" {{ $request->creator_role == 2 ? 'selected' : '' }}>Project Manager</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+
             <div class="row">
                 @forelse($projects as $project)
                 <div class="col-md-4 mb-4">
@@ -31,6 +45,12 @@
                             <h5 class="card-title">{{ $project->name }}</h5>
                             <p class="card-text">{{ Str::limit($project->description, 100) }}</p>
                             <p class="text-muted"><small>Created: {{ \Carbon\Carbon::parse($project->created_at)->format('d M, Y') }}</small></p>
+
+                            {{-- Display creator role & name --}}
+                            @if($project->creator_name)
+                            <p><strong>Created By:</strong> {{ $project->creator_name }}
+                                ({{ $project->creator_role_id == 1 ? 'Admin' : 'Project Manager' }})</p>
+                            @endif
                         </div>
                         <div class="card-footer d-flex">
                             <a href="{{ route('projects.show', $project->project_id) }}" class="btn btn-info btn-sm me-1">View</a>
