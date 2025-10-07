@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <title>Welcome - TaskFlow Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -115,7 +117,7 @@
                     </div>
                     <h3 class="feature-title">Role-Based Access Control</h3>
                     <p class="feature-description">
-                        Comprehensive permission system with Admin and User roles. Admins get full control
+                        Comprehensive permission system with Admin, User, Project manager and project member roles. Admins get full control
                         over user management, task assignment, and system settings, while users have
                         secure access to their assigned tasks.
                     </p>
@@ -244,7 +246,7 @@
                         <h3 class="step-title">Set Up Your Team</h3>
                         <p class="step-description">
                             Invite team members, assign roles, and configure permissions.
-                            Create your organizational structure with admins and users.
+                            Create your organizational structure with admins, users, project managers, and project members.
                             Import existing team data or start fresh.
                         </p>
                     </div>

@@ -1,0 +1,257 @@
+# TaskFlow Management System
+
+A comprehensive task management platform built with Laravel, featuring advanced role-based access control, Google OAuth integration, and powerful team collaboration tools.
+
+## Features
+
+### Core Functionality
+- **Advanced Task Management** - Create, organize, and track tasks with multiple status levels (pending, in-progress, completed, on-hold)
+- **Role-Based Access Control** - Four distinct roles: Admin, User, Project Manager, and Project Member
+- **Project Management** - Create and manage multiple projects with task assignments
+- **Advanced Filtering** - Filter tasks by project, status, priority, tag, assigned user, and date
+- **Task Calendar** - Interactive calendar view for tracking task deadlines
+- **Report Generation** - Export data in Excel, PDF, Word, and PowerPoint formats
+
+### Authentication & Security
+- **Multiple Authentication Methods** - Traditional login/register and Google OAuth
+- **Secure Password Encryption** - Industry-standard encryption for user credentials
+- **Email Verification** - Account verification system for enhanced security
+- **Session Management** - Robust session handling and security
+
+### User Management
+- **Complete CRUD Operations** - Full create, read, update, and delete functionality for users
+- **Permission Management** - Granular control over user permissions and roles
+- **User Activity Tracking** - Monitor team activity and task progress
+- **Team Structure** - Organize users into teams and projects
+
+### Integration & Accessibility
+- **Google Workspace Integration** - Seamless sync with Google services
+- **Responsive Design** - Works perfectly on desktop, tablet, and mobile devices
+- **Enhanced Admin Dashboard** - Comprehensive metrics and analytics in one place
+
+## Technology Stack
+
+- **Backend Framework**: Laravel (PHP)
+- **Frontend**: Bootstrap 5.3.2
+- **Icons**: Font Awesome 6.0.0
+- **Styling**: Custom CSS with glassmorphism design
+- **Authentication**: Laravel Socialite (Google OAuth)
+
+## Installation
+
+### Prerequisites
+- PHP >= 8.1
+- Composer
+- MySQL/PostgreSQL
+
+### Steps
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/Dwip-Pandya/task-management-system.git
+cd taskflow
+```
+
+2. **Install PHP dependencies**
+```bash
+composer install
+```
+
+3. **Environment setup**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. **Configure your `.env` file**
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=task-management-system
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_REDIRECT_URI=your_callback_url
+```
+
+5. **Run migrations**
+```bash
+php artisan migrate
+```
+
+6. **Seed the database (optional)**
+```bash
+php artisan db:seed
+```
+
+7. **Start the development server**
+```bash
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+php artisan config:clear
+php artisan optimize
+php artisan optimize:clear
+php artisan serve
+```
+
+Visit `http://localhost:8000` to access the application.
+
+## Usage
+
+### User Roles
+
+**Admin**
+- Full system access
+- User management (CRUD operations)
+- Task creation and assignment
+- System configuration
+- Analytics and reporting
+
+**Project Manager**
+- Manage assigned projects
+- Create and assign tasks within projects
+- View team member activity
+- Generate project reports
+
+**Project Member**
+- View assigned tasks
+- Update task status
+- Collaborate with team members
+- Access project resources
+
+**User**
+- View and manage assigned tasks
+- Update task status
+- Basic collaboration features
+
+### Getting Started
+
+1. **Create an Account** - Sign up using email or Google authentication
+2. **Set Up Your Profile** - Complete your profile information
+3. **Join/Create Projects** - Get added to projects or create your own (based on role)
+4. **Start Managing Tasks** - Create, assign, and track tasks
+5. **Generate Reports** - Export data for presentations and record-keeping
+
+## Project Structure
+
+```
+task-management-system/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   ├── Models/
+│   
+├── config/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── favicon.png
+├── resources/
+│   ├── views/
+│   │   ├── welcome.blade.php
+|   |   ├── calender.blade.php
+│   │   ├── auth/
+│   │   ├── admin/
+│   │   ├── layouts/
+│   │   ├── partials/
+│   │   ├── user/
+│   └── css/
+├── routes/
+│   ├── web.php
+│   └── api.php
+└── tests/
+```
+
+## Configuration
+
+### Google OAuth Setup
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URIs
+6. Copy Client ID and Client Secret to `.env` file
+
+## API Documentation
+
+API endpoints are available for programmatic access. Contact your administrator for API key and documentation.
+
+## Support & Documentation
+
+- **Email Support**: adnapdwip@gmail.com
+- **Phone**: +91-8320036370
+
+## Pricing
+
+### Starter (Free)
+- Up to 5 tasks per month
+- Basic task management
+- Email notifications
+- Mobile access
+
+### Professional ($19/user/month)
+- Unlimited tasks
+- Advanced task management
+- Team collaboration
+- Real-time notifications
+- Analytics dashboard
+- Google integration
+
+### Enterprise ($49/user/month)
+- Everything in Professional
+- Advanced user management
+- Custom integrations
+- Priority support
+- Advanced security features
+- Custom branding
+
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Security
+
+If you discover any security-related issues, please email us instead of using the issue tracker.
+
+## License
+
+This project is proprietary software. All rights reserved.
+
+## Credits
+
+- **Development Team**: Pandya Dwip
+- **Design**: Modern glassmorphism UI/UX
+- **Icons**: Font Awesome
+- **Framework**: Laravel 12
+
+## Changelog
+
+### Version 1.0.0 (Current)
+- Initial release
+- Basic task management
+- User authentication
+- Google OAuth integration
+- Role-based access control
+- Report generation
+- Calendar view
+- Admin dashboard
+
+---
+
+**Built with ❤️ by the  Pandya Dwip**
+
+For more information, visit our website or contact our support team.
