@@ -24,7 +24,7 @@
                     <select name="status_id" class="form-select">
                         <option value="">All Statuses</option>
                         @foreach($statuses as $s)
-                        <option value="{{ $s->status_id }}" {{ $request->status_id == $s->status_id ? 'selected' : '' }}>
+                        <option class="text-dark" value="{{ $s->status_id }}" {{ $request->status_id == $s->status_id ? 'selected' : '' }}>
                             {{ ucfirst($s->name) }}
                         </option>
                         @endforeach
@@ -36,7 +36,7 @@
                     <select name="priority_id" class="form-select">
                         <option value="">All Priorities</option>
                         @foreach($priorities as $p)
-                        <option value="{{ $p->priority_id }}" {{ $request->priority_id == $p->priority_id ? 'selected' : '' }}>
+                        <option class="text-dark" value="{{ $p->priority_id }}" {{ $request->priority_id == $p->priority_id ? 'selected' : '' }}>
                             {{ ucfirst($p->name) }}
                         </option>
                         @endforeach
@@ -46,7 +46,7 @@
                 {{-- Project Filter --}}
                 <div class="col-md-2">
                     <select name="project_id" class="form-select">
-                        <option class="text-dark">All Projects</option>
+                        <option class="text-dark" value="">All Projects</option>
                         @foreach($projects as $p)
                         <option class="text-dark" value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
                             {{ $p->name }}
@@ -78,7 +78,17 @@
                             <p>{{ Str::limit($t->description, 80) }}</p>
                             <p><strong>Priority:</strong> {{ ucfirst($t->priority_name) }}</p>
                             <p><strong>Due:</strong> {{ $t->due_date }}</p>
+                            <p><strong>Assigned By:</strong> {{ $t->assigned_by_name ?? 'N/A' }}
+                                @if(isset($t->assigned_by_role))
+                                ({{ ucfirst($t->assigned_by_role) }})
+                                @endif
+                            </p>
                         </div>
+                        @if($tasks->isEmpty())
+                        <div class="col-12 text-center mt-5">
+                            <h5 class="text-danger">Unauthorized to view this task or no tasks assigned.</h5>
+                        </div>
+                        @endif
                         <div class="card-footer">
                             <a href="{{ route('user.tasks.show', $t->task_id) }}" class="btn btn-info btn-sm">View</a>
                             <a href="{{ route('user.tasks.show', $t->task_id) }}" class="btn btn-light btn-sm">Comment</a>

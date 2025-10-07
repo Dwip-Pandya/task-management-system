@@ -28,7 +28,7 @@
                     <select name="assigned_to" class="form-select me-2">
                         <option value="">My Tasks</option>
                         @foreach($usersList as $u)
-                        <option value="{{ $u->user_id }}" {{ $request->assigned_to == $u->user_id ? 'selected' : '' }}>
+                        <option value="{{ $u->id }}" {{ $request->assigned_to == $u->id ? 'selected' : '' }}>
                             {{ $u->name }}
                         </option>
                         @endforeach
@@ -62,7 +62,9 @@
                         <div class="task-item">
                             <p class="task-title">{{ $task->title }}</p>
                             @if($user->role === 'admin')
-                            <p class="task-assigned">Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span></p>
+                            <p class="task-assigned">
+                                Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span>
+                            </p>
                             @endif
                             <a href="{{ route('user.tasks.index') }}" class="glass-btn">View</a>
                         </div>

@@ -26,7 +26,11 @@
                 <div class="card-body">
                     <h4>{{ $task->title }}</h4>
                     <p>{{ $task->description }}</p>
-                    <p><strong>Assigned By:</strong> {{ $task->created_by_name ?? 'Admin' }}</p>
+                    <p><strong>Assigned By:</strong> {{ $task->assigned_by_name ?? 'N/A' }}
+                        @if(isset($task->assigned_by_role))
+                        ({{ ucfirst($task->assigned_by_role) }})
+                        @endif
+                    </p>
                     <p><strong>Status:</strong>
                         <select class="form-select form-select-sm change-status" data-id="{{ $task->task_id }}">
                             @foreach (DB::table('statuses')->get() as $s)

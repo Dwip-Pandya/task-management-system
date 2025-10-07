@@ -13,31 +13,37 @@ class UserDashboardController extends Controller
     {
         $user = Auth::user();
 
+        // Fetch tasks with creators, assigned users, statuses, projects
         $tasksQuery = DB::table('tasks')
-            ->leftJoin('tbl_user as created_by_user', 'tasks.created_by', '=', 'created_by_user.user_id')
+            ->leftJoin('users as created_by_user', 'tasks.created_by', '=', 'created_by_user.id')
+            ->leftJoin('users as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.id')
+            ->leftJoin('roles as assigned_user_role', 'assigned_user.role_id', '=', 'assigned_user_role.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
                 'tasks.*',
                 'created_by_user.name as created_by_name',
+                'assigned_user.name as assigned_user_name',
+                'assigned_user_role.name as assigned_user_role_name',
                 'statuses.name as status_name',
                 'projects.name as project_name'
             );
 
         // Filter by project if chosen
-        if ($request->project_id) {
+        if ($request->filled('project_id')) {
             $tasksQuery->where('tasks.project_id', $request->project_id);
         }
 
         // Show selected user's tasks (if chosen) otherwise show current user's tasks
-        if ($request->assigned_to) {
+        if ($request->filled('assigned_to')) {
             $tasksQuery->where('tasks.assigned_to', $request->assigned_to);
         } else {
-            $tasksQuery->where('tasks.assigned_to', $user->user_id);
+            $tasksQuery->where('tasks.assigned_to', $user->id);
         }
 
         $tasks = $tasksQuery->get();
 
+        // Group tasks by status
         $tasksByStatus = [
             'pending'     => $tasks->where('status_name', 'pending'),
             'in_progress' => $tasks->where('status_name', 'in_progress'),
@@ -45,8 +51,8 @@ class UserDashboardController extends Controller
             'on_hold'     => $tasks->where('status_name', 'on_hold'),
         ];
 
-        // Pass users list for the dropdown in the dashboard
-        $usersList = DB::table('tbl_user')->get();
+        // Users and projects for filters
+        $usersList = DB::table('users')->get();
         $projectsList = DB::table('projects')->get();
 
         return view('user.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));

@@ -20,18 +20,22 @@ class TaskController extends Controller
         $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
-            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id') // join projects
+            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
+            ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id') // assigner info
+            ->leftJoin('roles', 'assigner.id', '=', 'roles.id')         // assigner role
             ->select(
                 'tasks.*',
                 'statuses.name as status_name',
                 'priorities.name as priority_name',
-                'projects.name as project_name'
+                'projects.name as project_name',
+                'assigner.name as assigned_by_name',
+                'roles.name as assigned_by_role'
             )
-            ->where('tasks.assigned_to', $user->user_id)
+            ->where('tasks.assigned_to', $user->id)
             ->when($request->status_id, fn($q) => $q->where('tasks.status_id', $request->status_id))
             ->when($request->priority_id, fn($q) => $q->where('tasks.priority_id', $request->priority_id))
             ->when($request->due_date, fn($q) => $q->whereDate('tasks.due_date', $request->due_date))
-            ->when($request->project_id, fn($q) => $q->where('tasks.project_id', $request->project_id)) // <-- filter by project
+            ->when($request->project_id, fn($q) => $q->where('tasks.project_id', $request->project_id))
             ->get();
 
         $statuses   = DB::table('statuses')->get();
@@ -46,17 +50,19 @@ class TaskController extends Controller
         $user = Auth::user();
 
         $task = DB::table('tasks')
-            ->leftJoin('tbl_user as created_by_user', 'tasks.created_by', '=', 'created_by_user.user_id')
+            ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')
+            ->leftJoin('roles', 'assigner.role_id', '=', 'roles.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->select(
                 'tasks.*',
-                'created_by_user.name as created_by_name',
+                'assigner.name as assigned_by_name',
+                'roles.name as assigned_by_role',    // <-- assigner role
                 'statuses.name as status_name',
                 'priorities.name as priority_name'
             )
             ->where('tasks.task_id', $task_id)
-            ->where('tasks.assigned_to', $user->user_id)
+            ->where('tasks.assigned_to', $user->id)
             ->first();
 
         if (!$task) {
@@ -64,11 +70,18 @@ class TaskController extends Controller
         }
 
         $comments = DB::table('comments')
-            ->leftJoin('tbl_user', 'comments.user_id', '=', 'tbl_user.user_id')
+            ->leftJoin('users', 'comments.user_id', '=', 'users.id')
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id') // optional if you have roles
             ->where('comments.task_id', $task->task_id)
             ->orderBy('comments.created_at', 'asc')
-            ->select('comments.*', 'tbl_user.name', 'tbl_user.role')
+            ->select(
+                'comments.*',
+                'users.name as name',
+                'roles.name as role'
+            )
             ->get();
+
+
 
         return view('user.tasks.show', compact('task', 'user', 'comments'));
     }
@@ -78,7 +91,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
-        $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->user_id)->first();
+        $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->id)->first();
         if (!$task) {
             return redirect()->route('user.tasks.index')->with('error', 'Unauthorized to edit this task.');
         }
@@ -95,7 +108,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
-        $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->user_id)->first();
+        $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->id)->first();
         if (!$task) {
             return redirect()->route('user.tasks.index')->with('error', 'Unauthorized update.');
         }
@@ -124,7 +137,7 @@ class TaskController extends Controller
 
         $task = DB::table('tasks')->where('task_id', $task_id)->first();
 
-        if (!$task || $task->assigned_to != $user->user_id) {
+        if (!$task || $task->assigned_to != $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
