@@ -1,43 +1,29 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.main')
 
-<head>
-    <title>Project Details</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/partials.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/task.css') }}">
-</head>
+@section('title', 'Project Details')
 
-<body class="d-flex flex-column" style="min-height: 100vh;">
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+@endpush
 
-    @include('partials.header', ['user' => $user])
+@section('content')
+<div class="container mt-4">
+    <h2>Project Details</h2>
 
-    <div class="d-flex flex-grow-1">
-        @include('partials.sidebar', ['user' => $user])
+    <div class="card card-1 mt-3">
+        <div class="card-body">
+            <h4 class="card-title">{{ $project->name }}</h4>
+            <p class="card-text"><strong>Description:</strong> {{ $project->description }}</p>
+            <p class="card-text"><strong>Created At:</strong> {{ $project->created_at->format('d M, Y H:i') }}</p>
 
-        <div class="container mt-4">
-            <h2>Project Details</h2>
+            {{-- Display creator info --}}
+            @if($creator)
+            <p class="card-text"><strong>Created By:</strong> {{ $creator->name }}
+                ({{ $creator->role_id == 1 ? 'Admin' : 'Project Manager' }})</p>
+            @endif
 
-            <div class="card card-1 mt-3">
-                <div class="card-body">
-                    <h4 class="card-title">{{ $project->name }}</h4>
-                    <p class="card-text"><strong>Description:</strong> {{ $project->description }}</p>
-                    <p class="card-text"><strong>Created At:</strong> {{ $project->created_at->format('d M, Y H:i') }}</p>
-
-                    {{-- Display creator info --}}
-                    @if($creator)
-                    <p class="card-text"><strong>Created By:</strong> {{ $creator->name }}
-                        ({{ $creator->role_id == 1 ? 'Admin' : 'Project Manager' }})</p>
-                    @endif
-
-                    <a href="{{ route('projects.index') }}" class="btn btn-secondary">Back</a>
-                </div>
-            </div>
+            <a href="{{ route('projects.index') }}" class="btn btn-secondary">Back</a>
         </div>
     </div>
-
-    @include('partials.footer')
-
-</body>
-
-</html>
+</div>
+@endsection

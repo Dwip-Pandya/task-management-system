@@ -1,58 +1,44 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.main')
 
-<head>
-    <title>Create User</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/user.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/partials.css') }}">
-</head>
+@section('title', 'Create User')
 
-<body class="d-flex flex-column" style="min-height: 100vh;">
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+@endpush
 
-    @include('partials.header', ['user' => $user])
+@section('content')
+<div class="flex-grow-1 p-4">
+    <h2>Create User</h2>
+    <form action="{{ route('users.store') }}" method="POST">
+        @csrf
 
-    <div class="d-flex flex-grow-1">
-        @include('partials.sidebar', ['user' => $user])
-
-        <div class="flex-grow-1 p-4">
-            <h2>Create User</h2>
-            <form action="{{ route('users.store') }}" method="POST">
-                @csrf
-
-                <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" name="name" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Role</label>
-                    <select name="role_id" class="form-select" required>
-                        <option value="">-- Select Role --</option>
-                        @foreach ($roles as $role)
-                        <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <button class="btn btn-success">Create</button>
-                <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
-            </form>
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" required>
         </div>
-    </div>
 
-    @include('partials.footer')
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
 
-</body>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
 
-</html>
+        <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select name="role_id" class="form-select" required>
+                <option value="">-- Select Role --</option>
+                @foreach ($roles as $role)
+                <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <button class="btn btn-success">Create</button>
+        <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+@endsection
