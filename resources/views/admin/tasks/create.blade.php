@@ -35,7 +35,7 @@
                     <select name="assigned_to" class="form-select">
                         <option value="">-- Select User --</option>
                         @foreach($users as $u)
-                        <option class="text-dark" value="{{ $u->user_id }}">{{ $u->name }} ({{ $u->role }})</option>
+                        <option class="text-dark" value="{{ $u->user_id }}">{{ $u->name }} ({{ $u->role_name }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -54,6 +54,7 @@
                 <div class="mb-3">
                     <label class="form-label">Status</label>
                     <select name="status_id" class="form-select" required>
+                        <option value="">-- Select Status --</option>
                         @foreach($statuses as $s)
                         <option class="text-dark" value="{{ $s->status_id }}">{{ ucfirst($s->name) }}</option>
                         @endforeach

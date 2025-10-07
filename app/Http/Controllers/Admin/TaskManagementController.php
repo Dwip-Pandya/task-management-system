@@ -21,19 +21,21 @@ class TaskManagementController extends Controller
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('tags', 'tasks.tag_id', '=', 'tags.tag_id')
-            ->leftJoin('tbl_user', 'tasks.assigned_to', '=', 'tbl_user.user_id')
+            ->leftJoin('tbl_user as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.user_id')
+            ->leftJoin('roles as assigned_role', 'assigned_user.role_id', '=', 'assigned_role.id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
                 'tasks.*',
                 'statuses.name as status_name',
                 'priorities.name as priority_name',
                 'tags.name as tag_name',
-                'tbl_user.name as assigned_user_name',
+                'assigned_user.name as assigned_user_name',
+                'assigned_role.name as assigned_role_name',
                 'projects.name as project_name'
             );
 
         // Filter by user
-        if ($user->role === 'admin') {
+        if ($user->role_id === 1) {
             if ($request->assigned_to) {
                 $tasksQuery->where('tasks.assigned_to', $request->assigned_to);
             }
@@ -58,11 +60,15 @@ class TaskManagementController extends Controller
 
         $tasks = $tasksQuery->get();
 
-        // Data for dropdowns
+        // Users with role
+        $usersList = DB::table('tbl_user')
+            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
+            ->select('tbl_user.*', 'roles.name as role_name')
+            ->get();
+
         $statuses = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
-        $usersList = DB::table('tbl_user')->get();
-        $projects = DB::table('projects')->get(); // new
+        $projects = DB::table('projects')->get();
 
         return view('admin.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'usersList', 'projects', 'request'));
     }
@@ -73,12 +79,17 @@ class TaskManagementController extends Controller
      */
     public function create()
     {
-        $user       = Auth::user();
-        $statuses   = DB::table('statuses')->get();
+        $user = Auth::user();
+        $statuses = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
-        $tags       = DB::table('tags')->get();
-        $users      = DB::table('tbl_user')->get();
-        $projects   = DB::table('projects')->get();
+        $tags = DB::table('tags')->get();
+
+        $users = DB::table('tbl_user')
+            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
+            ->select('tbl_user.*', 'roles.name as role_name')
+            ->get();
+
+        $projects = DB::table('projects')->get();
 
         return view('admin.tasks.create', compact(
             'user',
@@ -96,33 +107,63 @@ class TaskManagementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'       => 'required|max:255',
+            'title' => 'required|max:255',
             'description' => 'nullable|string',
             'assigned_to' => 'nullable|integer',
-            'status_id'   => 'required|integer',
+            'status_id' => 'required|integer',
             'priority_id' => 'required|integer',
-            'tag_id'      => 'nullable|integer',
-            'project_id'  => 'required|integer|exists:projects,project_id',
-            'due_date'    => 'nullable|date',
+            'tag_id' => 'nullable|integer',
+            'project_id' => 'required|integer|exists:projects,project_id',
+            'due_date' => 'nullable|date',
         ]);
 
         $user = Auth::user();
 
         DB::table('tasks')->insert([
-            'title'       => $request->title,
+            'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $request->assigned_to,
-            'created_by'  => $user->user_id,
-            'status_id'   => $request->status_id,
+            'created_by' => $user->user_id,
+            'status_id' => $request->status_id,
             'priority_id' => $request->priority_id,
-            'tag_id'      => $request->tag_id,
-            'project_id'  => $request->project_id,
-            'due_date'    => $request->due_date,
-            'created_at'  => now(),
-            'updated_at'  => now(),
+            'tag_id' => $request->tag_id,
+            'project_id' => $request->project_id,
+            'due_date' => $request->due_date,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $user = Auth::user();
+
+        $task = DB::table('tasks')->where('task_id', $id)->first();
+        $statuses = DB::table('statuses')->get();
+        $priorities = DB::table('priorities')->get();
+        $tags = DB::table('tags')->get();
+
+        $users = DB::table('tbl_user')
+            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
+            ->select('tbl_user.*', 'roles.name as role_name')
+            ->get();
+
+        $projects = DB::table('projects')->get();
+
+        return view('admin.tasks.edit', compact(
+            'task',
+            'statuses',
+            'priorities',
+            'tags',
+            'users',
+            'projects',
+            'user'
+        ));
     }
 
     /**
@@ -135,14 +176,18 @@ class TaskManagementController extends Controller
 
         $task = DB::table('tasks')
             ->leftJoin('tbl_user as created_by_user', 'tasks.created_by', '=', 'created_by_user.user_id')
+            ->leftJoin('roles as created_role', 'created_by_user.role_id', '=', 'created_role.id')
             ->leftJoin('tbl_user as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.user_id')
+            ->leftJoin('roles as assigned_role', 'assigned_user.role_id', '=', 'assigned_role.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
                 'tasks.*',
                 'created_by_user.name as created_by_name',
+                'created_role.name as created_by_role',
                 'assigned_user.name as assigned_to_name',
+                'assigned_role.name as assigned_to_role',
                 'statuses.name as status_name',
                 'priorities.name as priority_name',
                 'projects.name as project_name'
@@ -157,71 +202,48 @@ class TaskManagementController extends Controller
         // Fetch all comments
         $comments = DB::table('comments')
             ->leftJoin('tbl_user', 'comments.user_id', '=', 'tbl_user.user_id')
+            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
             ->where('comments.task_id', $task->task_id)
             ->orderBy('comments.created_at', 'asc')
-            ->select('comments.*', 'tbl_user.name', 'tbl_user.role')
+            ->select('comments.*', 'tbl_user.name', 'roles.name as role_name')
             ->get();
 
         return view('admin.tasks.show', compact('task', 'user', 'comments'));
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $user       = Auth::user();
-        $task       = DB::table('tasks')->where('task_id', $id)->first();
-        $statuses   = DB::table('statuses')->get();
-        $priorities = DB::table('priorities')->get();
-        $tags       = DB::table('tags')->get();
-        $users      = DB::table('tbl_user')->get();
-        $projects   = DB::table('projects')->get();
-
-        return view('admin.tasks.edit', compact(
-            'task',
-            'statuses',
-            'priorities',
-            'tags',
-            'users',
-            'projects',
-            'user'
-        ));
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update a task.
      */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title'       => 'required|max:255',
+            'title' => 'required|max:255',
             'description' => 'nullable|string',
             'assigned_to' => 'nullable|integer',
-            'status_id'   => 'required|integer',
+            'status_id' => 'required|integer',
             'priority_id' => 'required|integer',
-            'tag_id'      => 'nullable|integer',
-            'project_id'  => 'required|integer|exists:projects,project_id',
-            'due_date'    => 'nullable|date',
+            'tag_id' => 'nullable|integer',
+            'project_id' => 'required|integer|exists:projects,project_id',
+            'due_date' => 'nullable|date',
         ]);
 
         DB::table('tasks')->where('task_id', $id)->update([
-            'title'       => $request->title,
+            'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $request->assigned_to,
-            'status_id'   => $request->status_id,
+            'status_id' => $request->status_id,
             'priority_id' => $request->priority_id,
-            'tag_id'      => $request->tag_id,
-            'project_id'  => $request->project_id,
-            'due_date'    => $request->due_date,
-            'updated_at'  => now(),
+            'tag_id' => $request->tag_id,
+            'project_id' => $request->project_id,
+            'due_date' => $request->due_date,
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deletion disabled
      */
     public function destroy($id)
     {
@@ -229,27 +251,22 @@ class TaskManagementController extends Controller
         return redirect()->route('tasks.index')->with('error', 'Task deletion is disabled.');
     }
 
+    // Update status, priority, assigned user (AJAX)
     public function updateStatus(Request $request, $id)
     {
-        DB::table('tasks')->where('task_id', $id)->update([
-            'status_id' => $request->status_id,
-        ]);
+        DB::table('tasks')->where('task_id', $id)->update(['status_id' => $request->status_id]);
         return response()->json(['success' => true]);
     }
 
     public function updatePriority(Request $request, $id)
     {
-        DB::table('tasks')->where('task_id', $id)->update([
-            'priority_id' => $request->priority_id,
-        ]);
+        DB::table('tasks')->where('task_id', $id)->update(['priority_id' => $request->priority_id]);
         return response()->json(['success' => true]);
     }
 
     public function updateAssigned(Request $request, $id)
     {
-        DB::table('tasks')->where('task_id', $id)->update([
-            'assigned_to' => $request->assigned_to,
-        ]);
+        DB::table('tasks')->where('task_id', $id)->update(['assigned_to' => $request->assigned_to]);
         return response()->json(['success' => true]);
     }
 }

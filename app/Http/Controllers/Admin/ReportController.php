@@ -110,70 +110,257 @@ class ReportController extends Controller
 
         switch ($format) {
             case 'pdf':
+                $projects = $tasks->groupBy('project_name');
+
+                // Get filter names - collect all active filters
+                $filterDetails = [];
+
+                if ($request->filled('project_id')) {
+                    $filterDetails['Project'] = DB::table('projects')
+                        ->where('project_id', $request->project_id)
+                        ->value('name');
+                }
+
+                if ($request->filled('status_id')) {
+                    $filterDetails['Status'] = DB::table('statuses')
+                        ->where('status_id', $request->status_id)
+                        ->value('name');
+                }
+
+                if ($request->filled('priority_id')) {
+                    $filterDetails['Priority'] = DB::table('priorities')
+                        ->where('priority_id', $request->priority_id)
+                        ->value('name');
+                }
+
+                if ($request->filled('assigned_to')) {
+                    $filterDetails['Assigned To'] = DB::table('tbl_user')
+                        ->where('user_id', $request->assigned_to)
+                        ->value('name');
+                }
+
+                if ($request->filled('from_date') && $request->filled('to_date')) {
+                    $filterDetails['Date Range'] = $request->from_date . ' to ' . $request->to_date;
+                }
+
                 return Pdf::loadView('admin.reports.export_pdf', [
                     'tasks' => $tasks,
+                    'projects' => $projects,
                     'selectedColumns' => $columns,
-                    'allColumns' => $allColumns
-                ])->download('tasks_report.pdf');
+                    'allColumns' => $allColumns,
+                    'filters' => $filterDetails,
+                ])->setPaper('a4', 'portrait')->download('tasks_report.pdf');
 
 
             case 'excel':
                 $spreadsheet = new Spreadsheet();
-                $sheet = $spreadsheet->getActiveSheet();
+                $spreadsheet->removeSheetByIndex(0);
 
-                // Headers
-                $headers = array_map(fn($c) => $allColumns[$c], $columns);
-                $sheet->fromArray($headers, null, 'A1');
+                $projects = $tasks->groupBy('project_name');
 
-                // Rows
-                $row = 2;
-                foreach ($tasks as $t) {
-                    $data = [];
-                    foreach ($columns as $col) {
-                        $value = $t->$col ?? '-';
-                        if (in_array($col, ['due_date', 'created_at'])) {
-                            $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                foreach ($projects as $projectName => $projectTasks) {
+                    $sheet = $spreadsheet->createSheet();
+                    $sheet->setTitle(substr($projectName ?: 'Unknown Project', 0, 31));
+
+                    // Header
+                    $headers = array_map(fn($c) => $allColumns[$c], $columns);
+                    $sheet->fromArray($headers, null, 'A1');
+
+                    // Apply header styling
+                    $headerStyle = [
+                        'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                            'startColor' => ['rgb' => '4A90E2'],
+                        ],
+                        'font' => [
+                            'bold' => true,
+                            'color' => ['rgb' => 'FFFFFF'],
+                            'size' => 12,
+                        ],
+                        'alignment' => [
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        ],
+                    ];
+                    $sheet->getStyle('A1:' . chr(64 + count($headers)) . '1')->applyFromArray($headerStyle);
+
+                    // Rows
+                    $row = 2;
+                    foreach ($projectTasks as $t) {
+                        $data = [];
+                        foreach ($columns as $col) {
+                            $value = $t->$col ?? '-';
+                            if (in_array($col, ['due_date', 'created_at'])) {
+                                $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                            }
+                            $data[] = $value;
                         }
-                        $data[] = $value;
+                        $sheet->fromArray($data, null, "A$row");
+                        $row++;
                     }
-                    $sheet->fromArray($data, null, "A$row");
-                    $row++;
+
+                    // Add alternating row background
+                    for ($r = 2; $r < $row; $r++) {
+                        if ($r % 2 === 0) {
+                            $sheet->getStyle("A$r:" . chr(64 + count($headers)) . "$r")->applyFromArray([
+                                'fill' => [
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    'startColor' => ['rgb' => 'F2F2F2'],
+                                ]
+                            ]);
+                        }
+                    }
+
+                    // Auto-size columns
+                    foreach (range('A', chr(64 + count($headers))) as $col) {
+                        $sheet->getColumnDimension($col)->setAutoSize(true);
+                    }
+
+                    // Add border to all cells
+                    $sheet->getStyle("A1:" . chr(64 + count($headers)) . ($row - 1))->applyFromArray([
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                'color' => ['rgb' => '999999'],
+                            ],
+                        ],
+                    ]);
                 }
 
-                foreach (range('A', 'Z') as $col) {
-                    $sheet->getColumnDimension($col)->setAutoSize(true);
-                }
-
-                $file = storage_path('tasks_report.xlsx');
                 $writer = new Xlsx($spreadsheet);
+                $file = storage_path('tasks_report.xlsx');
                 $writer->save($file);
-
                 return response()->download($file)->deleteFileAfterSend(true);
+
 
             case 'word':
                 $phpWord = new PhpWord();
-                $section = $phpWord->addSection();
+
+                // Define styles
+                $phpWord->addTitleStyle(1, ['bold' => true, 'size' => 20, 'color' => '2c3e50']);
+                $phpWord->addTitleStyle(2, ['bold' => true, 'size' => 14, 'color' => 'FFFFFF'], ['bgColor' => '667eea']);
 
                 $tableStyle = ['borderSize' => 6, 'borderColor' => '999999', 'cellMargin' => 50];
-                $firstRowStyle = ['bgColor' => 'CCCCCC'];
+                $firstRowStyle = ['bgColor' => 'f0f3f8'];
                 $phpWord->addTableStyle('TaskTable', $tableStyle, $firstRowStyle);
 
-                $table = $section->addTable('TaskTable');
+                // Group tasks by project
+                $projects = $tasks->groupBy('project_name');
 
-                $table->addRow();
-                foreach ($columns as $col) {
-                    $table->addCell(2000)->addText($allColumns[$col], ['bold' => true]);
+                // Get filter details - collect all active filters
+                $filterDetails = [];
+
+                if ($request->filled('project_id')) {
+                    $filterDetails['Project'] = DB::table('projects')
+                        ->where('project_id', $request->project_id)
+                        ->value('name');
                 }
 
-                foreach ($tasks as $index => $t) {
-                    $table->addRow();
-                    foreach ($columns as $col) {
-                        $value = $t->$col ?? '-';
-                        if (in_array($col, ['due_date', 'created_at'])) {
-                            $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                if ($request->filled('status_id')) {
+                    $filterDetails['Status'] = DB::table('statuses')
+                        ->where('status_id', $request->status_id)
+                        ->value('name');
+                }
+
+                if ($request->filled('priority_id')) {
+                    $filterDetails['Priority'] = DB::table('priorities')
+                        ->where('priority_id', $request->priority_id)
+                        ->value('name');
+                }
+
+                if ($request->filled('assigned_to')) {
+                    $filterDetails['Assigned To'] = DB::table('tbl_user')
+                        ->where('user_id', $request->assigned_to)
+                        ->value('name');
+                }
+
+                if ($request->filled('from_date') && $request->filled('to_date')) {
+                    $filterDetails['Date Range'] = $request->from_date . ' to ' . $request->to_date;
+                }
+
+                $isFirstProject = true;
+
+                foreach ($projects as $projectName => $projectTasks) {
+                    // Add section for each project (new page for each project except first)
+                    if ($isFirstProject) {
+                        $section = $phpWord->addSection();
+
+                        // Add Report Title (only on first page)
+                        $section->addTitle('Tasks Report', 1);
+                        $section->addTextBreak(1);
+
+                        // Add Filters Section (only on first page)
+                        $filterTable = $section->addTable([
+                            'borderSize' => 6,
+                            'borderColor' => '3498db',
+                            'cellMargin' => 80,
+                            'width' => 100 * 50
+                        ]);
+
+                        if (count($filterDetails) > 0) {
+                            foreach ($filterDetails as $label => $value) {
+                                $filterTable->addRow();
+                                $filterTable->addCell(2000)->addText($label . ':', ['bold' => true, 'color' => '2c3e50']);
+                                $filterTable->addCell(6000)->addText($value, ['color' => '555555']);
+                            }
+                        } else {
+                            $filterTable->addRow();
+                            $filterTable->addCell(2000)->addText('Filters:', ['bold' => true, 'color' => '2c3e50']);
+                            $filterTable->addCell(6000)->addText('None Applied (Showing All Tasks)', ['color' => '555555']);
                         }
-                        $table->addCell(2000)->addText($value);
+
+                        $section->addTextBreak(1);
+                        $isFirstProject = false;
+                    } else {
+                        // New page for each new project
+                        $section = $phpWord->addSection(['breakType' => 'nextPage']);
                     }
+
+                    // Add Project Header
+                    $projectHeader = $section->addTextRun([
+                        'bgColor' => '667eea',
+                        'spacing' => 0
+                    ]);
+                    $section->addText(
+                        'Project: ' . ($projectName ?? 'No Project Assigned'),
+                        [
+                            'bold' => true,
+                            'size' => 14,
+                            'color' => '#ffffffff'
+                        ],
+                        [
+                            'bgColor' => '667eea',
+                            'spaceBefore' => 100,
+                            'spaceAfter' => 100,
+                            'indentation' => ['left' => 200, 'right' => 200]
+                        ]
+                    );
+
+                    $section->addTextBreak(1);
+
+                    // Add Tasks Table for this project
+                    $table = $section->addTable('TaskTable');
+
+                    // Add Header Row
+                    $table->addRow(400);
+                    $table->addCell(800)->addText('#', ['bold' => true, 'color' => '2c3e50']);
+                    foreach ($columns as $col) {
+                        $table->addCell(2000)->addText($allColumns[$col], ['bold' => true, 'color' => '2c3e50']);
+                    }
+
+                    // Add Data Rows
+                    foreach ($projectTasks as $index => $t) {
+                        $table->addRow();
+                        $table->addCell(800)->addText($index + 1);
+                        foreach ($columns as $col) {
+                            $value = $t->$col ?? '-';
+                            if (in_array($col, ['due_date', 'created_at']) && $t->$col) {
+                                $value = date('d-m-Y', strtotime($t->$col));
+                            }
+                            $table->addCell(2000)->addText($value);
+                        }
+                    }
+
+                    $section->addTextBreak(1);
                 }
 
                 $file = storage_path('tasks_report.docx');

@@ -637,9 +637,7 @@
 
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 2rem; text-align: center;">
                     <p style="color: var(--text-muted); font-size: 0.9rem;">
-                        © 2024 TaskFlow. All rights reserved. |
-                        <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a> |
-                        <a href="#" style="color: var(--text-muted); text-decoration: none;">Terms of Service</a>
+                       &copy; {{ date('Y') }} Task Management System. All rights reserved.
                     </p>
                 </div>
             </div>

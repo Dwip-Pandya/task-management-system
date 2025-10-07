@@ -3,7 +3,7 @@
         <span class="navbar-brand">
             {{ Auth::user()->name ?? 'Guest' }}
             <small class="d-block" style="font-size: 0.8rem;">
-                {{ ucfirst(Auth::user()->role ?? 'guest') }}
+                {{ ucfirst(Auth::user()->role->name ?? 'guest') }}
             </small>
         </span>
 

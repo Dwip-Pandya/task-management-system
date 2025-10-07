@@ -40,9 +40,17 @@ Route::prefix('admin')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+    // Bulk delete (must be above resource)
+    Route::post('users/bulk-delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulk-delete');
+
     // User Management
     Route::resource('users', UserManagementController::class);
+
+    // Toggle role
     Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
+
+    // Restore user
+    Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
 
     // Task Management
     Route::resource('tasks', TaskManagementController::class);

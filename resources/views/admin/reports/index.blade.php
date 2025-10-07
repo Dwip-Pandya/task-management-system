@@ -89,7 +89,7 @@
                 <table class="reports-table table table-bordered table-striped align-middle">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Sr No</th>
                             @foreach($selectedColumns as $col)
                             <th>{{ $allColumns[$col] }}</th>
                             @endforeach

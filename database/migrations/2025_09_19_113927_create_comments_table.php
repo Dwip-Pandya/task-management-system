@@ -18,6 +18,10 @@ return new class extends Migration
             $table->text('message');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
+
+            // Foreign keys
+            $table->foreign('task_id')->references('task_id')->on('tasks')->onDelete('cascade');
+            $table->foreign('user_id')->references('user_id')->on('tbl_user')->onDelete('cascade');
         });
     }
 
@@ -26,6 +30,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('comments', function (Blueprint $table) {
+            $table->dropForeign(['task_id']);
+            $table->dropForeign(['user_id']);
+        });
+
         Schema::dropIfExists('comments');
     }
 };

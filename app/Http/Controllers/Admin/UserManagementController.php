@@ -5,115 +5,119 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class UserManagementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Display all users and deleted users
     public function index(Request $request)
     {
         $user = Auth::user();
         $search = $request->input('search');
 
-        $users = User::query();
-
-        if ($search) {
-            $users->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
-        }
-
-        $users = $users->get();
+        $users = User::with('role')
+            ->when($search, fn($q) => $q->where('name', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%"))
+            ->get();
 
         return view('admin.users.index', compact('users', 'user', 'search'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show create form
     public function create()
     {
         $user = Auth::user();
-        return view('admin.users.create', compact('user'));
+        $roles = Role::all();
+        return view('admin.users.create', compact('user', 'roles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store new user
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|max:100',
-            'email'    => 'required|email|unique:tbl_user,email',
+            'name'    => 'required|max:100',
+            'email'   => 'required|email|unique:tbl_user,email',
             'password' => 'required|min:6',
-            'role'     => 'required|in:admin,user',
+            'role_id' => 'required|exists:roles,id',
         ]);
 
         User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => $request->role,
+            'role_id'  => $request->role_id,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Show edit form
+    public function edit($id)
     {
         $user = Auth::user();
         $editUser = User::findOrFail($id);
-        return view('admin.users.edit', compact('editUser', 'user'));
+        $roles = Role::all();
+
+        return view('admin.users.edit', compact('editUser', 'user', 'roles'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Update user
+    public function update(Request $request, $id)
     {
         $editUser = User::findOrFail($id);
 
         $request->validate([
-            'name'  => 'required|max:100',
-            'email' => 'required|email|unique:tbl_user,email,' . $editUser->user_id . ',user_id',
-            'role'  => 'required|in:admin,user',
+            'name'    => 'required|max:100',
+            'email'   => 'required|email|unique:tbl_user,email,' . $editUser->user_id . ',user_id',
+            'role_id' => 'required|exists:roles,id',
         ]);
 
-        $editUser->name  = $request->name;
-        $editUser->email = $request->email;
-        $editUser->role  = $request->role;
-
-        if ($request->filled('password')) {
-            $editUser->password = Hash::make($request->password);
-        }
-
-        $editUser->save();
+        $editUser->update([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'role_id'  => $request->role_id,
+            'password' => $request->filled('password') ? Hash::make($request->password) : $editUser->password,
+        ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Soft delete user
     public function destroy($id)
     {
-        $editUser = User::findOrFail($id);
-        $editUser->delete();
+        $authUser = Auth::user();
+        $deleteUser = User::findOrFail($id);
 
+        if ($deleteUser->user_id == $authUser->user_id) {
+            return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');
+        }
+
+        $deleteUser->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    // Restore soft deleted user
+    public function restore($id)
+    {
+        $deletedUser = User::onlyTrashed()->findOrFail($id);
+        $deletedUser->restore();
+
+        return redirect()->route('users.index')->with('success', 'User restored successfully.');
+    }
+
+    // Bulk delete
+    public function bulkDelete(Request $request)
+    {
+        $authUser = Auth::user();
+        $ids = $request->input('user_ids', []);
+
+        if (in_array($authUser->user_id, $ids)) {
+            return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');
+        }
+
+        User::whereIn('user_id', $ids)->delete(); // Soft delete
+        return redirect()->route('users.index')->with('success', 'Selected users deleted successfully.');
     }
 }

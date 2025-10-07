@@ -9,16 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('tbl_user', function (Blueprint $table) {
             $table->bigIncrements('user_id');
             $table->string('name', 100);
             $table->string('email', 150)->unique();
             $table->string('password', 255);
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->unsignedBigInteger('role_id')->default(2);
+            // default role will be user
             $table->string('google_id')->nullable()->unique();
             $table->timestamps();
+
+            // Foreign key for roles table
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
     }
 

@@ -21,39 +21,44 @@ class GoogleController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Check if user already exists by Google ID
-            $user = User::where('google_id', $googleUser->getId())
-                ->orWhere('email', $googleUser->getEmail())
-                ->first();
+            // Step 1: Check if user exists by Google ID
+            $userByGoogleId = User::where('google_id', $googleUser->getId())->first();
+            if ($userByGoogleId) {
+                Auth::login($userByGoogleId);
+                session(['user' => $userByGoogleId]);
 
-            if ($user) {
-                // Update Google ID if missing
-                if (!$user->google_id) {
-                    $user->google_id = $googleUser->getId();
-                    $user->save();
-                }
-
-                Auth::login($user);
-                session(['user' => $user]); // optional
-
-                return $user->role === 'admin'
+                return $userByGoogleId->role === 'admin'
                     ? redirect()->route('admin.dashboard')
                     : redirect()->route('user.dashboard');
-            } else {
-                // New user
-                $newUser = User::create([
-                    'name'      => $googleUser->getName(),
-                    'email'     => $googleUser->getEmail(),
-                    'password'  => encrypt('password@123'), // default password
-                    'google_id' => $googleUser->getId(),
-                    'role'      => 'user' // default role
-                ]);
-
-                Auth::login($newUser);
-                session(['user' => $newUser]); // optional
-
-                return redirect()->route('user.dashboard');
             }
+
+            // Step 2: Check if user exists by email
+            $userByEmail = User::where('email', $googleUser->getEmail())->first();
+            if ($userByEmail) {
+                // Assign Google ID to existing user
+                $userByEmail->google_id = $googleUser->getId();
+                $userByEmail->save();
+
+                Auth::login($userByEmail);
+                session(['user' => $userByEmail]);
+
+                return $userByEmail->role === 'admin'
+                    ? redirect()->route('admin.dashboard')
+                    : redirect()->route('user.dashboard');
+            }
+
+            // Step 3: Create new user (Google ID and email both do not exist)
+            $newUser = User::create([
+                'name'      => $googleUser->getName(),
+                'email'     => $googleUser->getEmail(),
+                'password'  => encrypt('password@123'),
+                'google_id' => $googleUser->getId(),
+                'role'      => 'user'
+            ]);
+
+            Auth::login($newUser);
+            session(['user' => $newUser]);
+            return redirect()->route('user.dashboard');
         } catch (\Throwable $e) {
             dd($e->getMessage());
         }

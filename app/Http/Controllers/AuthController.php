@@ -5,32 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
     // Show register form
     public function showRegister()
     {
-        return view('auth.register');
+        $roles = Role::all();
+        return view('auth.register', compact('roles'));
     }
 
-    // Handle register
+    // Handle registration
     public function register(Request $request)
     {
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => 'required|email|max:150|unique:tbl_user,email',
             'password' => 'required|min:6|confirmed',
-            'role'     => 'required|in:admin,user',
+            'role_id'  => 'required|exists:roles,id',
         ]);
 
         $user = new User();
         $user->name     = $request->name;
         $user->email    = $request->email;
         $user->password = Hash::make($request->password);
-        $user->role     = $request->role;
+        $user->role_id  = $request->role_id;
         $user->save();
 
         return redirect()->route('login')->with('success', 'Registration successful! Please login.');
@@ -50,20 +51,34 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        // Find user by email, including only non-deleted users
+        $user = User::withTrashed()->where('email', $request->email)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
+        if (!$user) {
+            // No such user
+            return back()->withErrors(['email' => 'Invalid credentials.']);
+        }
+
+        if ($user->trashed()) {
+            // User is soft-deleted
+            return back()->withErrors(['email' => 'This account has been deactivated.']);
+        }
+
+        // Check password only if user is not soft-deleted
+        if (Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
-            if ($user->role === 'admin') {
+            if ($user->role->name === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
             } else {
                 return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
             }
         }
 
+        // Wrong password
         return back()->withErrors(['email' => 'Invalid credentials.']);
     }
+
 
     // Logout
     public function logout()

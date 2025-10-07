@@ -20,9 +20,13 @@ class CommentController extends Controller
 
         $user = Auth::user();
 
-        // Permission check: admin or assigned user
         $task = DB::table('tasks')->where('task_id', $request->task_id)->first();
-        if (!$task || ($user->role !== 'admin' && $task->assigned_to != $user->user_id)) {
+
+        if (!$task) {
+            return back()->with('error', 'Task not found.');
+        }
+
+        if ($user->role_id != 1 && $task->assigned_to != $user->user_id) {
             return back()->with('error', 'You cannot comment on this task.');
         }
 
@@ -30,7 +34,7 @@ class CommentController extends Controller
             'task_id' => $request->task_id,
             'user_id' => $user->user_id,
             'message' => $request->message,
-            'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent_id ?? null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -43,9 +47,10 @@ class CommentController extends Controller
     {
         $comments = DB::table('comments')
             ->leftJoin('tbl_user', 'comments.user_id', '=', 'tbl_user.user_id')
+            ->leftJoin('roles', 'tbl_user.role_id', '=', 'roles.id')
             ->where('comments.task_id', $task_id)
             ->orderBy('comments.created_at', 'asc')
-            ->select('comments.*', 'tbl_user.name', 'tbl_user.role')
+            ->select('comments.*', 'tbl_user.name', 'roles.name as role_name')
             ->get();
 
         return $comments;

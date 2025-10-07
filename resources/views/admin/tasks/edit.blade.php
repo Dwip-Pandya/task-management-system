@@ -37,7 +37,7 @@
                         <option value="">-- Select User --</option>
                         @foreach($users as $u)
                         <option class="text-dark" value="{{ $u->user_id }}" {{ $task->assigned_to == $u->user_id ? 'selected' : '' }}>
-                            {{ $u->name }} ({{ $u->role }})
+                            {{ $u->name }} ({{ $u->role_name }})
                         </option>
                         @endforeach
                     </select>

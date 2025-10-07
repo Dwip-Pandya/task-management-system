@@ -22,11 +22,20 @@ return new class extends Migration
             $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('priority_id');
             $table->unsignedBigInteger('tag_id')->nullable();
+            $table->unsignedBigInteger('project_id')->nullable();
 
             $table->dateTime('due_date')->nullable();
             $table->dateTime('completed_at')->nullable();
 
             $table->timestamps();
+
+            // Foreign keys
+            $table->foreign('assigned_to')->references('user_id')->on('tbl_user')->onDelete('set null');
+            $table->foreign('created_by')->references('user_id')->on('tbl_user')->onDelete('cascade');
+            $table->foreign('status_id')->references('status_id')->on('statuses')->onDelete('cascade');
+            $table->foreign('priority_id')->references('priority_id')->on('priorities')->onDelete('cascade');
+            $table->foreign('tag_id')->references('tag_id')->on('tags')->onDelete('set null');
+            $table->foreign('project_id')->references('project_id')->on('projects')->onDelete('set null');
         });
     }
 

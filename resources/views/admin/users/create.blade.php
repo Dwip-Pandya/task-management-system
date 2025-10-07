@@ -37,9 +37,11 @@
 
                 <div class="mb-3">
                     <label class="form-label">Role</label>
-                    <select name="role" class="form-select" required>
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
+                    <select name="role_id" class="form-select" required>
+                        <option value="">-- Select Role --</option>
+                        @foreach ($roles as $role)
+                        <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                        @endforeach
                     </select>
                 </div>
 

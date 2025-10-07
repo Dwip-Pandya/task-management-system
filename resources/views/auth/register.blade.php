@@ -52,10 +52,13 @@
 
                             <div class="mb-3">
                                 <label class="form-label glass-label">Role</label>
-                                <select name="role" class="form-select glass-input" required>
+                                <select name="role_id" class="form-select glass-input" required>
                                     <option value="">Select Role</option>
-                                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                                        {{ ucfirst($role->name) }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
 

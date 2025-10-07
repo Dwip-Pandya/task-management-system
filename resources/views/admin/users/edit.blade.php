@@ -38,11 +38,16 @@
 
                 <div class="mb-3">
                     <label class="form-label">Role</label>
-                    <select name="role" class="form-select" required>
-                        <option value="user" {{ $editUser->role === 'user' ? 'selected' : '' }}>User</option>
-                        <option value="admin" {{ $editUser->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                    <select name="role_id" class="form-select" required>
+                        <option value="">-- Select Role --</option>
+                        @foreach ($roles as $role)
+                        <option value="{{ $role->id }}" {{ $editUser->role_id == $role->id ? 'selected' : '' }}>
+                            {{ ucfirst($role->name) }}
+                        </option>
+                        @endforeach
                     </select>
                 </div>
+
 
                 <button class="btn btn-primary">Update</button>
                 <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
