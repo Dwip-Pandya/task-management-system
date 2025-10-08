@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 07, 2025 at 10:44 AM
+-- Generation Time: Oct 08, 2025 at 10:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -148,7 +148,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2025_01_01_000500_create_projects_table', 1),
 (10, '2025_01_01_000600_create_tasks_table', 1),
 (11, '2025_01_01_000700_create_comments_table', 1),
-(13, '2025_10_07_055840_create_sessions_table', 2);
+(14, '2025_10_07_055840_create_sessions_table', 2);
 
 -- --------------------------------------------------------
 
@@ -199,7 +199,8 @@ INSERT INTO `projects` (`project_id`, `created_by`, `name`, `description`, `crea
 (4, 1, 'Inventory Management System', 'Create a system to track stock, suppliers, and orders efficiently.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
 (5, 1, 'Marketing Campaign Analysis', 'Analyze past marketing campaigns to improve ROI.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
 (6, 1, 'Customer Feedback Portal', 'Build a portal for collecting and managing customer feedback.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
-(7, 3, 'PHP-Fresher interview', '- 6 months of experience\r\n- 2 projects (E-com & HMS)\r\n- 2 internships', '2025-10-07 03:08:35', '2025-10-07 03:08:35');
+(7, 3, 'PHP-Fresher interview', '- 6 months of experience\r\n- 2 projects (E-com & HMS)\r\n- 2 internships', '2025-10-07 03:08:35', '2025-10-07 03:08:35'),
+(8, 4, 'Nyka', 'Development Project', '2025-10-08 00:12:06', '2025-10-08 00:14:39');
 
 -- --------------------------------------------------------
 
@@ -244,7 +245,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8YcqmjxIBe2to4siAVdrrkRH6Pq8t2pylY3VFkIJ', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiQUhkTzV6YjdFbE5hZkFNQmVxTFo2aGxWdUNwSnJ5UFBxdmZhdGxhNiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9wcm9qZWN0cz9jcmVhdG9yX3JvbGU9Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzt9', 1759826425);
+('XQbDdGZokCyU1mDuCfrq2wUZhM6NvnGxEvOqyubX', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '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', 1759911069);
 
 -- --------------------------------------------------------
 
@@ -330,31 +331,20 @@ CREATE TABLE `tasks` (
 --
 
 INSERT INTO `tasks` (`task_id`, `title`, `description`, `assigned_to`, `created_by`, `status_id`, `priority_id`, `tag_id`, `project_id`, `due_date`, `completed_at`, `created_at`, `updated_at`) VALUES
-(1, 'Website Wireframe', 'Create wireframes for the new website layout.\r\nand add remarks about the changes.', 2, 4, 3, 4, 5, 1, '2025-10-08 00:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 02:20:18'),
-(2, 'Bug Fix: Login Issue', 'Resolve login failure for certain users.', 5, 2, 2, 3, 2, 2, '2025-10-10 12:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 06:51:29'),
+(1, 'Website Wireframe', 'Create wireframes for the new website layout.\r\nand add remarks about the changes.\r\nnew remarks.', 2, 4, 3, 4, 5, 1, '2025-10-15 00:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 04:51:16'),
 (3, 'Mobile App MVP', 'Develop minimum viable product for mobile app.', 6, 4, 1, 4, 3, 2, '2025-11-01 18:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 06:51:29'),
-(4, 'Database Optimization', 'Optimize queries and indexes for faster reports.', 7, 2, 1, 3, 12, 3, '2025-10-20 16:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 06:51:29'),
 (5, 'Customer Feedback Form', 'Design and implement feedback collection form.', 8, 4, 1, 2, 7, 5, '2025-10-18 14:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 06:51:29'),
 (6, 'Marketing Analysis', 'Analyze recent marketing campaigns.', 9, 4, 1, 2, 14, 4, '2025-10-25 15:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (7, 'Server Maintenance', 'Perform routine server maintenance and updates.', 2, 4, 1, 3, 4, 3, '2025-10-12 10:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(8, 'New Feature: Chat', 'Implement chat feature in mobile app.', 6, 2, 1, 4, 3, 2, '2025-11-05 12:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (9, 'Bug Fix: Payment Gateway', 'Fix payment gateway timeout errors.', 5, 4, 2, 4, 2, 1, '2025-10-14 18:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(10, 'UI Update', 'Update dashboard UI for better usability.', 7, 2, 1, 2, 5, 1, '2025-10-20 14:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (11, 'User Documentation', 'Prepare user documentation for new software release.', 8, 4, 1, 2, 7, 5, '2025-10-28 16:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(12, 'Testing Payment Module', 'Test all functionalities of the payment module.', 6, 2, 2, 3, 6, 2, '2025-10-19 11:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (13, 'Deployment to Staging', 'Deploy latest build to staging environment.', 9, 4, 1, 4, 9, 3, '2025-10-17 09:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(14, 'Team Training', 'Conduct training session for new team members.', 2, 2, 1, 2, 13, 4, '2025-10-22 10:30:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (15, 'Bug Fix: Profile Update', 'Fix issue with user profile update.', 5, 4, 2, 3, 2, 1, '2025-10-16 14:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(16, 'SEO Optimization', 'Improve SEO for company website.', 7, 2, 1, 3, 12, 1, '2025-10-21 17:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (17, 'Feature: Export Reports', 'Add export functionality to reports section.', 6, 4, 1, 3, 3, 3, '2025-10-29 15:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (18, 'Client Meeting Preparation', 'Prepare slides and documents for client meeting.', 2, 4, 1, 2, 1, 4, '2025-10-15 09:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(19, 'Code Review', 'Review latest pull requests and provide feedback.', 8, 2, 1, 2, 11, 2, '2025-10-18 13:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (20, 'Database Backup', 'Take full database backup before release.', 9, 4, 1, 3, 4, 3, '2025-10-12 20:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(21, 'Bug Fix: Notifications', 'Resolve notification delivery errors.', 5, 2, 2, 3, 2, 1, '2025-10-14 16:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (22, 'Research: New Technologies', 'Research emerging technologies for product enhancement.', 6, 4, 1, 2, 8, 3, '2025-10-30 11:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(23, 'Feature: Dark Mode', 'Implement dark mode in web and mobile app.', 7, 2, 1, 3, 3, 2, '2025-11-03 18:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (24, 'Support Ticket Handling', 'Handle high-priority support tickets.', 2, 4, 2, 4, 10, 5, '2025-10-17 12:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(25, 'Maintenance: Server Cleanup', 'Remove old logs and optimize server storage.', 9, 2, 1, 3, 4, 3, '2025-10-23 09:30:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
 (26, 'Review of the Dashboard wire-frame', 'review the wire-frame', 2, 3, 3, 1, 11, 2, '2025-10-07 00:00:00', NULL, '2025-10-07 01:35:05', '2025-10-07 01:35:05');
 
 -- --------------------------------------------------------
@@ -392,24 +382,24 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role_id`, `google_id`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'admin', 'admin@gmail.com', NULL, '$2y$12$4GJPcpxuMotwr70cz7T8OuBJsNDcTMjNBjV1yaHsOyiG2b2R0S95.', 1, NULL, NULL, '2025-10-07 01:19:16', '2025-10-07 01:19:16', NULL),
-(2, 'Pandya Dwip', 'aydnapdwip@gmail.com', NULL, '$2y$12$lK2HKAnE2sHFb/T2WL4S7uAwqCGAyyou9W235q211ZKOzgpr/7EfG', 2, '116898354848865798613', NULL, '2025-10-06 19:04:51', '2025-10-06 19:21:33', NULL),
-(3, 'Trupti Pandya', 'trupti007@gmail.com', NULL, '$2y$12$z4V2h1QDnfl5StkJiQAma.9xvfQlL03mz3NxCLwLBtnZjln143cou', 1, NULL, NULL, '2025-10-06 19:09:19', '2025-10-06 19:09:19', NULL),
-(4, 'vrushabh Gajjar', 'vg@gmail.com', NULL, '$2y$12$cSJ4pLnGfxhD2nJ9z14Xx.g1ojSe5ALo67tfHoNkKfR1Pml/.ay/W', 4, NULL, NULL, '2025-10-06 19:22:23', '2025-10-06 19:25:54', NULL),
-(5, 'Vaishali Vala', 'vaishali@gmail.com', NULL, '$2y$12$lnB39lemTQ7pQTuOU8dSs.Oq7Awpo/c73c7mxfY47mwSc0/JhupXW', 2, NULL, NULL, '2025-10-06 19:39:04', '2025-10-06 19:39:04', NULL),
-(6, 'Sahil Sharma', 'sahilsharma@gmail.com', NULL, '$2y$12$gPja0GYQhPIgaCPAUWRGE.KfuXKyROs7bMIRdrxLONOjmdikjUdkW', 3, NULL, NULL, '2025-10-06 19:39:40', '2025-10-06 19:39:40', NULL),
-(7, 'Aruhi Patel', 'aruhi@gmail.com', NULL, '$2y$12$d8h17XaOkHrzyoegE8RAPOB4rat7cg8DB/8VwgghfgqresrMiKXWm', 2, NULL, NULL, '2025-10-06 19:40:04', '2025-10-06 19:40:04', NULL),
-(8, 'Vishwa pandya', 'vish@gmail.com', NULL, '$2y$12$GML.0bpSl7qO/URkfwD0xORqyPzdtSC9i23x01yukIoMySgiujBfC', 2, NULL, NULL, '2025-10-06 19:40:33', '2025-10-06 19:40:33', NULL),
-(9, 'Namrata Gohel', 'namrata.gohel@gmail.com', NULL, '$2y$12$G.w0u.BwNt8/12Ez2osqleHwq2PpkNngdxdXZK78bSTDQJ9RnOtO.', 4, NULL, NULL, '2025-10-06 19:40:47', '2025-10-06 19:40:47', NULL),
-(10, 'Prachi Anarkat', 'prachiank@gmail.com', NULL, '$2y$12$zxt/t4BNGJepubu6SsKlneN7EXrANgXfKtQDPj87nVKCX3ZO9TXgS', 4, NULL, NULL, '2025-10-06 19:41:05', '2025-10-06 19:41:05', NULL),
-(11, 'Prathmesh Pandya', 'prathmesh.pandya@gmail.com', NULL, '$2y$12$HP6Ss6z7TDitdP.5MeVwKuauKFIDz9VXuXdi2sE4eHR9TwRXMlow.', 2, NULL, NULL, '2025-10-06 19:41:20', '2025-10-06 19:41:20', NULL);
+(1, 'admin', 'admin@gmail.com', NULL, '$2y$12$XYqp8ZFBKgDvm3RQ0hdyDuBvZZ2WsKIaLmJ1CufGuHlhehqQs5Kk6', 1, NULL, NULL, '2025-10-06 19:49:16', '2025-10-07 00:56:39', NULL),
+(2, 'Pandya Dwip', 'aydnapdwip@gmail.com', NULL, '$2y$12$lK2HKAnE2sHFb/T2WL4S7uAwqCGAyyou9W235q211ZKOzgpr/7EfG', 2, '116898354848865798613', NULL, '2025-10-06 13:34:51', '2025-10-06 13:51:33', NULL),
+(3, 'Trupti Pandya', 'trupti007@gmail.com', NULL, '$2y$12$z4V2h1QDnfl5StkJiQAma.9xvfQlL03mz3NxCLwLBtnZjln143cou', 1, NULL, NULL, '2025-10-06 13:39:19', '2025-10-06 13:39:19', NULL),
+(4, 'vrushabh Gajjar', 'vg@gmail.com', NULL, '$2y$12$cSJ4pLnGfxhD2nJ9z14Xx.g1ojSe5ALo67tfHoNkKfR1Pml/.ay/W', 4, NULL, NULL, '2025-10-06 13:52:23', '2025-10-08 01:56:49', NULL),
+(5, 'Vaishali Vala', 'vaishali@gmail.com', NULL, '$2y$12$lnB39lemTQ7pQTuOU8dSs.Oq7Awpo/c73c7mxfY47mwSc0/JhupXW', 2, NULL, NULL, '2025-10-06 14:09:04', '2025-10-06 14:09:04', NULL),
+(6, 'Sahil Sharma', 'sahilsharma@gmail.com', NULL, '$2y$12$gPja0GYQhPIgaCPAUWRGE.KfuXKyROs7bMIRdrxLONOjmdikjUdkW', 3, NULL, NULL, '2025-10-06 14:09:40', '2025-10-06 14:09:40', NULL),
+(7, 'Aruhi Patel', 'aruhi@gmail.com', NULL, '$2y$12$d8h17XaOkHrzyoegE8RAPOB4rat7cg8DB/8VwgghfgqresrMiKXWm', 2, NULL, NULL, '2025-10-06 14:10:04', '2025-10-06 14:10:04', NULL),
+(8, 'Vishwa pandya', 'vish@gmail.com', NULL, '$2y$12$GML.0bpSl7qO/URkfwD0xORqyPzdtSC9i23x01yukIoMySgiujBfC', 2, NULL, NULL, '2025-10-06 14:10:33', '2025-10-06 14:10:33', NULL),
+(9, 'Namrata Gohel', 'namrata.gohel@gmail.com', NULL, '$2y$12$G.w0u.BwNt8/12Ez2osqleHwq2PpkNngdxdXZK78bSTDQJ9RnOtO.', 4, NULL, NULL, '2025-10-06 14:10:47', '2025-10-06 14:10:47', NULL),
+(10, 'Prachi Anarkat', 'prachiank@gmail.com', NULL, '$2y$12$zxt/t4BNGJepubu6SsKlneN7EXrANgXfKtQDPj87nVKCX3ZO9TXgS', 4, NULL, NULL, '2025-10-06 14:11:05', '2025-10-06 14:11:05', NULL),
+(11, 'Prathmesh Pandya', 'prathmesh.pandya@gmail.com', NULL, '$2y$12$HP6Ss6z7TDitdP.5MeVwKuauKFIDz9VXuXdi2sE4eHR9TwRXMlow.', 2, NULL, NULL, '2025-10-06 14:11:20', '2025-10-06 14:11:20', NULL);
 
 --
 -- Indexes for dumped tables
@@ -526,8 +516,8 @@ ALTER TABLE `tbl_user`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`),
-  ADD UNIQUE KEY `users_google_id_unique` (`google_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `google_id` (`google_id`),
   ADD KEY `users_role_id_foreign` (`role_id`);
 
 --
@@ -538,7 +528,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -556,7 +546,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `priorities`
@@ -568,13 +558,13 @@ ALTER TABLE `priorities`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `project_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `project_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `statuses`

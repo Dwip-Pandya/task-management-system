@@ -55,7 +55,12 @@
                         Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span>
                     </p>
                     @endif
-                    <a href="{{ route('user.tasks.index') }}" class="glass-btn">View</a>
+                    {{-- Updated View Button --}}
+                    <a href="{{ route('user.tasks.index') }}"
+                        class="glass-btn view-task-btn"
+                        data-assigned-to="{{ $task->assigned_to }}">
+                        View
+                    </a>
                 </div>
                 @endforeach
 
@@ -67,4 +72,26 @@
         @endforeach
     </div>
 </div>
+
+<!-- pass id to js  -->
+<script>
+    const currentUserId = {{ json_encode($user->id) }};
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewButtons = document.querySelectorAll('.view-task-btn');
+
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const assignedTo = parseInt(this.dataset.assignedTo);
+
+                if (assignedTo !== currentUserId) {
+                    e.preventDefault(); // stop default redirect
+                    if (confirm("You are not allowed to view tasks assigned to other users. Click OK to go to your tasks.")) {
+                        window.location.href = this.href; // redirect to tasks page
+                    }
+                }
+                // else, do nothing and allow normal redirect
+            });
+        });
+    });
+</script>
 @endsection

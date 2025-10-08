@@ -251,11 +251,10 @@ class TaskManagementController extends Controller
     }
 
     // Update status, priority, assigned user (AJAX)
-    // Update Assigned User
     public function updateAssigned(Request $request, $id)
     {
         $request->validate([
-            'assigned_to' => 'nullable|integer|exists:tbl_user,user_id',
+            'assigned_to' => 'nullable|integer|exists:users,id',
         ]);
 
         DB::table('tasks')->where('task_id', $id)->update([
