@@ -35,7 +35,7 @@ Route::get('/auth/google-callback', [GoogleController::class, 'googleauthenticat
 
 
 // ========================= ADMIN ROUTES =========================
-Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\ForceChangePassword::class])->group(function () {
+Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class, \App\Http\Middleware\ForceChangePassword::class])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -80,7 +80,7 @@ Route::get('admin/reports/export/{format}', [App\Http\Controllers\Admin\ReportCo
 
 // ========================= USER ROUTES =========================
 // User Routes
-Route::prefix('user')->group(function () {
+Route::prefix('user')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])->group(function () {
 
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
