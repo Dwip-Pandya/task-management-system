@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserManagementController extends Controller
 {
@@ -38,12 +39,18 @@ class UserManagementController extends Controller
     // Store new user
     public function store(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|max:100',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'role_id'  => 'required|exists:roles,id',
-        ]);
+        try {
+            $request->validate([
+                'name'     => 'required|max:100',
+                'email'    => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'role_id'  => 'required|exists:roles,id',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        }
 
         User::create([
             'name'     => $request->name,
@@ -70,11 +77,18 @@ class UserManagementController extends Controller
     {
         $editUser = User::findOrFail($id);
 
-        $request->validate([
-            'name'    => 'required|max:100',
-            'email'   => 'required|email|unique:users,email,' . $editUser->id,
-            'role_id' => 'required|exists:roles,id',
-        ]);
+        try {
+            $request->validate([
+                'name'     => 'required|min:3|max:100',
+                'email'    => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'role_id'  => 'required|exists:roles,id',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        }
 
         $editUser->update([
             'name'     => $request->name,
