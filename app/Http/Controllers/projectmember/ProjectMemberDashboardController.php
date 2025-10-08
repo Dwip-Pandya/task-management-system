@@ -1,43 +1,40 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\projectmember;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class ProjectMemberDashboardController extends Controller
 {
     public function index(Request $request)
     {
         $user = Auth::user();
 
-        
-
-        // Get all projects for filter
+        // Get all projects for filter dropdown
         $projectsList = DB::table('projects')->get();
 
-        // Base query for tasks
+        // Base query: tasks assigned to the member
         $tasksQuery = DB::table('tasks')
-            ->leftJoin('users', 'tasks.assigned_to', '=', 'users.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
-            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id') // join projects
+            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
                 'tasks.*',
-                'users.name as assigned_user_name',
                 'statuses.name as status_name',
                 'projects.name as project_name'
-            );
+            )
+            ->where('tasks.assigned_to', $user->id);
 
-        // Filter by assigned user (optional)
-        if ($request->assigned_to) {
-            $tasksQuery->where('tasks.assigned_to', $request->assigned_to);
-        }
-
-        // Filter by project (optional)
+        // Optional project filter
         if ($request->project_id) {
             $tasksQuery->where('tasks.project_id', $request->project_id);
+        }
+
+        // Optional status filter
+        if ($request->status) {
+            $tasksQuery->where('statuses.name', $request->status);
         }
 
         $tasks = $tasksQuery->get();
@@ -50,9 +47,6 @@ class DashboardController extends Controller
             'on_hold'     => $tasks->where('status_name', 'on_hold'),
         ];
 
-        // Get all users for dropdown
-        $usersList = DB::table('users')->get();
-
-        return view('admin.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
+        return view('projectmember.dashboard', compact('tasksByStatus', 'user', 'projectsList', 'request'));
     }
 }

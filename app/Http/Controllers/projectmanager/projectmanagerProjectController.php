@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\ProjectManager;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ProjectController extends Controller
+class ProjectManagerProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,21 +28,20 @@ class ProjectController extends Controller
 
         $projects = $projectsQuery->orderBy('projects.created_at', 'desc')->get();
 
-        return view('admin.projects.index', compact('projects', 'user', 'request'));
+        return view('projectmanager.projects.index', compact('projects', 'user', 'request'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new project.
      */
     public function create()
     {
         $user = Auth::user();
-
-        return view('admin.projects.create', compact('user'));
+        return view('projectmanager.projects.create', compact('user'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created project.
      */
     public function store(Request $request)
     {
@@ -56,45 +55,57 @@ class ProjectController extends Controller
         Project::create([
             'name' => $request->name,
             'description' => $request->description,
-            'created_by' => $user->id, // make sure this column is fillable
+            'created_by' => $user->id,
         ]);
 
-        return redirect()->route('projects.index')
+        return redirect()->route('projectmanager.projects.index')
             ->with('success', 'Project created successfully.');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified project.
      */
     public function show(Project $project)
     {
         $user = Auth::user();
 
-        // Get creator info
+        // Ensure the manager can only view their own projects
+        if ($project->created_by !== $user->id) {
+            abort(403);
+        }
+
         $creator = DB::table('users')
             ->select('name', 'role_id')
             ->where('id', $project->created_by)
             ->first();
 
-        return view('admin.projects.show', compact('project', 'user', 'creator'));
+        return view('projectmanager.projects.show', compact('project', 'user', 'creator'));
     }
 
-
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified project.
      */
     public function edit(Project $project)
     {
         $user = Auth::user();
-        return view('admin.projects.edit', compact('project', 'user'));
+
+        if ($project->created_by !== $user->id) {
+            abort(403);
+        }
+
+        return view('projectmanager.projects.edit', compact('project', 'user'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified project.
      */
     public function update(Request $request, Project $project)
     {
         $user = Auth::user();
+
+        if ($project->created_by !== $user->id) {
+            abort(403);
+        }
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -106,19 +117,11 @@ class ProjectController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('projects.index', compact('user'))
+        return redirect()->route('projectmanager.projects.index')
             ->with('success', 'Project updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * **No delete** for project manager (disabled)
      */
-    public function destroy(Project $project)
-    {
-        $user = Auth::user();
-
-        $project->delete();
-        return redirect()->route('projects.index', compact('user'))
-            ->with('success', 'Project deleted successfully.');
-    }
 }

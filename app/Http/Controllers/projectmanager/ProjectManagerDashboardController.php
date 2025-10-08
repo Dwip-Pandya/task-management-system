@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\projectmanager;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class ProjectManagerDashboardController extends Controller
 {
     public function index(Request $request)
     {
         $user = Auth::user();
-
-        
 
         // Get all projects for filter
         $projectsList = DB::table('projects')->get();
@@ -22,7 +20,7 @@ class DashboardController extends Controller
         $tasksQuery = DB::table('tasks')
             ->leftJoin('users', 'tasks.assigned_to', '=', 'users.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
-            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id') // join projects
+            ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
             ->select(
                 'tasks.*',
                 'users.name as assigned_user_name',
@@ -53,6 +51,6 @@ class DashboardController extends Controller
         // Get all users for dropdown
         $usersList = DB::table('users')->get();
 
-        return view('admin.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
+        return view('projectmanager.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
     }
 }

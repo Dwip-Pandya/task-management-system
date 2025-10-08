@@ -12,6 +12,11 @@ use App\Http\Controllers\User\TaskController as UserTaskController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\projectmanager\ProjectManagerDashboardController;
+use App\Http\Controllers\projectmanager\ProjectManagerProjectController;
+use App\Http\Controllers\projectmanager\ProjectManagerTaskController;
+use App\Http\Controllers\projectmember\projectmemberDashboardController;
+use App\Http\Controllers\projectmember\ProjectMemberTaskController;
 
 
 Route::get('/', function () {
@@ -103,3 +108,71 @@ Route::get('/user/calendar', [CalendarController::class, 'index'])->name('user.c
 
 // AJAX for events
 Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+
+Route::prefix('projectmanager')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])->group(function () {
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmanager.calendar');
+});
+
+Route::prefix('projectmember')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])->group(function () {
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmember.calendar');
+});
+
+// ========================= PROJECT MANAGER ROUTES =========================
+Route::prefix('projectmanager')
+    ->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])
+    ->group(function () {
+
+        Route::get('/dashboard', [ProjectManagerDashboardController::class, 'index'])
+            ->name('projectmanager.dashboard');
+
+        // Projects (resource)
+        Route::resource('projects', ProjectManagerProjectController::class)
+            ->names([
+                'index' => 'projectmanager.projects.index',
+                'create' => 'projectmanager.projects.create',
+                'store' => 'projectmanager.projects.store',
+                'show' => 'projectmanager.projects.show',
+                'edit' => 'projectmanager.projects.edit',
+                'update' => 'projectmanager.projects.update',
+                // No delete
+            ])
+            ->except(['destroy']);
+
+        // Tasks (resource)
+        Route::resource('tasks', ProjectManagerTaskController::class)
+            ->names([
+                'index' => 'projectmanager.tasks.index',
+                'create' => 'projectmanager.tasks.create',
+                'store' => 'projectmanager.tasks.store',
+                'show' => 'projectmanager.tasks.show',
+                'edit' => 'projectmanager.tasks.edit',
+                'update' => 'projectmanager.tasks.update',
+                // No delete
+            ])
+            ->except(['destroy']); //
+
+        // Optional: Comments on tasks
+        Route::post('tasks/comments', [ProjectManagerTaskController::class, 'storeComment'])
+            ->name('projectmanager.tasks.comments.store');
+    });
+
+// ========================= PROJECT MEMBER ROUTES =========================
+Route::prefix('projectmember')
+    ->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])
+    ->group(function () {
+
+        Route::get('/dashboard', [ProjectMemberDashboardController::class, 'index'])
+            ->name('projectmember.dashboard');
+
+        // Tasks (only index & show)
+        Route::resource('tasks', ProjectMemberTaskController::class)
+            ->only(['index', 'show'])
+            ->names([
+                'index' => 'projectmember.tasks.index',
+                'show' => 'projectmember.tasks.show',
+            ]);
+
+        // Optional: Comments for member
+        Route::post('tasks/comments', [ProjectMemberTaskController::class, 'storeComment'])
+            ->name('projectmember.tasks.comments.store');
+    });

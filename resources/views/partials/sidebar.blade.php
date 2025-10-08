@@ -14,15 +14,15 @@
         <li class="nav-item"><a href="/admin/calendar" class="nav-link">Calendar</a></li>
 
         @elseif ($role === 'project manager')
-        <li class="nav-item"><a href="/task-manager/dashboard" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="/task-manager/projects" class="nav-link">Projects</a></li>
-        <li class="nav-item"><a href="/task-manager/tasks" class="nav-link">Tasks</a></li>
-        <li class="nav-item"><a href="/task-manager/calendar" class="nav-link">Calendar</a></li>
+        <li class="nav-item"><a href="/projectmanager/dashboard" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="/projectmanager/projects" class="nav-link">Projects</a></li>
+        <!-- <li class="nav-item"><a href="/projectmanager/tasks" class="nav-link">Tasks</a></li> -->
+        <li class="nav-item"><a href="/projectmanager/calendar" class="nav-link">Calendar</a></li>
 
         @elseif ($role === 'project member')
-        <li class="nav-item"><a href="/task-member/dashboard" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="/task-member/tasks" class="nav-link">Tasks</a></li>
-        <li class="nav-item"><a href="/task-member/calendar" class="nav-link">Calendar</a></li>
+        <li class="nav-item"><a href="/projectmember/dashboard" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="/projectmember/tasks" class="nav-link">Tasks</a></li>
+        <li class="nav-item"><a href="/projectmember/calendar" class="nav-link">Calendar</a></li>
 
         @else
         <li class="nav-item"><a href="/user/dashboard" class="nav-link">Home</a></li>

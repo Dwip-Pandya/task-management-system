@@ -1,0 +1,60 @@
+@extends('layouts.main')
+
+@section('title', 'Projects')
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+@endpush
+
+@section('content')
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Projects</h2>
+        <a href="{{ route('projectmanager.projects.create') }}" class="btn btn-primary">+ New Project</a>
+    </div>
+
+    {{-- Filter by Creator Role --}}
+    <form method="GET" class="mb-4 row g-2 align-items-center">
+        <div class="col-auto">
+            <select name="creator_role" class="form-select">
+                <option value="">All Creators</option>
+                <option class="text-dark" value="1" {{ $request->creator_role == 1 ? 'selected' : '' }}>Admin</option>
+                <option class="text-dark" value="4" {{ $request->creator_role == 4 ? 'selected' : '' }}>Project Manager</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    <div class="row">
+        @forelse($projects as $project)
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    {{-- Project Capsule --}}
+                    <span class="badge bg-info text-dark mb-2">Project</span>
+                    <h5 class="card-title">{{ $project->name }}</h5>
+                    <p class="card-text">{{ Str::limit($project->description, 100) }}</p>
+                    <p class="text-muted"><small>Created: {{ \Carbon\Carbon::parse($project->created_at)->format('d M, Y') }}</small></p>
+
+                    {{-- Display creator role & name --}}
+                    @if($project->creator_name)
+                    <p><strong>Created By:</strong> {{ $project->creator_name }}
+                        ({{ $project->creator_role_id == 1 ? 'Admin' : 'Project Manager' }})</p>
+                    @endif
+                </div>
+                <div class="card-footer d-flex">
+                    <a href="{{ route('projectmanager.projects.show', $project->project_id) }}" class="btn btn-info btn-sm me-1">View</a>
+                    <a href="{{ route('projectmanager.projects.edit', $project->project_id) }}" class="btn btn-warning btn-sm me-1">Edit</a>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="col-12 text-center">
+            <p>No projects found.</p>
+        </div>
+        @endforelse
+    </div>
+</div>
+@endsection

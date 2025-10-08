@@ -44,6 +44,7 @@ class AuthController extends Controller
     }
 
     // Handle login
+    // Handle login
     public function login(Request $request)
     {
         $request->validate([
@@ -55,23 +56,27 @@ class AuthController extends Controller
         $user = User::withTrashed()->where('email', $request->email)->first();
 
         if (!$user) {
-            // No such user
             return back()->withErrors(['email' => 'Invalid credentials.']);
         }
 
         if ($user->trashed()) {
-            // User is soft-deleted
             return back()->withErrors(['email' => 'This account has been deactivated.']);
         }
 
-        // Check password only if user is not soft-deleted
         if (Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
-            if ($user->role->name === 'admin') {
-                return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
-            } else {
-                return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
+            $roleName = strtolower($user->role->name ?? 'user');
+
+            switch ($roleName) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
+                case 'project manager':
+                    return redirect()->route('projectmanager.dashboard')->with('success', 'Welcome Project Manager!');
+                case 'project member':
+                    return redirect()->route('projectmember.dashboard')->with('success', 'Welcome Project Member!');
+                default:
+                    return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
             }
         }
 
