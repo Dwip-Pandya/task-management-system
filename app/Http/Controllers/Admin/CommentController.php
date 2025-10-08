@@ -6,40 +6,63 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\log;
+
 
 class CommentController extends Controller
 {
     // Store a new comment or reply
     public function store(Request $request)
     {
-        $request->validate([
-            'task_id' => 'required|integer',
-            'message' => 'required|string',
-            'parent_id' => 'nullable|integer',
-        ]);
+        try {
+            // Custom validation
+            $validator = Validator::make($request->all(), [
+                'task_id' => 'required|integer',
+                'message' => [
+                    'required',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if ($value !== strip_tags($value)) {
+                            $fail('HTML tags are not allowed.');
+                        }
+                    },
+                ],
+                'parent_id' => 'nullable|integer',
+            ]);
 
-        $user = Auth::user();
+            if ($validator->fails()) {
+                // Redirect back with validation errors
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
 
-        $task = DB::table('tasks')->where('task_id', $request->task_id)->first();
+            $user = Auth::user();
+            $task = DB::table('tasks')->where('task_id', $request->task_id)->first();
 
-        if (!$task) {
-            return back()->with('error', 'Task not found.');
+            if (!$task) {
+                return redirect()->back()->with('error', 'Task not found.');
+            }
+
+            if ($user->role_id != 1 && $task->assigned_to != $user->id) {
+                return redirect()->back()->with('error', 'You cannot comment on this task.');
+            }
+
+            DB::table('comments')->insert([
+                'task_id' => $request->task_id,
+                'user_id' => $user->id,
+                'message' => $request->message,
+                'parent_id' => $request->parent_id ?? null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return redirect()->back()->with('success', 'Comment added successfully.');
+        } catch (\Exception $e) {
+            Log::error('Comment store error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
         }
-
-        if ($user->role_id != 1 && $task->assigned_to != $user->id) {
-            return back()->with('error', 'You cannot comment on this task.');
-        }
-
-        DB::table('comments')->insert([
-            'task_id' => $request->task_id,
-            'user_id' => $user->id,
-            'message' => $request->message,
-            'parent_id' => $request->parent_id ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return back()->with('success', 'Comment added successfully.');
     }
 
     // Fetch comments for a task

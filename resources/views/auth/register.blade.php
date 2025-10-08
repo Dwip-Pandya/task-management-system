@@ -4,6 +4,8 @@
 <head>
     <title>Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <title>@yield('title', 'Task Manager')</title>
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 </head>
 

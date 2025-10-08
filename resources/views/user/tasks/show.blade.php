@@ -25,7 +25,7 @@
             <p><strong>Status:</strong>
                 <select class="form-select form-select-sm change-status text-dark" data-id="{{ $task->task_id }}">
                     @foreach (DB::table('statuses')->get() as $s)
-                    <option value="{{ $s->status_id }}" {{ $s->status_id == $task->status_id ? 'selected' : '' }}>
+                    <option class="text-dark" value="{{ $s->status_id }}" {{ $s->status_id == $task->status_id ? 'selected' : '' }}>
                         {{ ucfirst($s->name) }}
                     </option>
                     @endforeach
@@ -43,7 +43,10 @@
     <form action="{{ route('comments.store') }}" method="POST" class="mb-3">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->task_id }}">
-        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment..." required></textarea>
+        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment..." required>{{ old('message') }}</textarea>
+        @error('message')
+        <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
         <button class="btn btn-primary btn-sm">Post Comment</button>
     </form>
 

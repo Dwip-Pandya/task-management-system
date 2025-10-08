@@ -97,49 +97,49 @@
 
 <body>
 
-    <!-- Fixed Header for all pages -->
-    <div class="page-header">
+    <!-- Page Header (shown once) -->
+    <div class="page-header" style="text-align: center; margin-bottom: 10px;">
         <h2>Tasks Report</h2>
-        @if(count($filters) > 0)
-        <div class="filters">
-            @foreach($filters as $label => $value)
-            <span class="filter-item">
-                <span class="filter-label">{{ $label }}:</span> {{ $value }}
-            </span>
-            @endforeach
-        </div>
-        @else
-        <div class="filters">
-            <span class="filter-item">
-                <span class="filter-label">Filters:</span> None Applied
-            </span>
-        </div>
-        @endif
     </div>
 
-    <!-- Projects Content -->
+    <!-- Filters Section - only if filters exist -->
+    @if(count($filters) > 0)
+    <div class="filters" style="margin-bottom: 25px;">
+        <h4>Applied Filters:</h4>
+        <div class="filter-list" style="margin-top: 8px; font-size: 13px;">
+            @foreach($filters as $label => $value)
+            <div style="margin-bottom: 4px;">
+                <strong style="text-transform: capitalize;">{{ $label }}:</strong>
+                <span>{{ $value }}</span>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- Projects Section -->
     @foreach($projects as $projectName => $projectTasks)
-    <div class="project-section">
-        <!-- Project Name - Will show on each page for this project -->
-        <div class="project-header">
+    <div class="project-section" style="margin-top: 30px;">
+        <!-- Project Header -->
+        <div class="project-header" style="font-weight: bold; margin-bottom: 8px;">
             Project: {{ $projectName }}
         </div>
 
-        <table>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
             <thead>
                 <tr>
-                    <th>Sr No.</th>
+                    <th style="border: 1px solid #ccc; padding: 6px;">Sr No.</th>
                     @foreach($selectedColumns as $col)
-                    <th>{{ $allColumns[$col] }}</th>
+                    <th style="border: 1px solid #ccc; padding: 6px;">{{ $allColumns[$col] }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @foreach($projectTasks as $t)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px;">{{ $loop->iteration }}</td>
                     @foreach($selectedColumns as $col)
-                    <td>
+                    <td style="border: 1px solid #ccc; padding: 6px;">
                         @if(in_array($col, ['created_at', 'due_date']) && $t->$col)
                         {{ \Carbon\Carbon::parse($t->$col)->format('d-m-Y') }}
                         @else
