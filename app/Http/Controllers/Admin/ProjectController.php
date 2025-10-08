@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ProjectController extends Controller
 {
@@ -48,10 +49,16 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        }
 
         Project::create([
             'name' => $request->name,
@@ -96,10 +103,16 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        }
 
         $project->update([
             'name' => $request->name,

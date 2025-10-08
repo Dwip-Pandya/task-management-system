@@ -10,18 +10,29 @@
 <div class="container">
     <h2>Edit Project</h2>
 
-    <form action="{{ route('projects.update', $project) }}" method="POST">
+    <form action="{{ route('projects.update', $project) }}" method="POST" id="editProjectForm">
         @csrf
         @method('PUT')
 
         <div class="mb-3">
             <label for="name" class="form-label">Project Name</label>
-            <input type="text" name="name" id="name" value="{{ $project->name }}" class="form-control" required>
+            <input type="text" name="name" id="name"
+                value="{{ old('name', $project->name) }}"
+                class="form-control @error('name') is-invalid @enderror" required>
+            {{-- Server-side validation error --}}
+            @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea name="description" id="description" rows="4" class="form-control">{{ $project->description }}</textarea>
+            <textarea name="description" id="description" rows="4"
+                class="form-control @error('description') is-invalid @enderror">{{ old('description', $project->description) }}</textarea>
+            {{-- Server-side validation error --}}
+            @error('description')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Update Project</button>
@@ -29,3 +40,7 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/validation.js') }}"></script>
+@endpush
