@@ -116,4 +116,68 @@ class CommentController extends Controller
 
         return back()->with('success', 'Comment deleted successfully.');
     }
+    // combined comment and status update
+    public function storeWithStatus(Request $request)
+    {
+        $user = Auth::user();
+
+        // --- VALIDATE INPUT ---
+        $validator = Validator::make($request->all(), [
+            'task_id' => 'required|integer',
+            'message' => [
+                'nullable', // allow empty if only status is changing
+                'string',
+                function ($attribute, $value, $fail) {
+                    if ($value && $value !== strip_tags($value)) {
+                        $fail('HTML tags are not allowed.');
+                    }
+                },
+            ],
+            'parent_id' => 'nullable|integer',
+            'status_id' => 'nullable|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // --- FETCH TASK ---
+        $task = DB::table('tasks')->where('task_id', $request->task_id)->first();
+        if (!$task) {
+            return redirect()->back()->with('error', 'Task not found.');
+        }
+
+        // Permission check for commenting
+        if ($request->message && $user->role_id != 1 && $task->assigned_to != $user->id) {
+            return redirect()->back()->with('error', 'You cannot comment on this task.');
+        }
+
+        // Permission check for status change
+        if ($request->status_id && $user->role_id != 1 && $task->assigned_to != $user->id) {
+            return redirect()->back()->with('error', 'You cannot change status for this task.');
+        }
+
+        // --- UPDATE STATUS IF PROVIDED ---
+        if ($request->status_id) {
+            DB::table('tasks')->where('task_id', $task->task_id)->update([
+                'status_id' => $request->status_id
+            ]);
+        }
+
+        // --- INSERT COMMENT IF PROVIDED ---
+        if ($request->message) {
+            DB::table('comments')->insert([
+                'task_id' => $task->task_id,
+                'user_id' => $user->id,
+                'message' => $request->message,
+                'parent_id' => $request->parent_id ?? null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Action completed successfully.');
+    }
 }

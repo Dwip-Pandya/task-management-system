@@ -131,20 +131,5 @@ class TaskController extends Controller
     }
 
     // Update task status (AJAX)
-    public function updateStatus(Request $request, $task_id)
-    {
-        $user = Auth::user();
-
-        $task = DB::table('tasks')->where('task_id', $task_id)->first();
-
-        if (!$task || $task->assigned_to != $user->id) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        DB::table('tasks')->where('task_id', $task_id)->update([
-            'status_id' => $request->status_id
-        ]);
-
-        return response()->json(['success' => true]);
-    }
+    
 }

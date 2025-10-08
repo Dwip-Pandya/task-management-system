@@ -22,32 +22,31 @@
                 @endif
             </p>
 
-            <p><strong>Status:</strong>
-                <select class="form-select form-select-sm change-status text-dark" data-id="{{ $task->task_id }}">
-                    @foreach (DB::table('statuses')->get() as $s)
-                    <option class="text-dark" value="{{ $s->status_id }}" {{ $s->status_id == $task->status_id ? 'selected' : '' }}>
-                        {{ ucfirst($s->name) }}
-                    </option>
-                    @endforeach
-                </select>
-            </p>
-
             <p><strong>Priority:</strong> {{ ucfirst($task->priority_name) }}</p>
         </div>
     </div>
 
-    {{-- Comments Section --}}
-    <h5>Comments</h5>
-
-    {{-- Add Comment Form --}}
-    <form action="{{ route('comments.store') }}" method="POST" class="mb-3">
+    <!-- combined comment and status update -->
+    <h5>Post Comment / Update Status</h5>
+    <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->task_id }}">
-        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment..." required>{{ old('message') }}</textarea>
+
+        {{-- Status Dropdown --}}
+        <p><strong>Status:</strong>
+            <select name="status_id" class="form-select form-select-sm text-dark">
+                @foreach (DB::table('statuses')->get() as $s)
+                <option class="text-dark" value="{{ $s->status_id }}" {{ $s->status_id == $task->status_id ? 'selected' : '' }}>
+                    {{ ucfirst($s->name) }}
+                </option>
+                @endforeach
+            </select>
+        </p>
+        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment...">{{ old('message') }}</textarea>
         @error('message')
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
-        <button class="btn btn-primary btn-sm">Post Comment</button>
+        <button class="btn btn-primary btn-sm">Post Comment / Update Status</button>
     </form>
 
     {{-- Build Comments Tree --}}
@@ -76,7 +75,7 @@
             <p>{{ $comment->message }}</p>
 
             {{-- Reply Form --}}
-            <form action="{{ route('comments.store') }}" method="POST" class="mt-2">
+            <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mt-2">
                 @csrf
                 <input type="hidden" name="task_id" value="{{ $task->task_id }}">
                 <input type="hidden" name="parent_id" value="{{ $comment->comment_id }}">
@@ -104,25 +103,4 @@
 @endsection
 
 @push('scripts')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    $('.change-status').change(function() {
-        let status_id = $(this).val();
-        let task_id = $(this).data('id');
-
-        $.post('/user/tasks/' + task_id + '/update-status', {
-            status_id
-        }, function(res) {
-            if (res.success) alert('Status updated successfully');
-            else alert('Error updating status');
-        });
-    });
-</script>
 @endpush

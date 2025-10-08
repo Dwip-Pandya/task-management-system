@@ -66,6 +66,10 @@ Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\CheckUserExists
     Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
     Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
+    // combined comment and status update
+    Route::post('/comments/store-with-status', [App\Http\Controllers\Admin\CommentController::class, 'storeWithStatus'])
+        ->name('comments.storeWithStatus');
+
 
     // Projects
     Route::resource('projects', ProjectController::class)
