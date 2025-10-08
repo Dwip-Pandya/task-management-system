@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class projectmanagerTaskController extends Controller
 {
@@ -118,16 +119,20 @@ class projectmanagerTaskController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'title'       => 'required|max:255',
-            'description' => 'nullable|string',
-            'assigned_to' => 'nullable|integer',
-            'status_id'   => 'required|integer',
-            'priority_id' => 'required|integer',
-            'tag_id'      => 'nullable|integer',
-            'project_id'  => 'required|integer|exists:projects,project_id',
-            'due_date'    => 'nullable|date',
-        ]);
+        try {
+            $request->validate([
+                'title'       => 'required|max:255',
+                'description' => 'nullable|string',
+                'assigned_to' => 'nullable|integer',
+                'status_id'   => 'required|integer',
+                'priority_id' => 'required|integer',
+                'tag_id'      => 'nullable|integer',
+                'project_id'  => 'required|integer|exists:projects,project_id',
+                'due_date'    => 'nullable|date',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
 
         // Ensure task belongs to PM's project
         $project = DB::table('projects')->where('project_id', $request->project_id)->where('created_by', $user->id)->first();
@@ -185,16 +190,20 @@ class projectmanagerTaskController extends Controller
 
         if (!$task) return redirect()->route('projectmanager.tasks.index')->with('error', 'Unauthorized update.');
 
-        $request->validate([
-            'title'       => 'required|max:255',
-            'description' => 'nullable|string',
-            'assigned_to' => 'nullable|integer',
-            'status_id'   => 'required|integer',
-            'priority_id' => 'required|integer',
-            'tag_id'      => 'nullable|integer',
-            'project_id'  => 'required|integer|exists:projects,project_id',
-            'due_date'    => 'nullable|date',
-        ]);
+        try {
+            $request->validate([
+                'title'       => 'required|max:255',
+                'description' => 'nullable|string',
+                'assigned_to' => 'nullable|integer',
+                'status_id'   => 'required|integer',
+                'priority_id' => 'required|integer',
+                'tag_id'      => 'nullable|integer',
+                'project_id'  => 'required|integer|exists:projects,project_id',
+                'due_date'    => 'nullable|date',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
 
         DB::table('tasks')->where('task_id', $task_id)->update([
             'title'       => $request->title,

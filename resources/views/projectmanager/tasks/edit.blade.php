@@ -15,12 +15,18 @@
 
         <div class="mb-3">
             <label class="form-label">Title</label>
-            <input type="text" name="title" value="{{ $task->title }}" class="form-control" required>
+            <input type="text" name="title" class="form-control" value="{{ old('title', $task->title) }}">
+            @error('title')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea name="description" class="form-control">{{ $task->description }}</textarea>
+            <textarea name="description" class="form-control">{{ old('description', $task->description) }}</textarea>
+            @error('description')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -28,44 +34,56 @@
             <select name="assigned_to" class="form-select">
                 <option value="">-- Select User --</option>
                 @foreach($users as $u)
-                <option class="text-dark" value="{{ $u->id }}" {{ $task->assigned_to == $u->id ? 'selected' : '' }}>
+                <option value="{{ $u->id }}" {{ old('assigned_to', $task->assigned_to) == $u->id ? 'selected' : '' }}>
                     {{ $u->name }} ({{ $u->role_name ?? '' }})
                 </option>
                 @endforeach
             </select>
+            @error('assigned_to')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label for="project_id" class="form-label">Project</label>
-            <select name="project_id" id="project_id" class="form-select" required>
+            <select name="project_id" id="project_id" class="form-select">
                 @foreach($projects as $project)
-                <option value="{{ $project->project_id }}" {{ $task->project_id == $project->project_id ? 'selected' : '' }}>
+                <option value="{{ $project->project_id }}" {{ old('project_id', $task->project_id) == $project->project_id ? 'selected' : '' }}>
                     {{ $project->name }}
                 </option>
                 @endforeach
             </select>
+            @error('project_id')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label class="form-label">Status</label>
-            <select name="status_id" class="form-select" required>
+            <select name="status_id" class="form-select">
                 @foreach($statuses as $s)
-                <option class="text-dark" value="{{ $s->status_id }}" {{ $task->status_id == $s->status_id ? 'selected' : '' }}>
+                <option value="{{ $s->status_id }}" {{ old('status_id', $task->status_id) == $s->status_id ? 'selected' : '' }}>
                     {{ ucfirst($s->name) }}
                 </option>
                 @endforeach
             </select>
+            @error('status_id')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label class="form-label">Priority</label>
-            <select name="priority_id" class="form-select" required>
+            <select name="priority_id" class="form-select">
                 @foreach($priorities as $p)
-                <option class="text-dark" value="{{ $p->priority_id }}" {{ $task->priority_id == $p->priority_id ? 'selected' : '' }}>
+                <option value="{{ $p->priority_id }}" {{ old('priority_id', $task->priority_id) == $p->priority_id ? 'selected' : '' }}>
                     {{ ucfirst($p->name) }}
                 </option>
                 @endforeach
             </select>
+            @error('priority_id')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -73,16 +91,22 @@
             <select name="tag_id" class="form-select">
                 <option value="">-- None --</option>
                 @foreach($tags as $t)
-                <option class="text-dark" value="{{ $t->tag_id }}" {{ $task->tag_id == $t->tag_id ? 'selected' : '' }}>
+                <option value="{{ $t->tag_id }}" {{ old('tag_id', $task->tag_id) == $t->tag_id ? 'selected' : '' }}>
                     {{ ucfirst($t->name) }}
                 </option>
                 @endforeach
             </select>
+            @error('tag_id')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label class="form-label">Due Date</label>
-            <input type="date" name="due_date" value="{{ $task->due_date }}" class="form-control">
+            <input type="date" name="due_date" class="form-control" value="{{ old('due_date', $task->due_date) }}">
+            @error('due_date')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <button class="btn btn-primary">Update</button>
@@ -90,3 +114,7 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/task-validation.js') }}"></script>
+@endpush
