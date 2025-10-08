@@ -50,7 +50,7 @@ Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\CheckUserExists
 
     // User management
     Route::resource('users', UserManagementController::class);
-    Route::post('users/bulk-delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulk-delete');
+
     Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
     Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
 

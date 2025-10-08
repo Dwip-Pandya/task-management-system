@@ -9,7 +9,7 @@
     <title>@yield('title', 'Task Manager')</title>
 
     {{-- Global CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/partials.css') }}">
 
     {{-- Page-Specific CSS --}}
@@ -33,7 +33,7 @@
     @include('partials.footer')
 
     {{-- Global JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     {{-- Page-Specific JS --}}
     @stack('scripts')
