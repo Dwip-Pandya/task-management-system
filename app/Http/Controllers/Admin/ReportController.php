@@ -369,46 +369,69 @@ class ReportController extends Controller
 
             case 'ppt':
                 $ppt = new PhpPresentation();
-                $slide = $ppt->getActiveSlide();
 
-                // Title
-                $titleShape = $slide->createRichTextShape()
-                    ->setHeight(50)->setWidth(900)->setOffsetX(20)->setOffsetY(20);
-                $titleShape->getActiveParagraph()->getAlignment()->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
-                $titleRun = $titleShape->createTextRun('Tasks Report');
-                $titleRun->getFont()->setBold(true)->setSize(22)->setColor(new Color('0000FF'));
+                // Group tasks by project
+                $tasksByProject = [];
+                foreach ($tasks as $t) {
+                    $projectName = $t->project_name ?? 'No Project';
+                    $tasksByProject[$projectName][] = $t;
+                }
 
-                // Header background rectangle with text
-                $headerBox = $slide->createRichTextShape()
-                    ->setHeight(30)->setWidth(1000)->setOffsetX(20)->setOffsetY(80);
-                $headerBox->getFill()->setFillType(Fill::FILL_SOLID)->setStartColor(new Color('CCCCCC'));
-                $headerBox->getActiveParagraph()->getAlignment()->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
+                foreach ($tasksByProject as $projectName => $projectTasks) {
+                    $slide = $ppt->createSlide();
 
-                $headerText = $headerBox->createTextRun(implode(' | ', array_map(fn($c) => $allColumns[$c], $columns)));
-                $headerText->getFont()->setBold(true)->setSize(14)->setColor(new Color('000000'));
+                    // Project title
+                    $titleShape = $slide->createRichTextShape()
+                        ->setHeight(50)->setWidth(900)->setOffsetX(20)->setOffsetY(20);
+                    $titleShape->getActiveParagraph()->getAlignment()
+                        ->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
+                    $titleRun = $titleShape->createTextRun($projectName);
+                    $titleRun->getFont()->setBold(true)->setSize(24)->setColor(new Color('1E90FF'));
 
-                // Data rows
-                $y = 120;
-                foreach ($tasks as $index => $t) {
-                    $rowData = [];
-                    foreach ($columns as $col) {
-                        $value = $t->$col ?? '-';
-                        if (in_array($col, ['due_date', 'created_at'])) {
-                            $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
-                        }
-                        $rowData[] = $value;
+                    // Optional filter info
+                    $y = 100;
+                    if (!empty($filters) && $projectName === array_key_first($tasksByProject)) {
+                        $filterShape = $slide->createRichTextShape()
+                            ->setHeight(30)->setWidth(900)->setOffsetX(20)->setOffsetY(80);
+                        $filterShape->getActiveParagraph()->getAlignment()
+                            ->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
+                        $filterText = $filterShape->createTextRun('Filter applied: ' . implode(', ', $filters));
+                        $filterText->getFont()->setItalic(true)->setSize(14)->setColor(new Color('FF8C00'));
+                        $y = 120;
                     }
-                    $rowText = implode(' | ', $rowData);
 
-                    $rowShape = $slide->createRichTextShape()
-                        ->setHeight(25)->setWidth(1000)->setOffsetX(20)->setOffsetY($y);
-                    $rowShape->createTextRun($rowText)->getFont()->setSize(12)->setColor(new Color('333333'));
-
-                    // alternating background
-                    $rowShape->getFill()->setFillType(Fill::FILL_SOLID)
-                        ->setStartColor(new Color($index % 2 === 0 ? 'F5F5F5' : 'FFFFFF'));
-
+                    // Header
+                    $headerShape = $slide->createRichTextShape()
+                        ->setHeight(30)->setWidth(1000)->setOffsetX(20)->setOffsetY($y);
+                    $headerShape->getFill()->setFillType(Fill::FILL_SOLID)
+                        ->setStartColor(new Color('333333'));
+                    $headerShape->getActiveParagraph()->getAlignment()
+                        ->setHorizontal(\PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER);
+                    $headerText = $headerShape->createTextRun(implode(' | ', array_map(fn($c) => $allColumns[$c], $columns)));
+                    $headerText->getFont()->setBold(true)->setSize(14)->setColor(new Color('FFFFFF'));
                     $y += 30;
+
+                    // Data rows
+                    foreach ($projectTasks as $index => $t) {
+                        $rowData = [];
+                        foreach ($columns as $col) {
+                            $value = $t->$col ?? '-';
+                            if (in_array($col, ['due_date', 'created_at'])) {
+                                $value = $t->$col ? date('d-m-Y', strtotime($t->$col)) : '-';
+                            }
+                            $rowData[] = $value;
+                        }
+
+                        $rowShape = $slide->createRichTextShape()
+                            ->setHeight(25)->setWidth(1000)->setOffsetX(20)->setOffsetY($y);
+                        $rowShape->createTextRun(implode(' | ', $rowData))
+                            ->getFont()->setSize(12)
+                            ->setColor(new Color('000000'));
+                        // alternating background
+                        $rowShape->getFill()->setFillType(Fill::FILL_SOLID)
+                            ->setStartColor(new Color($index % 2 === 0 ? 'F0F0F0' : 'FFFFFF'));
+                        $y += 30;
+                    }
                 }
 
                 $file = storage_path('tasks_report.pptx');
