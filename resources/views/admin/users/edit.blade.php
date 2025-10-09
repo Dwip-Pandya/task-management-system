@@ -50,5 +50,4 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/user-validation.js') }}"></script>
 @endpush

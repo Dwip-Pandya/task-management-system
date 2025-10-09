@@ -50,16 +50,16 @@ class CalendarController extends Controller
                 });
                 break;
 
-            case 4: // Project Manager → Tasks in their managed projects OR assigned to them
-                $query->where(function ($q) use ($user) {
-                    $q->whereIn('tasks.project_id', function ($subquery) use ($user) {
-                        $subquery->select('project_id')
-                            ->from('projects')
-                            ->where('created_by', $user->id); // Manager-created projects
-                    })
-                        ->orWhere('tasks.assigned_to', $user->id);
-                });
-                break;
+            // case 4: // Project Manager → Tasks in their managed projects OR assigned to them
+            //     $query->where(function ($q) use ($user) {
+            //         $q->whereIn('tasks.project_id', function ($subquery) use ($user) {
+            //             $subquery->select('project_id')
+            //                 ->from('projects')
+            //                 ->where('created_by', $user->id); // Manager-created projects
+            //         })
+            //             ->orWhere('tasks.assigned_to', $user->id);
+            //     });
+            //     break;
 
             default:
                 // No tasks if role is unknown

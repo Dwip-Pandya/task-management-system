@@ -24,7 +24,6 @@
 
         {{-- Status Dropdown --}}
         <div class="mb-2">
-            <label for="status_id" class="form-label"><strong>Status:</strong></label>
             <select name="status_id" id="status_id" class="form-select form-select-sm text-dark">
                 @foreach(DB::table('statuses')->get() as $s)
                 <option class="text-dark" value="{{ $s->status_id }}" {{ $s->status_id == $task->status_id ? 'selected' : '' }}>
@@ -40,7 +39,7 @@
             @enderror
         </div>
         <button type="submit" class="btn btn-primary btn-sm">Post Comment / Update Status</button>
-        <a href="{{ route('projectmanager.tasks.index') }}" class="btn btn-secondary btn-sm">Back to Tasks</a>
+        <a href="{{ route('projectmember.tasks.index') }}" class="btn btn-secondary btn-sm">Back to Tasks</a>
     </form>
     @endif
 

@@ -14,7 +14,7 @@
         {{-- Status --}}
         <div class="col-md-2">
             <select name="status_id" class="form-select">
-                <option value="">All Statuses</option>
+                <option class="text-dark" value="">All Statuses</option>
                 @foreach($statuses as $s)
                 <option class="text-dark" value="{{ $s->status_id }}" {{ $request->status_id == $s->status_id ? 'selected' : '' }}>
                     {{ ucfirst($s->name) }}
@@ -26,7 +26,7 @@
         {{-- Priority --}}
         <div class="col-md-2">
             <select name="priority_id" class="form-select">
-                <option value="">All Priorities</option>
+                <option class="text-dark" value="">All Priorities</option>
                 @foreach($priorities as $p)
                 <option class="text-dark" value="{{ $p->priority_id }}" {{ $request->priority_id == $p->priority_id ? 'selected' : '' }}>
                     {{ ucfirst($p->name) }}

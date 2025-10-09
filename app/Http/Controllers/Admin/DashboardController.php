@@ -12,9 +12,6 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-
-        
-
         // Get all projects for filter
         $projectsList = DB::table('projects')->get();
 

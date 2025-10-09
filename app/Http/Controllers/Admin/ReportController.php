@@ -305,7 +305,6 @@ class ReportController extends Controller
                         } else {
                             $filterTable->addRow();
                             $filterTable->addCell(2000)->addText('Filters:', ['bold' => true, 'color' => '2c3e50']);
-                            $filterTable->addCell(6000)->addText('None Applied (Showing All Tasks)', ['color' => '555555']);
                         }
 
                         $section->addTextBreak(1);

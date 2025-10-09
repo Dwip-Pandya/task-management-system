@@ -10,14 +10,13 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Tasks</h3>
-        <a href="{{ route('projectmanager.tasks.create') }}" class="btn btn-primary">+ Create Task</a>
     </div>
 
     <form method="GET" class="row g-2 mb-4">
         {{-- Status --}}
         <div class="col-md-2">
             <select name="status_id" class="form-select">
-                <option value="">All Statuses</option>
+                <option class="text-dark" value="">All Statuses</option>
                 @foreach($statuses as $s)
                 <option class="text-dark" value="{{ $s->status_id }}" {{ $request->status_id == $s->status_id ? 'selected' : '' }}>
                     {{ ucfirst($s->name) }}
@@ -29,7 +28,7 @@
         {{-- Priority --}}
         <div class="col-md-2">
             <select name="priority_id" class="form-select">
-                <option value="">All Priorities</option>
+                <option class="text-dark" value="">All Priorities</option>
                 @foreach($priorities as $p)
                 <option class="text-dark" value="{{ $p->priority_id }}" {{ $request->priority_id == $p->priority_id ? 'selected' : '' }}>
                     {{ ucfirst($p->name) }}
@@ -41,7 +40,7 @@
         {{-- Project --}}
         <div class="col-md-2">
             <select name="project_id" class="form-select">
-                <option value="">All Projects</option>
+                <option class="text-dark" value="">All Projects</option>
                 @foreach($projects as $p)
                 <option class="text-dark" value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
                     {{ $p->name }}

@@ -47,7 +47,7 @@
                 class="form-select @error('role_id') is-invalid @enderror" >
                 <option value="">-- Select Role --</option>
                 @foreach ($roles as $role)
-                <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
                     {{ ucfirst($role->name) }}
                 </option>
                 @endforeach

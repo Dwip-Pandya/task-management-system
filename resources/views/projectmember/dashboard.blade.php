@@ -14,7 +14,7 @@
         <form method="GET" class="d-flex">
             {{-- Project Filter --}}
             <select name="project_id" class="form-select me-2">
-                <option value="">All Projects</option>
+                <option class="text-dark" value="">All Projects</option>
                 @foreach($projectsList as $p)
                 <option value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
                     {{ $p->name }}
@@ -53,7 +53,7 @@
                 <div class="task-item">
                     <p class="task-title">{{ $task->title }}</p>
                     <p class="task-project">Project: {{ $task->project_name }}</p>
-                    <a href="{{ route('user.tasks.show', $task->task_id) }}" class="glass-btn">View</a>
+                    <a href="{{ route('projectmember.tasks.show', $task->task_id) }}" class="glass-btn">View</a>
                 </div>
                 @endforeach
 

@@ -77,9 +77,9 @@ class ProjectManagerProjectController extends Controller
         $user = Auth::user();
 
         // Ensure the manager can only view their own projects
-        if ($project->created_by !== $user->id) {
-            abort(403);
-        }
+        // if ($project->created_by !== $user->id) {
+        //     abort(403);
+        // }
 
         $creator = DB::table('users')
             ->select('name', 'role_id')
@@ -96,9 +96,9 @@ class ProjectManagerProjectController extends Controller
     {
         $user = Auth::user();
 
-        if ($project->created_by !== $user->id) {
-            abort(403);
-        }
+        // if ($project->created_by !== $user->id) {
+        //     abort(403);
+        // }
 
         return view('projectmanager.projects.edit', compact('project', 'user'));
     }

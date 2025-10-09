@@ -220,21 +220,18 @@ class TaskManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $request->validate([
-                'title'       => 'required|max:255',
-                'description' => 'nullable|string',
-                'assigned_to' => 'nullable|integer',
-                'status_id'   => 'required|integer',
-                'priority_id' => 'required|integer',
-                'tag_id'      => 'nullable|integer',
-                'project_id'  => 'required|integer|exists:projects,project_id',
-                'due_date'    => 'nullable|date',
-            ]);
-        } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        }
 
+        $request->validate([
+            'title'       => 'required|max:255',
+            'description' => 'nullable|string',
+            'assigned_to' => 'nullable|integer',
+            'status_id'   => 'required|integer',
+            'priority_id' => 'required|integer',
+            'tag_id'      => 'nullable|integer',
+            'project_id'  => 'required|integer|exists:projects,project_id',
+            'due_date'    => 'nullable|date',
+        ]);
+        
         DB::table('tasks')->where('task_id', $id)->update([
             'title' => $request->title,
             'description' => $request->description,

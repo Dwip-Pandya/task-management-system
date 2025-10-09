@@ -77,18 +77,11 @@ class UserManagementController extends Controller
     {
         $editUser = User::findOrFail($id);
 
-        try {
-            $request->validate([
-                'name'     => 'required|min:3|max:100',
-                'email'    => 'required|email|unique:users,email',
-                'password' => 'required|min:6',
-                'role_id'  => 'required|exists:roles,id',
-            ]);
-        } catch (ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput();
-        }
+        $request->validate([
+            'name'     => 'required|min:3|max:100',
+            'email'    => 'required|email',
+            'role_id'  => 'required|exists:roles,id',
+        ]);
 
         $editUser->update([
             'name'     => $request->name,

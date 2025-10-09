@@ -19,7 +19,7 @@
             <select name="creator_role" class="form-select">
                 <option value="">All Creators</option>
                 <option class="text-dark" value="1" {{ $request->creator_role == 1 ? 'selected' : '' }}>Admin</option>
-                <option class="text-dark" value="2" {{ $request->creator_role == 2 ? 'selected' : '' }}>Project Manager</option>
+                <option class="text-dark" value="4" {{ $request->creator_role == 4 ? 'selected' : '' }}>Project Manager</option>
             </select>
         </div>
         <div class="col-auto">

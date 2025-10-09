@@ -30,9 +30,9 @@
         <div class="mb-3">
             <label class="form-label">Project</label>
             <select name="project_id" class="form-select" required>
-                <option value="">Select Project</option>
+                <option class="text-dark" value="">Select Project</option>
                 @foreach($projectsList as $p)
-                <option value="{{ $p->project_id }}" {{ $task->project_id == $p->project_id ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $p->project_id }}" {{ $task->project_id == $p->project_id ? 'selected' : '' }}>
                     {{ $p->name }}
                 </option>
                 @endforeach
