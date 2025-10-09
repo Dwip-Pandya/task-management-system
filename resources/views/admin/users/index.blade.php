@@ -24,53 +24,42 @@
     <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- Bulk delete form --}}
-    <form method="POST" action="{{ route('users.bulk-delete') }}">
-        @csrf
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th><input type="checkbox" id="selectAll"></th>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($users as $u)
-                <tr>
-                    <td>
-                        @if($u->id !== $user->id)
-                        <input type="checkbox" name="user_ids[]" value="{{ $u->id }}">
-                        @endif
-                    </td>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $u->name }}</td>
-                    <td>{{ $u->email }}</td>
-                    <td>{{ ucfirst($u->role->name ?? 'N/A') }}</td>
-                    <td>
-                        <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        @if($u->id !== $user->id)
-                        <form action="{{ route('users.destroy', $u->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?')">Delete</button>
-                        </form>
-                        @endif
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center">No users found.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-
-        <button type="submit" class="btn btn-danger mt-2 mb-4" onclick="return confirm('Are you sure you want to delete selected users?')">Delete Selected</button>
-    </form>
+    {{-- Users --}}
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($users as $u)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $u->name }}</td>
+                <td>{{ $u->email }}</td>
+                <td>{{ ucfirst($u->role->name ?? 'N/A') }}</td>
+                <td>
+                    <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    @if($u->id !== $user->id)
+                    <form action="{{ route('users.destroy', $u->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?')">Delete</button>
+                    </form>
+                    @endif
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="6" class="text-center">No users found.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 
     {{-- Deleted Users --}}
     <h4 class="mt-5">Deleted Users</h4>
