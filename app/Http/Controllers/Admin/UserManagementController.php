@@ -130,4 +130,23 @@ class UserManagementController extends Controller
 
         return redirect()->back()->with('success', 'Password updated successfully!');
     }
+    public function bulkDelete(Request $request)
+    {
+        $user = Auth::user();
+        $ids = $request->input('user_ids', []);
+
+        if (empty($ids)) {
+            return redirect()->route('users.index')->with('error', 'No users selected for deletion.');
+        }
+
+        // Prevent deleting yourself
+        if (in_array($user->id, $ids)) {
+            return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');
+        }
+
+        // Soft delete selected users
+        User::whereIn('id', $ids)->delete();
+
+        return redirect()->route('users.index')->with('success', 'Selected users deleted successfully.');
+    }
 }
