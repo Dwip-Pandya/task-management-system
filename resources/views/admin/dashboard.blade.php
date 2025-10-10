@@ -3,14 +3,14 @@
 @section('title', 'Create Project')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
 @endpush
 
 @section('content')
 <div class="flex-grow-1" id="dashboard-main">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>{{ $user->role === 'admin' ? 'Admin Dashboard' : 'Dashboard' }}</h2>
+        <h2>Admin Dashboard</h2>
 
         {{-- User Filter Dropdown --}}
         <form method="GET" class="d-flex">
@@ -53,9 +53,7 @@
                 @foreach($tasksByStatus[$status] as $task)
                 <div class="task-item">
                     <p class="task-title">{{ $task->title }}</p>
-                    @if($user->role === 'admin')
                     <p class="task-assigned">Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span></p>
-                    @endif
                     <a href="{{ route('tasks.index') }}" class="glass-btn">View</a>
                 </div>
                 @endforeach

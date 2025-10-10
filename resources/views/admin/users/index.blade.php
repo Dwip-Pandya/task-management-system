@@ -3,7 +3,7 @@
 @section('title', 'Manage Users')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/user.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/user.css') }}">
 @endpush
 
 @section('content')

@@ -3,7 +3,7 @@
 @section('title', 'Create Task')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @push('scripts')
@@ -104,5 +104,5 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('js/task-validation.js') }}"></script>
+<script src="{{ asset('assets/js/task-validation.js') }}"></script>
 @endpush

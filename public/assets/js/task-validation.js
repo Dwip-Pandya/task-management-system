@@ -16,6 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 errors.title = "Title must be less than 255 characters.";
             }
 
+            // assigned_to validation
+            const assigned_to = form.querySelector("[name='assigned_to']");
+            if (!assigned_to.value) {
+                valid = false;
+                errors.assigned_to = "Please select an assigned user.";
+            }
+
 
             // Status validation
             const status = form.querySelector("[name='status_id']");

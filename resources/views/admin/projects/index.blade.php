@@ -3,7 +3,7 @@
 @section('title', 'Projects')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -17,7 +17,7 @@
     <form method="GET" class="mb-4 row g-2 align-items-center">
         <div class="col-auto">
             <select name="creator_role" class="form-select">
-                <option value="">All Creators</option>
+                <option class="text-black" value="">All Creators</option>
                 <option class="text-dark" value="1" {{ $request->creator_role == 1 ? 'selected' : '' }}>Admin</option>
                 <option class="text-dark" value="4" {{ $request->creator_role == 4 ? 'selected' : '' }}>Project Manager</option>
             </select>
@@ -26,7 +26,12 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
     </form>
-
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
     <div class="row">
         @forelse($projects as $project)
         <div class="col-md-4 mb-4">

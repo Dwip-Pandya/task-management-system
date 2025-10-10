@@ -3,7 +3,7 @@
 @section('title', 'Task Details')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -20,10 +20,10 @@
 
     {{-- Comment Form --}}
     @if($user->role_id === 1 || $user->id == $task->assigned_to)
-    <form action="{{ route('comments.store') }}" method="POST" class="mb-3">
+    <form action="{{ route('comments.store') }}" method="POST" class="comment-form mb-3">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->task_id }}">
-        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment..." required>{{ old('message') }}</textarea>
+        <textarea name="message" id="blank-comment" class="form-control mb-2" rows="2" placeholder="Write a comment...">{{ old('message') }}</textarea>
         @error('message')
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
@@ -86,3 +86,6 @@
     @endforeach
 </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('assets/js/comment-validation.js') }}"></script>
+@endpush

@@ -3,7 +3,7 @@
 @section('title', 'Manage Tasks')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -19,7 +19,7 @@
         @if($user->role_id === 1)
         <div class="col-md-2">
             <select name="assigned_to" class="form-select">
-                <option value="">All Users</option>
+                <option class="text-dark" value="">All Users</option>
                 @foreach($usersList as $u)
                 <option class="text-dark" value="{{ $u->id }}" {{ $request->assigned_to == $u->id ? 'selected' : '' }}>
                     {{ $u->name }}
@@ -34,7 +34,7 @@
         {{-- Status --}}
         <div class="col-md-2">
             <select name="status_id" class="form-select">
-                <option value="">All Statuses</option>
+                <option class="text-dark" value="">All Statuses</option>
                 @foreach($statuses as $s)
                 <option class="text-dark" value="{{ $s->status_id }}" {{ $request->status_id == $s->status_id ? 'selected' : '' }}>
                     {{ ucfirst($s->name) }}
@@ -46,7 +46,7 @@
         {{-- Priority --}}
         <div class="col-md-2">
             <select name="priority_id" class="form-select">
-                <option value="">All Priorities</option>
+                <option class="text-dark" value="">All Priorities</option>
                 @foreach($priorities as $p)
                 <option class="text-dark" value="{{ $p->priority_id }}" {{ $request->priority_id == $p->priority_id ? 'selected' : '' }}>
                     {{ ucfirst($p->name) }}
@@ -58,7 +58,7 @@
         {{-- Project --}}
         <div class="col-md-2">
             <select name="project_id" class="form-select">
-                <option value="">All Projects</option>
+                <option class="text-dark" value="">All Projects</option>
                 @foreach($projects as $p)
                 <option class="text-dark" value="{{ $p->project_id }}" {{ $request->project_id == $p->project_id ? 'selected' : '' }}>
                     {{ $p->name }}
@@ -78,6 +78,12 @@
         </div>
     </form>
 
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     <div class="row">
         @foreach ($tasks as $t)

@@ -63,7 +63,7 @@ class ProjectController extends Controller
         Project::create([
             'name' => $request->name,
             'description' => $request->description,
-            'created_by' => $user->id, // make sure this column is fillable
+            'created_by' => $user->id,
         ]);
 
         return redirect()->route('projects.index')

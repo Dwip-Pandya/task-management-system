@@ -23,7 +23,7 @@
     <form action="{{ route('comments.store') }}" method="POST" class="mb-3">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->task_id }}">
-        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment..." required>{{ old('message') }}</textarea>
+        <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment...">{{ old('message') }}</textarea>
         @error('message')
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
