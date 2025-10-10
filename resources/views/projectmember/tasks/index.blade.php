@@ -60,6 +60,10 @@
         </div>
     </form>
 
+    <div class="total-tasks">
+        <div class="text-secondary">Total : {{ $tasks->count() }} tasks</div>
+    </div>
+
     <div class="row">
         @foreach ($tasks as $t)
         <div class="col-md-4 mb-4">
@@ -71,6 +75,7 @@
                     <h5 class="card-title">{{ $t->title }}</h5>
                     <span class="badge bg-secondary mb-2">{{ ucfirst($t->status_name) }}</span>
                     <p class="card-text">{{ Str::limit($t->description, 100) }}</p>
+                    <p class="assinged-by"><strong>Assigned By:</strong> {{ $t->assigned_by_name ?? 'N/A' }}</p>
                     <p><strong>Due Date:</strong> {{ $t->due_date }}</p>
                 </div>
                 <div class="card-footer d-flex">

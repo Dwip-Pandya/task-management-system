@@ -18,11 +18,16 @@ use App\Http\Controllers\projectmanager\ProjectManagerTaskController;
 use App\Http\Controllers\projectmember\projectmemberDashboardController;
 use App\Http\Controllers\projectmember\ProjectMemberTaskController;
 
+// middlewares
+use App\Http\Middleware\CheckUserExists;
+use App\Http\Middleware\ForceChangePassword;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', [AuthController::class, 'showLogin'])->name('Login');
 
 // Manual Authentication
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -40,44 +45,44 @@ Route::get('/auth/google-callback', [GoogleController::class, 'googleauthenticat
 
 
 // ========================= ADMIN ROUTES =========================
-Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class, \App\Http\Middleware\ForceChangePassword::class])->group(function () {
+Route::prefix('admin')->middleware(['auth', CheckUserExists::class, ForceChangePassword::class])->group(function () {
 
-        // Dashboard
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-        // Update default password
-        Route::post('/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.updatePassword');
+    // Update default password
+    Route::post('/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.updatePassword');
 
-        // User management
-        Route::post('users/bulk/delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulkDelete');
-        Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
-        Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
-        Route::resource('users', UserManagementController::class);
+    // User management
+    Route::post('users/bulk/delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulkDelete');
+    Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
+    Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
+    Route::resource('users', UserManagementController::class);
 
-        // Task management
-        Route::resource('tasks', TaskManagementController::class);
-        Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->name('tasks.updateStatus');
-        Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->name('tasks.updatePriority');
-        Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->name('tasks.updateAssigned');
+    // Task management
+    Route::resource('tasks', TaskManagementController::class);
+    Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->name('tasks.updateStatus');
+    Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->name('tasks.updatePriority');
+    Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->name('tasks.updateAssigned');
 
-        // Comments
-        Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
-        Route::post('comments/store', [AdminCommentController::class, 'store'])->name('comments.store');
-        Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
-        Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
-        Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
-        // combined comment and status update
-        Route::post('/comments/store-with-status', [App\Http\Controllers\Admin\CommentController::class, 'storeWithStatus'])
-            ->name('comments.storeWithStatus');
+    // Comments
+    Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
+    Route::post('comments/store', [AdminCommentController::class, 'store'])->name('comments.store');
+    Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
+    Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
+    // combined comment and status update
+    Route::post('/comments/store-with-status', [App\Http\Controllers\Admin\CommentController::class, 'storeWithStatus'])
+        ->name('comments.storeWithStatus');
 
 
-        // Projects
-        Route::resource('projects', ProjectController::class)
-            ->parameters(['projects' => 'project']);
+    // Projects
+    Route::resource('projects', ProjectController::class)
+        ->parameters(['projects' => 'project']);
 
-        // Reports
-        Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
-    });
+    // Reports
+    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+});
 
 
 // Export Reports
@@ -180,3 +185,16 @@ Route::prefix('projectmember')
         Route::post('tasks/comments', [ProjectMemberTaskController::class, 'storeComment'])
             ->name('projectmember.tasks.comments.store');
     });
+
+
+// log testing
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
+Route::get('/test-logs', function () {
+    Log::debug('Debug log at ' . Carbon::now());
+    Log::info('Info log at ' . Carbon::now());
+    Log::error('Error log at ' . Carbon::now());
+
+    return 'Logs written! Check storage/logs folder.';
+});
