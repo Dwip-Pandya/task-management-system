@@ -16,27 +16,15 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         try {
-            // Custom validation
-            $validator = Validator::make($request->all(), [
+            $request->validate([
                 'task_id' => 'required|integer',
                 'message' => [
                     'required',
                     'string',
-                    function ($attribute, $value, $fail) {
-                        if ($value !== strip_tags($value)) {
-                            $fail('HTML tags are not allowed.');
-                        }
-                    },
+                    'regex:/^[^<>]*$/',
                 ],
                 'parent_id' => 'nullable|integer',
             ]);
-
-            if ($validator->fails()) {
-                // Redirect back with validation errors
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
 
             $user = Auth::user();
             $task = DB::table('tasks')->where('task_id', $request->task_id)->first();
@@ -48,20 +36,23 @@ class CommentController extends Controller
             if ($user->role_id != 1 && $task->assigned_to != $user->id) {
                 return redirect()->back()->with('error', 'You cannot comment on this task.');
             }
+            // Strip HTML tags silently
+            $message = strip_tags($request->message);
 
             DB::table('comments')->insert([
-                'task_id' => $request->task_id,
-                'user_id' => $user->id,
-                'message' => $request->message,
-                'parent_id' => $request->parent_id ?? null,
+                'task_id'    => $request->task_id,
+                'user_id'    => $user->id,
+                'message'    => $message,
+                'parent_id'  => $request->parent_id ?? null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             return redirect()->back()->with('success', 'Comment added successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Comment store error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+            throw $e;
         }
     }
 
@@ -124,15 +115,7 @@ class CommentController extends Controller
         // --- VALIDATE INPUT ---
         $validator = Validator::make($request->all(), [
             'task_id' => 'required|integer',
-            'message' => [
-                'nullable', // allow empty if only status is changing
-                'string',
-                function ($attribute, $value, $fail) {
-                    if ($value && $value !== strip_tags($value)) {
-                        $fail('HTML tags are not allowed.');
-                    }
-                },
-            ],
+            'message' => ['nullable','string','regex:/^[^<>]*$/',],
             'parent_id' => 'nullable|integer',
             'status_id' => 'nullable|integer',
         ]);

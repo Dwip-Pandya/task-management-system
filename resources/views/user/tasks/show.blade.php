@@ -15,20 +15,23 @@
         <div class="card-body">
             <h4>{{ $task->title }}</h4>
             <p>{{ $task->description }}</p>
-
             <p><strong>Assigned By:</strong> {{ $task->assigned_by_name ?? 'N/A' }}
                 @if(isset($task->assigned_by_role))
                 ({{ ucfirst($task->assigned_by_role) }})
                 @endif
             </p>
-
             <p><strong>Priority:</strong> {{ ucfirst($task->priority_name) }}</p>
         </div>
     </div>
 
     <!-- combined comment and status update -->
-    <h5>Post Comment / Update Status</h5>
-    <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3">
+    <h5>Post Comment & Update Status</h5>
+
+    @if(session('success'))
+    <div class="text-success small mb-2">{{ session('success') }}</div>
+    @endif
+
+    <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3 comment-form">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->task_id }}">
 
@@ -42,11 +45,13 @@
                 @endforeach
             </select>
         </p>
+
         <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment...">{{ old('message') }}</textarea>
         @error('message')
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
-        <button class="btn btn-primary btn-sm">Post Comment / Update Status</button>
+
+        <button class="btn btn-primary btn-sm">Update</button>
     </form>
 
     {{-- Build Comments Tree --}}
@@ -75,11 +80,14 @@
             <p>{{ $comment->message }}</p>
 
             {{-- Reply Form --}}
-            <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mt-2">
+            <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mt-2 comment-form">
                 @csrf
                 <input type="hidden" name="task_id" value="{{ $task->task_id }}">
                 <input type="hidden" name="parent_id" value="{{ $comment->comment_id }}">
-                <textarea name="message" class="form-control mb-1" rows="1" placeholder="Reply..." required></textarea>
+                <textarea name="message" class="form-control mb-1" rows="1" placeholder="Reply...">{{ old('message') }}</textarea>
+                @error('message')
+                <div class="text-danger small mt-1">{{ $message }}</div>
+                @enderror
                 <button class="btn btn-secondary btn-sm">Reply</button>
             </form>
 
@@ -103,4 +111,5 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('assets/js/comment-validation.js') }}"></script>
 @endpush

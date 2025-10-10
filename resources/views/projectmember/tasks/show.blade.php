@@ -3,12 +3,13 @@
 @section('title', 'Task Details')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
 <div class="container mt-4">
     <h4>Task Details</h4>
+    <p><strong>Project:</strong> {{ $task->project_name }}</p>
     <p><strong>Title:</strong> {{ $task->title }}</p>
     <p><strong>Description:</strong> {{ $task->description }}</p>
     <p><strong>Priority:</strong> {{ ucfirst($task->priority_name) }}</p>
@@ -18,11 +19,15 @@
     <h5>Status & Comments</h5>
 
     @if($user->role_id === 1 || $user->id == $task->assigned_to)
-    <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3">
+
+    @if(session('success'))
+    <div class="text-success small mb-2">{{ session('success') }}</div>
+    @endif
+
+    <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3 comment-form">
         @csrf
         <input type="hidden" name="task_id" value="{{ $task->task_id }}">
 
-        {{-- Status Dropdown --}}
         <div class="mb-2">
             <select name="status_id" id="status_id" class="form-select form-select-sm text-dark">
                 @foreach(DB::table('statuses')->get() as $s)
@@ -32,20 +37,21 @@
                 @endforeach
             </select>
         </div>
+
         <div class="mb-2">
             <textarea name="message" class="form-control mb-2" rows="2" placeholder="Write a comment...">{{ old('message') }}</textarea>
             @error('message')
             <div class="text-danger small mt-1">{{ $message }}</div>
             @enderror
         </div>
-        <button type="submit" class="btn btn-primary btn-sm">Post Comment / Update Status</button>
-        <a href="{{ route('projectmember.tasks.index') }}" class="btn btn-secondary btn-sm">Back to Tasks</a>
+
+        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+        <a href="{{ route('projectmember.tasks.index') }}" class="btn btn-secondary btn-sm">Back</a>
     </form>
     @endif
 
     <hr>
     <h5>Comments</h5>
-
     @foreach($comments as $c)
     <div class="card mb-2">
         <div class="card-body">
@@ -58,3 +64,6 @@
     @endforeach
 </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('assets/js/comment-validation.js') }}"></script>
+@endpush

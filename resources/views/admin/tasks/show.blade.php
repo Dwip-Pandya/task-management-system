@@ -9,6 +9,7 @@
 @section('content')
 <div class="container mt-4">
     <h4>Task Details</h4>
+    <p><strong>Project:</strong> {{ $task->project_name }}</p>
     <p><strong>Title:</strong> {{ $task->title }}</p>
     <p><strong>Description:</strong> {{ $task->description }}</p>
     <p><strong>Status:</strong> {{ ucfirst($task->status_name) }}</p>
@@ -27,7 +28,7 @@
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
         <button class="btn btn-primary btn-sm">Post Comment</button>
-        <a href="{{ route('tasks.index') }}" class="btn btn-secondary btn-sm">Back to Tasks</a>
+        <a href="{{ route('tasks.index') }}" class="btn btn-secondary btn-sm">Back</a>
     </form>
     @endif
 

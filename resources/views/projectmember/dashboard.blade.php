@@ -3,7 +3,7 @@
 @section('title', 'Project Member Dashboard')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
 @endpush
 
 @section('content')
