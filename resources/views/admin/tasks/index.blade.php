@@ -78,6 +78,10 @@
         </div>
     </form>
 
+    <div class="total-task">
+        <h4 class="text-secondary">Total Tasks: {{ $tasksQuery->count() }}</h4>
+    </div>
+
     @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif

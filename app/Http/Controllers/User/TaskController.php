@@ -71,7 +71,7 @@ class TaskController extends Controller
 
         $comments = DB::table('comments')
             ->leftJoin('users', 'comments.user_id', '=', 'users.id')
-            ->leftJoin('roles', 'users.role_id', '=', 'roles.id') // optional if you have roles
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->where('comments.task_id', $task->task_id)
             ->orderBy('comments.created_at', 'asc')
             ->select(

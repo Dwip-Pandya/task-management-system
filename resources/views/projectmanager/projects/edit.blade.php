@@ -3,7 +3,7 @@
 @section('title', 'Edit Project')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -15,7 +15,7 @@
 
         <div class="mb-3">
             <label for="name" class="form-label">Project Name</label>
-            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $project->name) }}" required>
+            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $project->name) }}" >
             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
@@ -32,5 +32,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/project-validation.js') }}"></script>
+<script src="{{ asset('assets/js/project-validation.js') }}"></script>
 @endpush

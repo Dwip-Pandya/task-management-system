@@ -3,7 +3,7 @@
 @section('title', 'Create Project')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -31,5 +31,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/project-validation.js') }}"></script>
+<script src="{{ asset('assets/js/project-validation.js') }}"></script>
 @endpush

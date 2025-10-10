@@ -3,7 +3,7 @@
 @section('title', 'My Tasks')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -56,6 +56,9 @@
             <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
     </form>
+    <div class="total-task">
+        <h6 class="text-secondary">Total Task: {{ $tasks->count() }}</h6>
+    </div>
 
     <div class="row">
         @foreach($tasks as $t)

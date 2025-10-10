@@ -7,7 +7,7 @@
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
 <!-- Page-Specific CSS -->
-<link href="{{ asset('css/calendar.css') }}" rel="stylesheet">
+<link href="{{ asset('assets/css/calendar.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')

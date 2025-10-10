@@ -110,9 +110,9 @@ class ProjectManagerProjectController extends Controller
     {
         $user = Auth::user();
 
-        if ($project->created_by !== $user->id) {
-            abort(403);
-        }
+        // if ($project->created_by !== $user->id) {
+        //     abort(403);
+        // }
 
         $request->validate([
             'name' => 'required|string|max:255',

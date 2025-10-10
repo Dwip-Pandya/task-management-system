@@ -3,7 +3,7 @@
 @section('title', 'User Dashboard')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
 @endpush
 
 @section('content')
@@ -89,7 +89,6 @@
                         window.location.href = this.href; // redirect to tasks page
                     }
                 }
-                // else, do nothing and allow normal redirect
             });
         });
     });

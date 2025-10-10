@@ -3,7 +3,7 @@
 @section('title', 'Projects')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -26,6 +26,9 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
     </form>
+    <div class="text-secondary">
+        Total : {{ $projects->count() }} projects
+    </div>
 
     <div class="row">
         @forelse($projects as $project)

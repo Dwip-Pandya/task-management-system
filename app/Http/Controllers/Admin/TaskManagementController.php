@@ -70,7 +70,7 @@ class TaskManagementController extends Controller
         $priorities = DB::table('priorities')->get();
         $projects = DB::table('projects')->get();
 
-        return view('admin.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'usersList', 'projects', 'request'));
+        return view('admin.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'usersList', 'projects', 'request', 'tasksQuery'));
     }
 
 
