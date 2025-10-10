@@ -94,7 +94,7 @@ Route::get('admin/reports/export/{format}', [App\Http\Controllers\Admin\ReportCo
 
 // ========================= USER ROUTES =========================
 // User Routes
-Route::prefix('user')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])->group(function () {
+Route::prefix('user')->middleware(['auth', CheckUserExists::class])->group(function () {
 
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
@@ -118,17 +118,17 @@ Route::get('/user/calendar', [CalendarController::class, 'index'])->name('user.c
 // AJAX for events
 Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
-Route::prefix('projectmanager')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])->group(function () {
+Route::prefix('projectmanager')->middleware(['auth',CheckUserExists::class])->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmanager.calendar');
 });
 
-Route::prefix('projectmember')->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])->group(function () {
+Route::prefix('projectmember')->middleware(['auth', CheckUserExists::class])->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmember.calendar');
 });
 
 // ========================= PROJECT MANAGER ROUTES =========================
 Route::prefix('projectmanager')
-    ->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])
+    ->middleware(['auth', CheckUserExists::class])
     ->group(function () {
 
         Route::get('/dashboard', [ProjectManagerDashboardController::class, 'index'])
@@ -167,7 +167,7 @@ Route::prefix('projectmanager')
 
 // ========================= PROJECT MEMBER ROUTES =========================
 Route::prefix('projectmember')
-    ->middleware(['auth', \App\Http\Middleware\CheckUserExists::class])
+    ->middleware(['auth', CheckUserExists::class])
     ->group(function () {
 
         Route::get('/dashboard', [ProjectMemberDashboardController::class, 'index'])
