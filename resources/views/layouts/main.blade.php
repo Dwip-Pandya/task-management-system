@@ -9,8 +9,8 @@
     <title>@yield('title', 'Task Manager')</title>
 
     {{-- Global CSS --}}
-    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/partials.css') }}">
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/partials.css') }}">
 
     {{-- Page-Specific CSS --}}
     @stack('styles')
@@ -34,7 +34,7 @@
 
     {{-- Global JS --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 
     {{-- Page-Specific JS --}}
     @stack('scripts')

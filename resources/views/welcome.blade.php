@@ -9,7 +9,7 @@
     <title>Welcome - TaskFlow Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
 
 <body>
@@ -639,14 +639,14 @@
 
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 2rem; text-align: center;">
                     <p style="color: var(--text-muted); font-size: 0.9rem;">
-                       &copy; {{ date('Y') }} Task Management System. All rights reserved.
+                        &copy; {{ date('Y') }} Task Management System. All rights reserved.
                     </p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
