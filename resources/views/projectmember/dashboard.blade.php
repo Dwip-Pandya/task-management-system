@@ -23,10 +23,10 @@
             </select>
 
             {{-- Priority Filter --}}
-            <select name="priority" class="form-select me-2">
-                <option value="">All Priorities</option>
+            <select name="priority_id" class="form-select me-2">
+                <option class="text-dark" value="">All Priorities</option>
                 @foreach(['low','medium','high','urgent'] as $p)
-                <option value="{{ $p }}" {{ $request->priority == $p ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $p }}" {{ $request->priority_id == $p ? 'selected' : '' }}>
                     {{ ucfirst($p) }}
                 </option>
                 @endforeach

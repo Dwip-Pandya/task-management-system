@@ -6,15 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class projectmemberTaskController extends Controller
 {
     // List tasks assigned to this project member
     public function index(Request $request)
     {
-        $userId = $request->session()->get('user_id');
-        $user = User::withTrashed()->where('id', $userId)->first();
+        $user = Auth::user();
 
         $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
@@ -32,7 +30,9 @@ class projectmemberTaskController extends Controller
             )
             ->where('tasks.assigned_to', $user->id)
             ->when($request->status_id, fn($q) => $q->where('tasks.status_id', $request->status_id))
-            ->when($request->priority_id, fn($q) => $q->where('tasks.priority_id', $request->priority_id))
+            ->when($request->priority_id, function ($q) use ($request) {
+                $q->where('priorities.name', $request->priority_id);
+            })
             ->when($request->due_date, fn($q) => $q->whereDate('tasks.due_date', $request->due_date))
             ->when($request->project_id, fn($q) => $q->where('tasks.project_id', $request->project_id))
             ->get();
