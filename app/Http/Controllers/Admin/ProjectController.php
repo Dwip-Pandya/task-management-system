@@ -8,6 +8,7 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class ProjectController extends Controller
 {
@@ -16,7 +17,10 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // Base query with creator info
         $projectsQuery = Project::leftJoin('users as creators', 'projects.created_by', '=', 'creators.id')

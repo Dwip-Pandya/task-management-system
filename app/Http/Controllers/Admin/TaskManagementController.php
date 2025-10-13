@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class TaskManagementController extends Controller
 {
@@ -15,8 +16,10 @@ class TaskManagementController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
-
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         // Start query
         $tasksQuery = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')

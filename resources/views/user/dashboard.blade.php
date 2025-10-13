@@ -56,7 +56,7 @@
                     <p class="task-assigned">Assigned By: <span class="assigned-name">{{ $task->assigned_by_name ?? 'Unassigned' }}</span></p>
                     {{-- Updated View Button --}}
                     <a href="{{ route('user.tasks.index') }}"
-                        class="glass-btn view-task-btn"
+                        class="glass-btn view-task-btn btn-warning"
                         data-assigned-to="{{ $task->assigned_to }}">
                         View
                     </a>

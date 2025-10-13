@@ -15,6 +15,7 @@ use PhpOffice\PhpPresentation\Style\Color;
 use PhpOffice\PhpPresentation\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Models\User;
 
 class ReportController extends Controller
 {
@@ -33,7 +34,10 @@ class ReportController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $query = DB::table('tasks')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')

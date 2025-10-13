@@ -12,7 +12,7 @@
 @section('content')
 <div class="main-content p-4 w-100">
     <h3>Task Calendar</h3>
-    <div id="calendar"></div>
+    <div class="calendar" id="calendar"></div>
 </div>
 @endsection
 

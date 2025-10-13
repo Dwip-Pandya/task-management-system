@@ -7,6 +7,10 @@
             </small>
         </span>
 
+        @if (session('is_deactivated'))
+        @include('partials.deactivate-message')
+        @endif
+        
         <div class="d-flex">
             <a href="{{ route('logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
         </div>

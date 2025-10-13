@@ -48,3 +48,6 @@
     </form>
 </div>
 @endsection
+@push('scripts')
+<script src="{{ asset('assets/js/user-validation.js') }}"></script>
+@endpush

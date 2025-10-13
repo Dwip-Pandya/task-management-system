@@ -33,17 +33,17 @@
     @include('partials.footer')
 
     {{-- Global JS --}}
-    <!-- @if(session('is_deactivated'))
+    @if(session('is_deactivated'))
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll("button, input[type=submit],a.btn-primary, a.btn-danger, a.btn-warning, a.btn-info").forEach(btn => {
+            document.querySelectorAll("button, input[type=submit], input[type=checkbox], input[type=date], a.btn-primary, a.btn-danger, a.btn-warning, a.btn-info, a.btn-light, a.btn-success,a.btn-secondary, option, div.calendar").forEach(btn => {
                 btn.disabled = true;
                 btn.style.opacity = "0.5";
                 btn.style.pointerEvents = "none";
             });
         });
     </script>
-    @endif -->
+    @endif
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 

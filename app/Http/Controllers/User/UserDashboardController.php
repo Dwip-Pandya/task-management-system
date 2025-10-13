@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class UserDashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // Fetch tasks with creators, assigned users, statuses, projects
         $tasksQuery = DB::table('tasks')

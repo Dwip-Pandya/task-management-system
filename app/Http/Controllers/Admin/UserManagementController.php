@@ -15,7 +15,10 @@ class UserManagementController extends Controller
     // Display all users
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         $search = $request->input('search');
 
         $users = User::with('role')

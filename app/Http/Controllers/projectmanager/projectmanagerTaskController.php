@@ -14,8 +14,10 @@ class projectmanagerTaskController extends Controller
     // List tasks in projects created by this project manager
     public function index(Request $request)
     {
-        $userId = $request->session()->get('user_id');
-        $user = User::withTrashed()->where('id', $userId)->first();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // Fetch tasks in projects managed by this PM
         $tasksQuery = DB::table('tasks')

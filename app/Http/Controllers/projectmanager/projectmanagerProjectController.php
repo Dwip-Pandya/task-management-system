@@ -17,8 +17,10 @@ class ProjectManagerProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = $request->session()->get('user_id');
-        $user = User::with(['role'])->withTrashed()->where('id', $userId)->first();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // Base query with creator info
         $projectsQuery = Project::leftJoin('users as creators', 'projects.created_by', '=', 'creators.id')
