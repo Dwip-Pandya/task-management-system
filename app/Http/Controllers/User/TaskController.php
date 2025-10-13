@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class TaskController extends Controller
 {
@@ -108,6 +109,18 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
+        try {
+            $request->validate([
+                'title'       => 'required|max:255',
+                'description' => 'nullable|string',
+                'status_id'   => 'required|integer',
+                'tag_id'      => 'nullable|integer',
+                'project_id'  => 'required|integer|exists:projects,project_id',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
+
         $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->id)->first();
         if (!$task) {
             return redirect()->route('user.tasks.index')->with('error', 'Unauthorized update.');
@@ -131,5 +144,5 @@ class TaskController extends Controller
     }
 
     // Update task status (AJAX)
-    
+
 }

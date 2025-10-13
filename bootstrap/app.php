@@ -23,4 +23,3 @@ $app->singleton(
 );
 
 return $app;
-

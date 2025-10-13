@@ -11,10 +11,7 @@
             </div>
             <div class="card-body glass-body">
 
-                {{-- Success message --}}
-                @if(session('success'))
-                <div class="alert alert-success glass-alert">{{ session('success') }}</div>
-                @endif
+                @include('partials.flash-messages')
 
                 <form method="POST" action="{{ route('register.post') }}" id="registerForm">
                     @csrf
@@ -45,7 +42,7 @@
 
                     <div class="mb-3">
                         <label class="form-label glass-label">Confirm Password</label>
-                        <input type="password" name="password_confirmation"  class="form-control glass-input">
+                        <input type="password" name="password_confirmation" class="form-control glass-input">
                     </div>
 
                     <div class="mb-3">

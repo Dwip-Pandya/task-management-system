@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ProjectMemberDashboardController extends Controller
 {
@@ -47,6 +48,6 @@ class ProjectMemberDashboardController extends Controller
             'on_hold'     => $tasks->where('status_name', 'on_hold'),
         ];
 
-        return view('projectmember.dashboard', compact('tasksByStatus', 'user', 'projectsList', 'request'));
+        return view('projectmember.dashboard', compact('tasksByStatus', 'user', 'projectsList', 'request', 'tasks'));
     }
 }

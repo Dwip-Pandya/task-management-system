@@ -31,7 +31,7 @@
         <div class="mb-3">
             <label class="form-label">Assign To</label>
             <select name="assigned_to" class="form-select">
-                <option class value="">-- Select User --</option>
+                <option class="text-dark" value="">-- Select User --</option>
                 @foreach($users as $u)
                 <option class="text-dark" value="{{ $u->id }}" {{ old('assigned_to') == $u->id ? 'selected' : '' }}>
                     {{ $u->name }} ({{ $u->role_name }})
@@ -82,7 +82,7 @@
         <div class="mb-3">
             <label class="form-label">Tag</label>
             <select name="tag_id" class="form-select">
-                <option value="">-- None --</option>
+                <option class="text-dark" value="">-- None --</option>
                 @foreach($tags as $t)
                 <option class="text-dark" value="{{ $t->tag_id }}" {{ old('tag_id') == $t->tag_id ? 'selected' : '' }}>
                     {{ ucfirst($t->name) }}

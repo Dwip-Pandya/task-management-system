@@ -82,12 +82,7 @@
         <h4 class="text-secondary">Total Tasks: {{ $tasksQuery->count() }}</h4>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+    @include('partials.flash-messages')
 
     <div class="row">
         @foreach ($tasks as $t)

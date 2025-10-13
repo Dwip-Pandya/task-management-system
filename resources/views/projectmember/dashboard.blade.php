@@ -22,18 +22,22 @@
                 @endforeach
             </select>
 
-            {{-- Status Filter --}}
-            <select name="status" class="form-select me-2">
-                <option value="">All Statuses</option>
-                @foreach(['pending','in_progress','completed','on_hold'] as $s)
-                <option value="{{ $s }}" {{ $request->status == $s ? 'selected' : '' }}>
-                    {{ ucfirst(str_replace('_', ' ', $s)) }}
+            {{-- Priority Filter --}}
+            <select name="priority" class="form-select me-2">
+                <option value="">All Priorities</option>
+                @foreach(['low','medium','high','urgent'] as $p)
+                <option value="{{ $p }}" {{ $request->priority == $p ? 'selected' : '' }}>
+                    {{ ucfirst($p) }}
                 </option>
                 @endforeach
             </select>
 
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
+    </div>
+
+    <div class="total-tasks">
+        <div class="text-secondary">Total : {{ $tasks->count() }} tasks</div>
     </div>
 
     @php

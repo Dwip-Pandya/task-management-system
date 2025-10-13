@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Create Project')
+@section('title', 'Admin Dashboard')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">

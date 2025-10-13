@@ -3,14 +3,14 @@
 @section('title', 'Edit Project')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
 <div class="container">
     <h2>Edit Project</h2>
 
-    <form action="{{ route('projects.update', $project) }}" method="POST" id="editProjectForm">
+    <form action="{{ route('projects.update', $project) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -18,7 +18,7 @@
             <label for="name" class="form-label">Project Name</label>
             <input type="text" name="name" id="name"
                 value="{{ old('name', $project->name) }}"
-                class="form-control @error('name') is-invalid @enderror" required>
+                class="form-control @error('name') is-invalid @enderror">
             {{-- Server-side validation error --}}
             @error('name')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -42,5 +42,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/validation.js') }}"></script>
+<script src="{{ asset('assets/js/project-validation.js') }}"></script>
 @endpush

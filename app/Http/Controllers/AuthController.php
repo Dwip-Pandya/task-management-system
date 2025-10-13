@@ -65,28 +65,36 @@ class AuthController extends Controller
                 return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
             }
 
+            if (!Hash::check($request->password, $user->password)) {
+                return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
+            }
+
+            // Login manually even if soft-deleted
+            Auth::login($user);
+
+            // Regenerate session to avoid CSRF token mismatch
+            $request->session()->regenerate();
+
+            // Set session flag for deactivated accounts
             if ($user->trashed()) {
-                return back()->withErrors(['email' => 'This account has been deactivated.'])->withInput();
+                session(['is_deactivated' => true]);
+            } else {
+                session(['is_deactivated' => false]);
             }
 
-            if (Hash::check($request->password, $user->password)) {
-                Auth::login($user);
+            // Determine role and redirect
+            $roleName = strtolower($user->role->name ?? 'user');
 
-                $roleName = strtolower($user->role->name ?? 'user');
-
-                switch ($roleName) {
-                    case 'admin':
-                        return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
-                    case 'project manager':
-                        return redirect()->route('projectmanager.dashboard')->with('success', 'Welcome Project Manager!');
-                    case 'project member':
-                        return redirect()->route('projectmember.dashboard')->with('success', 'Welcome Project Member!');
-                    default:
-                        return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
-                }
+            switch ($roleName) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
+                case 'project manager':
+                    return redirect()->route('projectmanager.dashboard')->with('success', 'Welcome Project Manager!');
+                case 'project member':
+                    return redirect()->route('projectmember.dashboard')->with('success', 'Welcome Project Member!');
+                default:
+                    return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
             }
-
-            return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {

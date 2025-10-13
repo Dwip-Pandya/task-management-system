@@ -20,9 +20,7 @@
 
     @if($user->role_id === 1 || $user->id == $task->assigned_to)
 
-    @if(session('success'))
-    <div class="text-success small mb-2">{{ session('success') }}</div>
-    @endif
+    @include('partials.flash-messages')
 
     <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3 comment-form">
         @csrf

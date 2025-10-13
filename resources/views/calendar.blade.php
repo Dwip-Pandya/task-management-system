@@ -4,7 +4,6 @@
 
 @push('styles')
 <!-- FullCalendar CSS -->
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
 <!-- Page-Specific CSS -->
 <link href="{{ asset('assets/css/calendar.css') }}" rel="stylesheet">
@@ -19,7 +18,7 @@
 
 @push('scripts')
 <!-- FullCalendar JS -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="{{ asset('assets/js/fullcalendar/index.global.min.js') }}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

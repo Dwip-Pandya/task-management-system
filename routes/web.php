@@ -45,7 +45,7 @@ Route::get('/auth/google-callback', [GoogleController::class, 'googleauthenticat
 
 
 // ========================= ADMIN ROUTES =========================
-Route::prefix('admin')->middleware(['auth', CheckUserExists::class, ForceChangePassword::class])->group(function () {
+Route::prefix('admin')->middleware([CheckUserExists::class, ForceChangePassword::class])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -94,7 +94,7 @@ Route::get('admin/reports/export/{format}', [App\Http\Controllers\Admin\ReportCo
 
 // ========================= USER ROUTES =========================
 // User Routes
-Route::prefix('user')->middleware(['auth', CheckUserExists::class])->group(function () {
+Route::prefix('user')->middleware([CheckUserExists::class])->group(function () {
 
     Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
@@ -128,7 +128,7 @@ Route::prefix('projectmember')->middleware(['auth', CheckUserExists::class])->gr
 
 // ========================= PROJECT MANAGER ROUTES =========================
 Route::prefix('projectmanager')
-    ->middleware(['auth', CheckUserExists::class])
+    ->middleware([CheckUserExists::class])
     ->group(function () {
 
         Route::get('/dashboard', [ProjectManagerDashboardController::class, 'index'])
@@ -167,7 +167,7 @@ Route::prefix('projectmanager')
 
 // ========================= PROJECT MEMBER ROUTES =========================
 Route::prefix('projectmember')
-    ->middleware(['auth', CheckUserExists::class])
+    ->middleware([CheckUserExists::class])
     ->group(function () {
 
         Route::get('/dashboard', [ProjectMemberDashboardController::class, 'index'])

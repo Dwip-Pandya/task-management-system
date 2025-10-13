@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ProjectManagerDashboardController extends Controller
 {
@@ -51,6 +52,6 @@ class ProjectManagerDashboardController extends Controller
         // Get all users for dropdown
         $usersList = DB::table('users')->get();
 
-        return view('projectmanager.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
+        return view('projectmanager.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request', 'tasks'));
     }
 }

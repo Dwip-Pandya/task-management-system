@@ -10,11 +10,8 @@
                 <h4 class="mb-0">Login</h4>
             </div>
             <div class="card-body glass-body">
-                
-                {{-- Success message --}}
-                @if(session('success'))
-                <div class="alert alert-success glass-alert">{{ session('success') }}</div>
-                @endif
+
+                @include('partials.flash-messages')
 
                 <form method="POST" action="{{ route('login.post') }}" id="loginForm">
                     @csrf

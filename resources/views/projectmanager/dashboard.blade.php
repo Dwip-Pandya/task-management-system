@@ -36,6 +36,9 @@
         </form>
     </div>
 
+    <div class="total-tasks">
+        <div class="text-secondary">Total : {{ $tasks->count() }} tasks</div>
+    </div>
     @php
     $statuses = ['pending', 'in_progress', 'completed', 'on_hold'];
     @endphp

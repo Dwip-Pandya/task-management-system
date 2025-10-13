@@ -27,9 +27,7 @@
     <!-- combined comment and status update -->
     <h5>Post Comment & Update Status</h5>
 
-    @if(session('success'))
-    <div class="text-success small mb-2">{{ session('success') }}</div>
-    @endif
+    @include('partials.flash-messages')
 
     <form action="{{ route('comments.storeWithStatus') }}" method="POST" class="mb-3 comment-form">
         @csrf

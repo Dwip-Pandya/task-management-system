@@ -7,13 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class projectmanagerTaskController extends Controller
 {
     // List tasks in projects created by this project manager
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $userId = $request->session()->get('user_id');
+        $user = User::withTrashed()->where('id', $userId)->first();
 
         // Fetch tasks in projects managed by this PM
         $tasksQuery = DB::table('tasks')

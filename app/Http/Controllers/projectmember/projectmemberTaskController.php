@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class projectmemberTaskController extends Controller
 {
     // List tasks assigned to this project member
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $userId = $request->session()->get('user_id');
+        $user = User::withTrashed()->where('id', $userId)->first();
 
         $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')

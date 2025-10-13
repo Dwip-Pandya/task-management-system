@@ -20,12 +20,15 @@ class UserDashboardController extends Controller
             ->leftJoin('roles as assigned_user_role', 'assigned_user.role_id', '=', 'assigned_user_role.id')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
+            ->leftJoin('users as assigned_by_user', 'tasks.created_by', '=', 'assigned_by_user.id')
             ->select(
                 'tasks.*',
+                'tasks.description',
                 'created_by_user.name as created_by_name',
                 'assigned_user.name as assigned_user_name',
                 'assigned_user_role.name as assigned_user_role_name',
                 'statuses.name as status_name',
+                'assigned_by_user.name as assigned_by_name',
                 'projects.name as project_name'
             );
 

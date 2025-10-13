@@ -33,6 +33,17 @@
     @include('partials.footer')
 
     {{-- Global JS --}}
+    <!-- @if(session('is_deactivated'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("button, input[type=submit],a.btn-primary, a.btn-danger, a.btn-warning, a.btn-info").forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.pointerEvents = "none";
+            });
+        });
+    </script>
+    @endif -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 

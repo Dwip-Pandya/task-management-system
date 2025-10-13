@@ -10,10 +10,7 @@
 <div class="flex-grow-1 p-4">
     <h2>Create User</h2>
 
-    {{-- Display error message --}}
-    @if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+    @include('partials.flash-messages')
 
     <form action="{{ route('users.store') }}" method="POST">
         @csrf
@@ -45,7 +42,7 @@
             <label class="form-label">Role</label>
             <select name="role_id"
                 class="form-select @error('role_id') is-invalid @enderror" >
-                <option value="">-- Select Role --</option>
+                <option class="text-dark" value="">-- Select Role --</option>
                 @foreach ($roles as $role)
                 <option class="text-dark" value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
                     {{ ucfirst($role->name) }}

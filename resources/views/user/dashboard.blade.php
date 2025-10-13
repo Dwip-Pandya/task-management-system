@@ -50,11 +50,10 @@
                 @foreach($tasksByStatus[$status] as $task)
                 <div class="task-item">
                     <p class="task-title">{{ $task->title }}</p>
-                    @if($user->role === 'admin')
                     <p class="task-assigned">
-                        Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span>
+                        {{ $task->description }}
                     </p>
-                    @endif
+                    <p class="task-assigned">Assigned By: <span class="assigned-name">{{ $task->assigned_by_name ?? 'Unassigned' }}</span></p>
                     {{-- Updated View Button --}}
                     <a href="{{ route('user.tasks.index') }}"
                         class="glass-btn view-task-btn"
@@ -75,7 +74,11 @@
 
 <!-- pass id to js  -->
 <script>
-    const currentUserId = {{ json_encode($user->id) }};
+    const currentUserId = {
+        {
+            json_encode($user - > id)
+        }
+    };
     document.addEventListener('DOMContentLoaded', function() {
         const viewButtons = document.querySelectorAll('.view-task-btn');
 

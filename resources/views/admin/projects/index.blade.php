@@ -26,12 +26,10 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
     </form>
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+    <div class="total-projects">
+        <h4 class="text-secondary">Total: {{ $projects->count() }} Projects</h4>
+    </div>
+    @include('partials.flash-messages')
     <div class="row">
         @forelse($projects as $project)
         <div class="col-md-4 mb-4">
