@@ -24,7 +24,7 @@
                 @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">Create Project</button>
+            <button type="submit" class="btn btn-primary deleted-user">Create Project</button>
             <a href="{{ route('projectmanager.projects.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

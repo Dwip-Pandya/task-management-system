@@ -27,7 +27,7 @@
         @error('message')
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
-        <button class="btn btn-primary btn-sm">Post Comment</button>
+        <button class="btn btn-primary btn-sm deleted-user">Post Comment</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary btn-sm">Back</a>
     </form>
     @endif

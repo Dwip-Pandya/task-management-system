@@ -52,7 +52,7 @@
             @error('role_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
-        <button class="btn btn-success">Create</button>
+        <button class="btn btn-success deleted-user">Create</button>
         <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

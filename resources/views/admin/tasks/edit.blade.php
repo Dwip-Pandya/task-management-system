@@ -112,7 +112,7 @@
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary deleted-user">Update</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

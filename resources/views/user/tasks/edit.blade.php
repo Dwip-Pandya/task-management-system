@@ -78,7 +78,7 @@
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Update Task</button>
+        <button type="submit" class="btn btn-primary deleted-user">Update Task</button>
         <a href="{{ route('user.tasks.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

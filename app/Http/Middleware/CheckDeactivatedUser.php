@@ -18,11 +18,11 @@ class CheckDeactivatedUser
             return $next($request);
         }
 
-        // Fetch user including soft-deleted, with role
+        // Fetch user including soft-deleted with role
         $user = User::with(['role'])->withTrashed()->find($userId);
 
         if (!$user) {
-            // User doesn't exist (maybe deleted), clear session
+            // User doesn't exist, clear session
             $request->session()->forget('user_id');
             return redirect('/login');
         }

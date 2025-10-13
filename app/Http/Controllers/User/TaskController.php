@@ -52,7 +52,10 @@ class TaskController extends Controller
     // Show single task
     public function show($task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')
             ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')

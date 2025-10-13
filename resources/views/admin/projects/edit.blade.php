@@ -35,7 +35,7 @@
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Update Project</button>
+        <button type="submit" class="btn btn-primary deleted-user">Update Project</button>
         <a href="{{ route('projects.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

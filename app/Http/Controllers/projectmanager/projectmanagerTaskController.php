@@ -14,13 +14,13 @@ class projectmanagerTaskController extends Controller
     // List tasks in projects created by this project manager
     public function index(Request $request)
     {
+        
         $user = User::withTrashed()
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-
-        // Fetch tasks in projects managed by this PM
-        $tasksQuery = DB::table('tasks')
+            // Fetch tasks in projects managed by this PM
+            $tasksQuery = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('tags', 'tasks.tag_id', '=', 'tags.tag_id')
@@ -68,7 +68,10 @@ class projectmanagerTaskController extends Controller
     // Show task details
     public function show($task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')
             ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')

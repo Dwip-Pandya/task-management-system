@@ -71,10 +71,10 @@
 
     <!-- Export Buttons -->
     <div class="mb-3">
-        <a href="{{ route('admin.reports.export', ['format' => 'pdf'] + request()->query()) }}" class="btn btn-danger">Export PDF</a>
-        <a href="{{ route('admin.reports.export', ['format' => 'excel'] + request()->query()) }}" class="btn btn-success">Export Excel</a>
-        <a href="{{ route('admin.reports.export', ['format' => 'word'] + request()->query()) }}" class="btn btn-primary">Export Word</a>
-        <a href="{{ route('admin.reports.export', ['format' => 'ppt'] + request()->query()) }}" class="btn btn-warning">Export PPT</a>
+        <a href="{{ route('admin.reports.export', ['format' => 'pdf'] + request()->query()) }}" class="btn btn-danger deleted-user">Export PDF</a>
+        <a href="{{ route('admin.reports.export', ['format' => 'excel'] + request()->query()) }}" class="btn btn-success deleted-user">Export Excel</a>
+        <a href="{{ route('admin.reports.export', ['format' => 'word'] + request()->query()) }}" class="btn btn-primary deleted-user">Export Word</a>
+        <a href="{{ route('admin.reports.export', ['format' => 'ppt'] + request()->query()) }}" class="btn btn-warning deleted-user">Export PPT</a>
     </div>
 
     <div class="table-responsive">

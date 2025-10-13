@@ -17,8 +17,8 @@ class projectmemberTaskController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-
-        $tasks = DB::table('tasks')
+            
+            $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
@@ -51,7 +51,10 @@ class projectmemberTaskController extends Controller
     // Show task details
     public function show($task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')
             ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')

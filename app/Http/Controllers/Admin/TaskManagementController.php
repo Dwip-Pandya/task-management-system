@@ -179,7 +179,10 @@ class TaskManagementController extends Controller
     // Show task details to admin
     public function show($task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')
             ->leftJoin('users as created_by_user', 'tasks.created_by', '=', 'created_by_user.id')

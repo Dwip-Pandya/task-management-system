@@ -49,7 +49,7 @@
         <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
 
-        <button class="btn btn-primary btn-sm">Update</button>
+        <button class="btn btn-primary btn-sm deleted-user">Update</button>
     </form>
 
     {{-- Build Comments Tree --}}

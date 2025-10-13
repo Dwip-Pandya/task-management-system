@@ -8,7 +8,7 @@
         </span>
 
         @if (session('is_deactivated'))
-        @include('partials.deactivate-message')
+            @include('partials.deactivate-message')
         @endif
         
         <div class="d-flex">

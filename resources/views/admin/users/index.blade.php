@@ -48,7 +48,7 @@
                     <td>
                         <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         @if($u->id !== $user->id)
-                        <button type="button" class="btn btn-sm btn-danger"
+                        <button type="button" class="btn btn-sm btn-danger deleted-user"
                             onclick="deleteUser('{{ $u->id }}')">
                             Delete
                         </button>
@@ -90,7 +90,7 @@
                 <td>
                     <form action="{{ route('users.restore', $deletedUser->id) }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Restore this user?')">Restore</button>
+                        <button type="submit" class="btn btn-sm btn-success deleted-user" onclick="return confirm('Restore this user?')">Restore</button>
                     </form>
                 </td>
             </tr>

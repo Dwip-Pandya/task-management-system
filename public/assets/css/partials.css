@@ -324,3 +324,16 @@ footer small {
 .card-1{
     background: var(--glass-bg) !important;
 }
+
+
+.alert-deleted-message {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 12px !important;
+    color: var(--text-primary) !important;
+    padding: 16px !important;
+    margin-bottom: 20px !important;
+    position: relative;
+}

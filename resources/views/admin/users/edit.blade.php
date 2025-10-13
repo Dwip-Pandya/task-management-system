@@ -43,7 +43,7 @@
         </div>
 
 
-        <button class="btn btn-primary">Update</button>
+        <button class="btn btn-primary deleted-user">Update</button>
         <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

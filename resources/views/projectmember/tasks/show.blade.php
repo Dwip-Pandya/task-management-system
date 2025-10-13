@@ -43,7 +43,7 @@
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+        <button type="submit" class="btn btn-primary btn-sm deleted-user">Update</button>
         <a href="{{ route('projectmember.tasks.index') }}" class="btn btn-secondary btn-sm">Back</a>
     </form>
     @endif

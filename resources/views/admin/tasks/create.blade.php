@@ -98,7 +98,7 @@
             @error('due_date')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
 
-        <button type="submit" class="btn btn-success">Create</button>
+        <button type="submit" class="btn btn-success deleted-user">Create</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
