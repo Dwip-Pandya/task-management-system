@@ -9,9 +9,10 @@
 @section('content')
 <div class="flex-grow-1 p-4">
     <h2>Task Details</h2>
-    <hr>
+    @include('partials.Breadcrumbs')
 
-    <div class="card mb-4 bg-dark text-white">
+
+    <div class="card mb-4 bg-dark text-white mt-4">
         <div class="card-body">
             <h4>{{ $task->title }}</h4>
             <p>{{ $task->description }}</p>

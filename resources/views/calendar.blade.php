@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="main-content p-4 w-100">
-    <h3>Task Calendar</h3>
+    <h2 class="mb-3">Task Calendar</h2>
     <div class="calendar" id="calendar"></div>
 </div>
 @endsection

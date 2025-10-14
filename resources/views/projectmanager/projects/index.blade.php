@@ -8,8 +8,10 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Projects</h2>
+    <h2>Projects</h2>
+    @include('partials.Breadcrumbs')
+    <div class="d-flex justify-content-between align-items-center">
+        <div><input type="hidden" name=""></div>
         <a href="{{ route('projectmanager.projects.create') }}" class="btn btn-primary">+ New Project</a>
     </div>
 

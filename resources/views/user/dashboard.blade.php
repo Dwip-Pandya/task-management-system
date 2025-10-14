@@ -8,9 +8,9 @@
 
 @section('content')
 <div class="flex-grow-1" id="dashboard-main">
-
+    @include('partials.Breadcrumbs')
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>{{ $user->role === 'admin' ? 'Admin Dashboard' : 'Dashboard' }}</h2>
+        <h2>User Dashboard</h2>
 
         {{-- User Filter Dropdown --}}
         <form method="GET" class="d-flex">

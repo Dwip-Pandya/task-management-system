@@ -9,6 +9,7 @@
 @section('content')
 <div class="flex-grow-1 p-4">
     <h2>Edit Task</h2>
+    @include('partials.Breadcrumbs')
     <form action="{{ route('projectmanager.tasks.update', $task->task_id) }}" method="POST">
         @csrf
         @method('PUT')

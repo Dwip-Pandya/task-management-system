@@ -9,8 +9,9 @@
 @section('content')
 <div class="container mt-3">
     <h3>My Tasks</h3>
+    @include('partials.Breadcrumbs')
 
-    <form method="GET" class="row g-2 mb-4">
+    <form method="GET" class="row g-2 mb-4 mt-2">
         {{-- Status --}}
         <div class="col-md-2">
             <select name="status_id" class="form-select">

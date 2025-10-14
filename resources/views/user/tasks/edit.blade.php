@@ -9,7 +9,7 @@
 @section('content')
 <div class="flex-grow-1 p-4">
     <h2>Edit Task</h2>
-    <hr>
+    @include('partials.Breadcrumbs')
 
     @if(session('error'))
     <div class="alert alert-danger">{{ session('error') }}</div>

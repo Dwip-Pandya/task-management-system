@@ -8,11 +8,10 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Tasks</h3>
-    </div>
+    <h2>Tasks</h2>
+    @include('partials.Breadcrumbs')
 
-    <form method="GET" class="row g-2 mb-4">
+    <form method="GET" class="row g-2 mb-4 mt-3">
         {{-- Status --}}
         <div class="col-md-2">
             <select name="status_id" class="form-select">

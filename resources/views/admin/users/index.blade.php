@@ -9,6 +9,7 @@
 @section('content')
 <div class="flex-grow-1 p-4">
     <h2>User Management</h2>
+    @include('partials.Breadcrumbs')
     <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">+ Create User</a>
 
     {{-- Search Form --}}

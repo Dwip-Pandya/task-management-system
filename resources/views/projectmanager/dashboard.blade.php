@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="flex-grow-1" id="dashboard-main">
-
+    @include('partials.Breadcrumbs')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Project Manager Dashboard</h2>
 

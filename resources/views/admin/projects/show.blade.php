@@ -9,6 +9,7 @@
 @section('content')
 <div class="container mt-4">
     <h2>Project Details</h2>
+    @include('partials.Breadcrumbs')
 
     <div class="card card-1 mt-3 text-light">
         <div class="card-body">

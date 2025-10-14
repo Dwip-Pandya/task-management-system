@@ -10,6 +10,7 @@
 <!-- Middle Section -->
 <div class="container-fluid">
     <h2 class="mb-4 mt-3">All Tasks Report</h2>
+    @include('partials.Breadcrumbs')
     <!-- Filter Form -->
     <form method="GET" action="{{ route('admin.reports.index') }}" class="report-filters mb-4">
         <select name="project_id">

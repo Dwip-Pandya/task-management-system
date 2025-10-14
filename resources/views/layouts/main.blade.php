@@ -17,7 +17,7 @@
     {{-- Global CSS --}}
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/partials.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('assets/css/breadcrumb.css') }}">
 
     {{-- Page-Specific CSS --}}
     @stack('styles')

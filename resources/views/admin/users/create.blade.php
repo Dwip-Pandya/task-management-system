@@ -9,6 +9,7 @@
 @section('content')
 <div class="flex-grow-1 p-4">
     <h2>Create User</h2>
+    @include('partials.Breadcrumbs')
 
     @include('partials.flash-messages')
 

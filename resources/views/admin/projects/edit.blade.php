@@ -9,6 +9,7 @@
 @section('content')
 <div class="container">
     <h2>Edit Project</h2>
+    @include('partials.Breadcrumbs')
 
     <form action="{{ route('projects.update', $project) }}" method="POST">
         @csrf
