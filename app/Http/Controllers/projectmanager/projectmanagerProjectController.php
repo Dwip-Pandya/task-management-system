@@ -31,7 +31,7 @@ class ProjectManagerProjectController extends Controller
             $projectsQuery->where('creators.role_id', $request->creator_role);
         }
 
-        $projects = $projectsQuery->orderBy('projects.created_at', 'desc')->get();
+        $projects = $projectsQuery->orderBy('projects.created_at', 'asc')->get();
 
         return view('projectmanager.projects.index', compact('projects', 'user', 'request'));
     }
@@ -98,7 +98,10 @@ class ProjectManagerProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // if ($project->created_by !== $user->id) {
         //     abort(403);

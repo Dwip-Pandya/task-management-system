@@ -444,10 +444,10 @@ form.d-inline {
 }
 
 .alert-deleted-message {
-    background: var(--glass-bg) !important;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.15)) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
     border-radius: 12px !important;
     color: var(--text-primary) !important;
     padding: 16px !important;

@@ -33,7 +33,7 @@
                 @endforeach
             </select>
 
-            <button type="submit" class="btn btn-primary deleted-user">Filter</button>
+            <button type="submit" class="btn btn-primary">Filter</button>
         </form>
     </div>
 

@@ -3,7 +3,7 @@
 @section('title', 'Create Task')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/task.css') }}">
 @endpush
 
 @section('content')
@@ -31,10 +31,10 @@
         <div class="mb-3">
             <label class="form-label">Assign To</label>
             <select name="assigned_to" class="form-select">
-                <option value="">-- Select User --</option>
+                <option class="text-dark" value="">-- Select User --</option>
                 @foreach($users as $u)
-                <option value="{{ $u->id }}" {{ old('assigned_to') == $u->id ? 'selected' : '' }}>
-                    {{ $u->name }} ({{ $u->role_name ?? '' }})
+                <option class="text-dark" value="{{ $u->id }}">
+                    {{ $u->name }} ({{ $u->role->name ?? 'No Role' }})
                 </option>
                 @endforeach
             </select>
@@ -46,9 +46,9 @@
         <div class="mb-3">
             <label for="project_id" class="form-label">Project</label>
             <select name="project_id" id="project_id" class="form-select">
-                <option value="">-- Select Project --</option>
+                <option class="text-dark" value="">-- Select Project --</option>
                 @foreach($projects as $project)
-                <option value="{{ $project->project_id }}" {{ old('project_id') == $project->project_id ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $project->project_id }}" {{ old('project_id') == $project->project_id ? 'selected' : '' }}>
                     {{ $project->name }}
                 </option>
                 @endforeach
@@ -61,9 +61,9 @@
         <div class="mb-3">
             <label class="form-label">Status</label>
             <select name="status_id" class="form-select">
-                <option value="">-- Select Status --</option>
+                <option class="text-dark" value="">-- Select Status --</option>
                 @foreach($statuses as $s)
-                <option value="{{ $s->status_id }}" {{ old('status_id') == $s->status_id ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $s->status_id }}" {{ old('status_id') == $s->status_id ? 'selected' : '' }}>
                     {{ ucfirst($s->name) }}
                 </option>
                 @endforeach
@@ -76,9 +76,9 @@
         <div class="mb-3">
             <label class="form-label">Priority</label>
             <select name="priority_id" class="form-select">
-                <option value="">-- Select Priority --</option>
+                <option class="text-dark" value="">-- Select Priority --</option>
                 @foreach($priorities as $p)
-                <option value="{{ $p->priority_id }}" {{ old('priority_id') == $p->priority_id ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $p->priority_id }}" {{ old('priority_id') == $p->priority_id ? 'selected' : '' }}>
                     {{ ucfirst($p->name) }}
                 </option>
                 @endforeach
@@ -91,9 +91,9 @@
         <div class="mb-3">
             <label class="form-label">Tag</label>
             <select name="tag_id" class="form-select">
-                <option value="">-- None --</option>
+                <option class="text-dark" value="">-- None --</option>
                 @foreach($tags as $t)
-                <option value="{{ $t->tag_id }}" {{ old('tag_id') == $t->tag_id ? 'selected' : '' }}>
+                <option class="text-dark" value="{{ $t->tag_id }}" {{ old('tag_id') == $t->tag_id ? 'selected' : '' }}>
                     {{ ucfirst($t->name) }}
                 </option>
                 @endforeach
@@ -118,5 +118,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/task-validation.js') }}"></script>
+<script src="{{ asset('assets/js/task-validation.js') }}"></script>
 @endpush

@@ -63,7 +63,7 @@
             </tbody>
         </table>
 
-        <button type="submit" class="btn btn-danger mt-2"
+        <button type="submit" class="btn btn-danger mt-2 deleted-user"
             onclick="return confirm('Are you sure you want to delete selected users?')">Bulk Delete</button>
     </form>
 

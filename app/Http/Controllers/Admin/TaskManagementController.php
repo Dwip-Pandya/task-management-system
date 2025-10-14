@@ -148,7 +148,10 @@ class TaskManagementController extends Controller
      */
     public function edit($id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')->where('task_id', $id)->first();
         $statuses = DB::table('statuses')->get();

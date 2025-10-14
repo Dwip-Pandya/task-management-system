@@ -79,7 +79,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // Get creator info
         $creator = DB::table('users')
@@ -96,7 +99,10 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         return view('admin.projects.edit', compact('project', 'user'));
     }
 

@@ -113,15 +113,12 @@ Visit `http://localhost:8000` to access the application.
 
 **Project Manager**
 - Manage assigned projects
-- Create and assign tasks within projects
+- Create projects
 - View team member activity
-- Generate project reports
 
 **Project Member**
 - View assigned tasks
 - Update task status
-- Collaborate with team members
-- Access project resources
 
 **User**
 - View and manage assigned tasks
@@ -161,6 +158,8 @@ task-management-system/
 │   │   ├── admin/
 │   │   ├── layouts/
 │   │   ├── partials/
+│   │   ├── projectmanager/
+│   │   ├── projectmember/
 │   │   ├── user/
 │   └── css/
 ├── routes/

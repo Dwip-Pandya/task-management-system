@@ -10,7 +10,7 @@
 <div class="container mt-4">
     <h2>Project Details</h2>
 
-    <div class="card card-1 mt-3">
+    <div class="card card-1 mt-3 text-light">
         <div class="card-body">
             <h4 class="card-title">{{ $project->name }}</h4>
             <p class="card-text"><strong>Description:</strong> {{ $project->description }}</p>

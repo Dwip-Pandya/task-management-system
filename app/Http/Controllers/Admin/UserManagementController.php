@@ -68,7 +68,10 @@ class UserManagementController extends Controller
     // Show edit form
     public function edit($id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         $editUser = User::findOrFail($id);
         $roles = Role::all();
 

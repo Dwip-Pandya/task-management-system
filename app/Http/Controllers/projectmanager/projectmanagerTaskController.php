@@ -19,8 +19,8 @@ class projectmanagerTaskController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-            // Fetch tasks in projects managed by this PM
-            $tasksQuery = DB::table('tasks')
+        // Fetch tasks in projects managed by this PM
+        $tasksQuery = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('tags', 'tasks.tag_id', '=', 'tags.tag_id')
@@ -111,12 +111,16 @@ class projectmanagerTaskController extends Controller
     // Create task
     public function create()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         $statuses   = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
         $tags       = DB::table('tags')->get();
         $projects   = DB::table('projects')->where('created_by', $user->id)->get();
-        $users      = DB::table('users')->get();
+        // $projects   = DB::table('projects')->get();
+        $users = User::with('role')->get();
 
         return view('projectmanager.tasks.create', compact('user', 'statuses', 'priorities', 'tags', 'projects', 'users'));
     }
@@ -167,7 +171,10 @@ class projectmanagerTaskController extends Controller
     // Edit task
     public function edit($task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')->where('task_id', $task_id)
             ->whereIn('project_id', function ($q) use ($user) {
@@ -180,7 +187,7 @@ class projectmanagerTaskController extends Controller
         $priorities = DB::table('priorities')->get();
         $tags       = DB::table('tags')->get();
         $projects   = DB::table('projects')->where('created_by', $user->id)->get();
-        $users      = DB::table('users')->get();
+        $users      = User::with('role')->get();
 
         return view('projectmanager.tasks.edit', compact('task', 'user', 'statuses', 'priorities', 'tags', 'projects', 'users'));
     }

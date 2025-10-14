@@ -16,7 +16,7 @@
         @elseif ($role === 'project manager')
         <li class="nav-item"><a href="/projectmanager/dashboard" class="nav-link">Home</a></li>
         <li class="nav-item"><a href="/projectmanager/projects" class="nav-link">Projects</a></li>
-        <!-- <li class="nav-item"><a href="/projectmanager/tasks" class="nav-link">Tasks</a></li> -->
+        <li class="nav-item"><a href="/projectmanager/tasks" class="nav-link">Tasks</a></li>
         <!-- <li class="nav-item"><a href="/projectmanager/calendar" class="nav-link">Calendar</a></li> -->
 
         @elseif ($role === 'project member')
