@@ -56,14 +56,26 @@
                     <td>
                         @if(!$u->trashed())
                         <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="{{ url('admin/users/' . $u->id . '/switch') }}" class="btn btn-sm btn-info" onclick="return confirm('Switch to this user account?')">Switch to user</a>
+                        <button type="button"
+                            class="btn btn-sm btn-info swal-switch-user"
+                            data-url="{{ url('admin/users/' . $u->id . '/switch') }}">
+                            Switch to user
+                        </button>
                         @if($u->id !== $user->id)
-                        <button type="button" class="btn btn-sm btn-danger deleted-user" onclick="deleteUser('{{ $u->id }}')">Delete</button>
+                        <button type="button" class="btn btn-sm btn-danger swal-delete-user"
+                            data-userid="{{ $u->id }}">
+                            Delete
+                        </button>
                         @endif
                         @else
                         <form action="{{ route('users.restore', $u->id) }}" method="POST" class="d-inline">
                             @csrf
-                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Restore this user?')">Restore</button>
+                            <button type="button"
+                                class="btn btn-sm btn-success swal-restore-user"
+                                data-userid="{{ $u->id }}">
+                                Restore
+                            </button>
+
                         </form>
                         @endif
                     </td>
@@ -76,8 +88,10 @@
             </tbody>
         </table>
 
-        <button type="submit" class="btn btn-danger mt-2 deleted-user"
-            onclick="return confirm('Are you sure you want to delete selected users?')">Bulk Delete</button>
+        <button type="button" class="btn btn-danger mt-2 deleted-user swal-bulk-delete">
+            Bulk Delete
+        </button>
+
     </form>
 </div>
 </div>
@@ -86,30 +100,5 @@
         const checkboxes = document.querySelectorAll('input[name="user_ids[]"]');
         checkboxes.forEach(cb => cb.checked = event.target.checked);
     });
-
-    function deleteUser(userId) {
-        if (!confirm('Delete this user?')) return;
-
-        // Create a form dynamically
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/admin/users/' + userId; // Your destroy route
-
-        const csrf = document.createElement('input');
-        csrf.type = 'hidden';
-        csrf.name = '_token';
-        csrf.value = '{{ csrf_token() }}';
-
-        const method = document.createElement('input');
-        method.type = 'hidden';
-        method.name = '_method';
-        method.value = 'DELETE';
-
-        form.appendChild(csrf);
-        form.appendChild(method);
-
-        document.body.appendChild(form);
-        form.submit();
-    }
 </script>
 @endsection

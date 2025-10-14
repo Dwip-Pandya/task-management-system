@@ -13,12 +13,15 @@
 
         <div class="d-flex">
             @if(session()->has('admin_id'))
-            <a href="{{ route( 'users.switchBack') }}"
-                class="btn text-light switch-back float-end"
-                onclick="return confirm('Return to your admin account?')">
+            <a href="{{ route('users.switchBack') }}"
+                class="btn text-light swal-switch-back float-end"
+                data-title="Return to your admin account?"
+                data-confirm="Yes, switch back"
+                data-cancel="Cancel">
                 Switch Back to Admin
-            </a> &nbsp; &nbsp;
+            </a>
             @endif
+            &nbsp;
             <a href="{{ route('logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
         </div>
     </div>
