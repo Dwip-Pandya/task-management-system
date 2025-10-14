@@ -54,6 +54,7 @@
                         {{ $task->description }}
                     </p>
                     <p class="task-assigned">Assigned By: <span class="assigned-name">{{ $task->assigned_by_name ?? 'Unassigned' }}</span></p>
+                    <p class="task-assigned">Due Date: {{ $task->due_date }}</p>
                     {{-- Updated View Button --}}
                     <a href="{{ route('user.tasks.index') }}"
                         class="glass-btn view-task-btn btn-warning"

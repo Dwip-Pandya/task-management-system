@@ -31,9 +31,20 @@ class ProjectController extends Controller
             $projectsQuery->where('creators.role_id', $request->creator_role);
         }
 
+        // Filter by specific creator (user id)
+        if ($request->filled('created_by')) {
+            $projectsQuery->where('projects.created_by', $request->created_by);
+        }
+
         $projects = $projectsQuery->orderBy('projects.created_at', 'desc')->get();
 
-        return view('admin.projects.index', compact('projects', 'user', 'request'));
+        // Get list of creators (unique users who created projects)
+        $creators = User::whereIn('id', Project::pluck('created_by')->unique())
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.projects.index', compact('projects', 'user', 'request', 'creators'));
     }
 
     /**
@@ -41,7 +52,10 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         return view('admin.projects.create', compact('user'));
     }

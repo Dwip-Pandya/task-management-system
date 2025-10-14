@@ -14,7 +14,7 @@ class projectmanagerTaskController extends Controller
     // List tasks in projects created by this project manager
     public function index(Request $request)
     {
-        
+
         $user = User::withTrashed()
             ->with('role')
             ->where('id', Auth::id())
@@ -42,6 +42,8 @@ class projectmanagerTaskController extends Controller
                     ->where('created_by', $user->id);
             });
 
+        $users = User::with('role')->get();
+
         // Optional filters
         if ($request->status_id) {
             $tasksQuery->where('tasks.status_id', $request->status_id);
@@ -55,14 +57,19 @@ class projectmanagerTaskController extends Controller
         if ($request->due_date) {
             $tasksQuery->whereDate('tasks.due_date', $request->due_date);
         }
+        if ($request->assigned_to) {
+            $tasksQuery->where('tasks.assigned_to', $request->assigned_to);
+        }
 
         $tasks = $tasksQuery->get();
+
+
 
         $statuses   = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
         $projects   = DB::table('projects')->where('created_by', $user->id)->get();
 
-        return view('projectmanager.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'projects', 'request'));
+        return view('projectmanager.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'projects', 'request', 'users'));
     }
 
     // Show task details

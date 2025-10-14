@@ -56,7 +56,9 @@
                 @foreach($tasksByStatus[$status] as $task)
                 <div class="task-item">
                     <p class="task-title">{{ $task->title }}</p>
-                    <p class="task-project">Project: {{ $task->project_name }}</p>
+                    <p class="task-assigned">Project: {{ $task->project_name }}</p>
+                    <p class="task-assigned">Due Date: {{ $task->due_date }}</p>
+                    <p class="task-assigned">Assigned By: <strong>{{ $task->assigned_by_name ?? 'N/A' }}</strong></p>
                     <a href="{{ route('projectmember.tasks.show', $task->task_id) }}" class="glass-btn">View</a>
                 </div>
                 @endforeach

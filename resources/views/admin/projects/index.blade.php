@@ -17,11 +17,24 @@
     <form method="GET" class="mb-4 row g-2 align-items-center">
         <div class="col-auto">
             <select name="creator_role" class="form-select">
-                <option class="text-black" value="">All Creators</option>
+                <option class="text-black" value="">All Roles</option>
                 <option class="text-dark" value="1" {{ $request->creator_role == 1 ? 'selected' : '' }}>Admin</option>
                 <option class="text-dark" value="4" {{ $request->creator_role == 4 ? 'selected' : '' }}>Project Manager</option>
             </select>
         </div>
+
+        {{-- New: Filter by creator --}}
+        <div class="col-auto">
+            <select name="created_by" class="form-select">
+                <option class="text-dark" value="">Creators</option>
+                @foreach($creators as $creator)
+                <option class="text-dark" value="{{ $creator->id }}" {{ $request->created_by == $creator->id ? 'selected' : '' }}>
+                    {{ $creator->name }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
@@ -36,7 +49,6 @@
             <div class="card shadow">
                 <div class="card-body">
                     {{-- Project Capsule --}}
-                    <span class="badge bg-info text-dark mb-2">Project</span>
                     <h5 class="card-title">{{ $project->name }}</h5>
                     <p class="card-text">{{ Str::limit($project->description, 100) }}</p>
                     <p class="text-muted"><small>Created: {{ \Carbon\Carbon::parse($project->created_at)->format('d M, Y') }}</small></p>

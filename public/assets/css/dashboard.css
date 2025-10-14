@@ -554,3 +554,19 @@
     margin-bottom: 20px !important;
     position: relative;
 }
+
+.badge {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 0.25rem 0.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-size: 0.65rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}

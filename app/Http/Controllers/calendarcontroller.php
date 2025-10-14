@@ -82,6 +82,7 @@ class CalendarController extends Controller
                 'id' => $task->task_id,
                 'title' => $task->title,
                 'start' => $task->due_date,
+                'status' => $task->status_name,
                 'color' => match (strtolower($task->status_name)) {
                     'pending' => 'orange',
                     'in_progress' => 'blue',

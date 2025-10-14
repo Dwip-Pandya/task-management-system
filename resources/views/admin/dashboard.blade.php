@@ -37,6 +37,10 @@
         </form>
     </div>
 
+    <div class="total-tasks">
+        <div class="text-secondary">Total : {{ $tasks->count() }} tasks</div>
+    </div>
+
     @php
     $statuses = ['pending', 'in_progress', 'completed', 'on_hold'];
     @endphp
@@ -52,6 +56,7 @@
             <div class="glass-card-body">
                 @foreach($tasksByStatus[$status] as $task)
                 <div class="task-item">
+                    <p class="badge">{{ $task->project_name }}</p>
                     <p class="task-title">{{ $task->title }}</p>
                     <p class="task-assigned">Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span></p>
                     <a href="{{ route('tasks.index') }}" class="glass-btn btn-warning">View</a>

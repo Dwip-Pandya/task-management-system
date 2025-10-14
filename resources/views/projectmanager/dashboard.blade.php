@@ -55,7 +55,7 @@
                 @foreach($tasksByStatus[$status] as $task)
                 <div class="task-item">
                     <p class="task-title">{{ $task->title }}</p>
-                    <p class="task-project">Project: {{ $task->project_name }}</p>
+                    <p class="task-assigned">Project: {{ $task->project_name }}</p>
                     <p class="task-assigned">Assigned To: <span class="assigned-name">{{ $task->assigned_user_name ?? 'Unassigned' }}</span></p>
                 </div>
                 @endforeach

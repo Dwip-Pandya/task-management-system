@@ -33,7 +33,7 @@
                 right: 'dayGridMonth,dayGridWeek,dayGridDay'
             },
             eventClick: function(info) {
-                alert('Task: ' + info.event.title + '\nDue: ' + info.event.startStr);
+                alert('Task: ' + info.event.title + '\nDue: ' + info.event.startStr + '\nStatus: ' + info.event.extendedProps.status);
             }
         });
         calendar.render();

@@ -54,6 +54,6 @@ class DashboardController extends Controller
         // Get all users for dropdown
         $usersList = DB::table('users')->get();
 
-        return view('admin.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
+        return view('admin.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request', 'tasks'));
     }
 }

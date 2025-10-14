@@ -25,9 +25,11 @@ class ProjectMemberDashboardController extends Controller
         $tasksQuery = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
+            ->leftJoin('users', 'tasks.created_by', '=', 'users.id')
             ->select(
                 'tasks.*',
                 'statuses.name as status_name',
+                'users.name as assigned_by_name',
                 'projects.name as project_name'
             )
             ->where('tasks.assigned_to', $user->id);

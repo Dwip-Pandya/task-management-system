@@ -44,7 +44,7 @@
         <div class="mb-3">
             <label class="form-label">Project</label>
             <select name="project_id" class="form-select">
-                <option value="">-- Select Project --</option>
+                <option class="text-dark" value="">-- Select Project --</option>
                 @foreach($projects as $project)
                 <option class="text-dark" value="{{ $project->project_id }}" {{ old('project_id') == $project->project_id ? 'selected' : '' }}>
                     {{ $project->name }}
@@ -57,7 +57,7 @@
         <div class="mb-3">
             <label class="form-label">Status</label>
             <select name="status_id" class="form-select">
-                <option value="">-- Select Status --</option>
+                <option class="text-dark" value="">-- Select Status --</option>
                 @foreach($statuses as $s)
                 <option class="text-dark" value="{{ $s->status_id }}" {{ old('status_id') == $s->status_id ? 'selected' : '' }}>
                     {{ ucfirst($s->name) }}

@@ -82,7 +82,10 @@ class TaskManagementController extends Controller
      */
     public function create()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         $statuses = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
         $tags = DB::table('tags')->get();
