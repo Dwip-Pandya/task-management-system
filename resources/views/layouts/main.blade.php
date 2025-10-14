@@ -8,9 +8,13 @@
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <title>@yield('title', 'Task Manager')</title>
 
+    <!-- SweetAlert2 CSS & JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     {{-- Global CSS --}}
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/partials.css') }}">
+
 
     {{-- Page-Specific CSS --}}
     @stack('styles')
@@ -44,6 +48,7 @@
         });
     </script>
     @endif
+    <script src="{{ asset('assets/js/sweet-alerts.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 

@@ -185,7 +185,7 @@
                 },
                 success: function(data) {
                     if (data.success) {
-                        alert('Assigned user updated!');
+                        showAjaxSuccess('Assigned user updated!');
                     }
                 }
             });
@@ -204,8 +204,8 @@
                 },
                 success: function(data) {
                     if (data.success) {
-                        alert('Status updated!');
-                        location.reload(); // optional: update badge color
+                        showAjaxSuccess('Status updated!');
+                        location.reload();
                     }
                 }
             });
@@ -224,7 +224,7 @@
                 },
                 success: function(data) {
                     if (data.success) {
-                        alert('Priority updated!');
+                        showAjaxSuccess('Priority updated!');
                     }
                 }
             });

@@ -62,6 +62,6 @@ class UserDashboardController extends Controller
         $usersList = DB::table('users')->get();
         $projectsList = DB::table('projects')->get();
 
-        return view('user.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request'));
+        return view('user.dashboard', compact('tasksByStatus', 'user', 'usersList', 'projectsList', 'request', 'tasks'));
     }
 }

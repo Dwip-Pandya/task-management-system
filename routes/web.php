@@ -45,7 +45,7 @@ Route::get('/auth/google-callback', [GoogleController::class, 'googleauthenticat
 
 
 // ========================= ADMIN ROUTES =========================
-Route::prefix('admin')->middleware([CheckDeactivatedUser::class,CheckUserExists::class, ForceChangePassword::class])->group(function () {
+Route::prefix('admin')->middleware([CheckDeactivatedUser::class, CheckUserExists::class, ForceChangePassword::class])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -57,6 +57,12 @@ Route::prefix('admin')->middleware([CheckDeactivatedUser::class,CheckUserExists:
     Route::post('users/bulk/delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulkDelete');
     Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
     Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
+    // Switch to user
+    Route::get('users/{id}/switch', [UserManagementController::class, 'switchToUser'])->name('users.switch');
+
+    // Switch back
+    Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->name('users.switchBack');
+    
     Route::resource('users', UserManagementController::class);
 
     // Task management
@@ -118,7 +124,7 @@ Route::get('/user/calendar', [CalendarController::class, 'index'])->name('user.c
 // AJAX for events
 Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
-Route::prefix('projectmanager')->middleware(['auth',CheckUserExists::class])->group(function () {
+Route::prefix('projectmanager')->middleware(['auth', CheckUserExists::class])->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmanager.calendar');
 });
 

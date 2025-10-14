@@ -19,16 +19,21 @@ class UserManagementController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
+
         $search = $request->input('search');
 
-        $users = User::with('role')
-            ->when($search, fn($q) => $q->where('name', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%"))
+        $users = User::withTrashed()
+            ->with('role')
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%");
+                });
+            })
+            ->orderBy('deleted_at') // active first
             ->get();
 
-        $deletedUsers = User::onlyTrashed()->with('role')->get();
-
-        return view('admin.users.index', compact('users', 'user', 'search', 'deletedUsers'));
+        return view('admin.users.index', compact('users', 'user', 'search'));
     }
 
     // Show create form
@@ -138,7 +143,11 @@ class UserManagementController extends Controller
     }
     public function bulkDelete(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         $ids = $request->input('user_ids', []);
 
         if (empty($ids)) {
@@ -154,5 +163,55 @@ class UserManagementController extends Controller
         User::whereIn('id', $ids)->delete();
 
         return redirect()->route('users.index')->with('success', 'Selected users deleted successfully.');
+    }
+    // Switch to user account
+    public function switchToUser($id)
+    {
+        $targetUser = User::findOrFail($id);
+
+        // current admin id to switch back
+        if (!session()->has('admin_id')) {
+            session(['admin_id' => Auth::id()]);
+        }
+
+        Auth::login($targetUser);
+
+        // Regenerate session to avoid issues
+        request()->session()->regenerate();
+
+        // Redirect based on role
+        $roleName = strtolower($targetUser->role->name ?? 'user');
+
+        switch ($roleName) {
+            case 'admin':
+                return redirect()->route('admin.dashboard')->with('success', 'Switched to user account.');
+            case 'project manager':
+                return redirect()->route('projectmanager.dashboard')->with('success', 'Switched to user account.');
+            case 'project member':
+                return redirect()->route('projectmember.dashboard')->with('success', 'Switched to user account.');
+            default:
+                return redirect()->route('user.dashboard')->with('success', 'Switched to user account.');
+        }
+    }
+
+    // Switch back to original admin
+    public function switchBack()
+    {
+        if (!session()->has('admin_id')) {
+            return redirect()->route('users.index')->with('error', 'No admin session found.');
+        }
+
+        $adminId = session('admin_id');
+        $admin = User::findOrFail($adminId);
+
+        Auth::login($admin);
+
+        // Clear the admin session
+        session()->forget('admin_id');
+
+        // Regenerate session
+        request()->session()->regenerate();
+
+        return redirect()->route('users.index')->with('success', 'Returned to your admin account.');
     }
 }

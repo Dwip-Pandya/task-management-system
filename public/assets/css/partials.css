@@ -337,3 +337,45 @@ footer small {
     margin-bottom: 20px !important;
     position: relative;
 }
+
+.btn {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-size: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    line-height: 1.2;
+}
+
+.switch-back {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 0.5rem;
+    border: none !important;
+}
+.switch-back {
+    background: linear-gradient(135deg, rgba(255, 251, 0, 0.4), rgba(245, 233, 11, 0.1)) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+}
+
+.switch-back:hover {
+    transform: translatex(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.2);
+}

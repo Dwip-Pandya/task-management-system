@@ -19,7 +19,7 @@
 
     @include('partials.flash-messages')
 
-    {{-- Users --}}
+    {{-- Users Table --}}
     <form method="POST" action="{{ route('users.bulkDelete') }}">
         @csrf
         <table class="table table-bordered table-striped">
@@ -30,6 +30,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -37,7 +38,7 @@
                 @forelse ($users as $u)
                 <tr>
                     <td>
-                        @if($u->id !== $user->id)
+                        @if($u->id !== $user->id && !$u->trashed())
                         <input type="checkbox" name="user_ids[]" value="{{ $u->id }}">
                         @endif
                     </td>
@@ -46,18 +47,30 @@
                     <td>{{ $u->email }}</td>
                     <td>{{ ucfirst($u->role->name ?? 'N/A') }}</td>
                     <td>
+                        @if($u->trashed())
+                        <span class="badge alert-danger">Deleted</span>
+                        @else
+                        <span class="badge alert-success">Active</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if(!$u->trashed())
                         <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{{ url('admin/users/' . $u->id . '/switch') }}" class="btn btn-sm btn-info" onclick="return confirm('Switch to this user account?')">Switch to user</a>
                         @if($u->id !== $user->id)
-                        <button type="button" class="btn btn-sm btn-danger deleted-user"
-                            onclick="deleteUser('{{ $u->id }}')">
-                            Delete
-                        </button>
+                        <button type="button" class="btn btn-sm btn-danger deleted-user" onclick="deleteUser('{{ $u->id }}')">Delete</button>
+                        @endif
+                        @else
+                        <form action="{{ route('users.restore', $u->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Restore this user?')">Restore</button>
+                        </form>
                         @endif
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center">No users found.</td>
+                    <td colspan="7" class="text-center">No users found.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -66,41 +79,6 @@
         <button type="submit" class="btn btn-danger mt-2 deleted-user"
             onclick="return confirm('Are you sure you want to delete selected users?')">Bulk Delete</button>
     </form>
-
-
-    {{-- Deleted Users --}}
-    <h4 class="mt-5">Deleted Users</h4>
-    <table class="table table-bordered table-striped">
-        <thead class="table-secondary">
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($deletedUsers as $deletedUser)
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $deletedUser->name }}</td>
-                <td>{{ $deletedUser->email }}</td>
-                <td>{{ ucfirst($deletedUser->role->name ?? 'N/A') }}</td>
-                <td>
-                    <form action="{{ route('users.restore', $deletedUser->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-sm btn-success deleted-user" onclick="return confirm('Restore this user?')">Restore</button>
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center">No deleted users.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
 </div>
 </div>
 <script>

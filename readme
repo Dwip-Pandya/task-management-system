@@ -1,220 +1,412 @@
 # TaskFlow Management System
 
-A comprehensive task management platform built with Laravel, featuring advanced role-based access control, Google OAuth integration, and powerful team collaboration tools.
+**A comprehensive task and project management platform built for teams that value productivity, clarity, and collaboration**
+---
 
-## Features
+## 📋 Table of Contents
 
-### Core Functionality
-- **Advanced Task Management** - Create, organize, and track tasks with multiple status levels (pending, in-progress, completed, on-hold)
-- **Role-Based Access Control** - Four distinct roles: Admin, User, Project Manager, and Project Member
-- **Project Management** - Create and manage multiple projects with task assignments
-- **Advanced Filtering** - Filter tasks by project, status, priority, tag, assigned user, and date
-- **Task Calendar** - Interactive calendar view for tracking task deadlines
-- **Report Generation** - Export data in Excel, PDF, Word, and PowerPoint formats
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Database Setup](#database-setup)
+- [Usage](#usage)
+- [Roles & Permissions](#roles--permissions)
+- [Project Structure](#project-structure)
+- [Pricing Plans](#pricing-plans)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
+- [Changelog](#changelog)
 
-### Authentication & Security
-- **Multiple Authentication Methods** - Traditional login/register and Google OAuth
-- **Secure Password Encryption** - Industry-standard encryption for user credentials
-- **Email Verification** - Account verification system for enhanced security
-- **Session Management** - Robust session handling and security
+---
 
-### User Management
-- **Complete CRUD Operations** - Full create, read, update, and delete functionality for users
-- **Permission Management** - Granular control over user permissions and roles
-- **User Activity Tracking** - Monitor team activity and task progress
-- **Team Structure** - Organize users into teams and projects
+## 🎯 Overview
 
-### Integration & Accessibility
-- **Google Workspace Integration** - Seamless sync with Google services
-- **Responsive Design** - Works perfectly on desktop, tablet, and mobile devices
-- **Enhanced Admin Dashboard** - Comprehensive metrics and analytics in one place
+TaskFlow is a feature-rich task and project management system built with Laravel and MySQL. It provides teams with powerful tools to organize work, track progress, and collaborate effectively. With role-based access control, Google OAuth integration, interactive calendar views, and comprehensive reporting capabilities, TaskFlow adapts to your team's workflow.
 
-## Technology Stack
+## ✨ Key Features
 
-- **Backend Framework**: Laravel (PHP)
-- **Frontend**: Bootstrap 5.3.2
-- **Icons**: Font Awesome 6.0.0
-- **Styling**: Custom CSS with glassmorphism design
-- **Authentication**: Laravel Socialite (Google OAuth)
+### 🔐 Authentication & Security
+- **Dual Authentication**: Manual login with email verification and Google OAuth via Laravel Socialite
+- **Secure Sessions**: Password encryption and secure session management
+- **Role-Based Middleware**: Dynamic permission sets based on user roles
+- **Soft Delete Protection**: Deactivated users retain view-only access with alert notifications
 
-## Installation
+### 👥 User Management
+- Complete CRUD operations for user accounts
+- Bulk deletion and advanced search functionality
+- Role assignment and permission management
+- Real-time activity tracking
+- Team organization and hierarchy
 
-### Prerequisites
-- PHP >= 8.1
-- Composer
-- MySQL/PostgreSQL
+### 📁 Project Management
+- Create and manage unlimited projects
+- Assign project managers and team members
+- Filter projects by creator or assigned manager
+- Project-level task organization
+- Progress tracking and reporting
 
-### Steps
+### ✅ Advanced Task Management
+- **Smart Task Creation**: Set priority levels, status, and deadlines
+- **Tag System**: Quick categorization with visual tags (bug, design, meeting, review, etc.)
+- **Inline Editing**: Update status, priority, and assignee without page reload
+- **Advanced Filtering**: Filter by project, user, priority, status, and date range
+- **Discussion Threads**: Threaded comments and replies on each task
+- **Real-time Updates**: Live task status changes across the system
 
-1. **Clone the repository**
+### 🗓️ Interactive Calendar Dashboard
+- **Multiple Views**: Day, week, and month calendar layouts
+- **Visual Task Overview**: Color-coded status badges for each task
+- **Interactive Navigation**: Click dates to view detailed task information
+- **Deadline Tracking**: Never miss an important due date
+
+### 📊 Comprehensive Reporting
+- Generate custom reports based on multiple filters
+- **Export Formats**: PDF, Excel, Word, and PowerPoint
+- Role-based report access and visibility
+- Data visualization and analytics
+
+### 💡 Additional Features
+- **Responsive Design**: Glassmorphism-inspired UI with Bootstrap 5.3.2
+- **Font Awesome Icons**: Modern, intuitive iconography
+- **Email Notifications**: Automated alerts for task assignments and updates
+- **Activity Logs**: Track all system activities and changes
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer                  | Technology |
+|------------------------|------------|
+| **Backend Framework**  | Laravel 12 (PHP 8.1+) |
+| **Database**           | MySQL |
+| **Frontend** | Bootstrap 5.3.2 + Custom CSS (Glassmorphism) |
+| **Icons** | Font Awesome 6 |
+| **Authentication** | Laravel Socialite (Google OAuth) |
+| **Export Libraries** | TCPDF, PhpSpreadsheet, PhpWord, PhpPresentation |
+
+---
+
+## 📦 Prerequisites
+
+Before installing TaskFlow, ensure your system meets these requirements:
+
+- **PHP** >= 8.1
+- **Composer** (latest version)
+- **MySQL** >= 5.7 or **MariaDB** >= 10.3
+- **Node.js** and **NPM** (for asset compilation)
+- **Git** (for cloning the repository)
+- **Web Server** (Apache/Nginx) or use Laravel's built-in server
+
+---
+
+## 🚀 Installation
+
+### Step 1: Clone the Repository
+
 ```bash
 git clone https://github.com/Dwip-Pandya/task-management-system.git
-cd taskflow
+cd task-management-system
 ```
 
-2. **Install PHP dependencies**
+### Step 2: Install Dependencies
+
 ```bash
+# Install PHP dependencies
 composer install
+
+# Install Node dependencies (if using npm)
+npm install
 ```
 
-3. **Environment setup**
+### Step 3: Environment Setup
+
 ```bash
+# Copy the example environment file
 cp .env.example .env
+
+# Generate application key
 php artisan key:generate
 ```
 
-4. **Configure your `.env` file**
+---
+
+## ⚙️ Configuration
+
+### Database Configuration
+
+Edit your `.env` file and configure the database settings:
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=task-management-system
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_DATABASE=task_management_system
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+```
 
+### Google OAuth Configuration
+
+To enable Google login, you need to set up OAuth credentials:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URI: `http://127.0.0.1:8000/auth/google/callback`
+6. Add credentials to your `.env` file:
+
+```env
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REDIRECT_URI=your_callback_url
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/auth/google/callback
 ```
 
-5. **Run migrations**
+### Mail Configuration (Optional)
+
+For email notifications and verification:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your_email@gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+---
+
+## 💾 Database Setup
+
+### Run Migrations and Seeders
+
 ```bash
+# Run all migrations
 php artisan migrate
-```
 
-6. **Seed the database (optional)**
-```bash
+# Seed the database with initial data
 php artisan db:seed
+
+# Or run both together
+php artisan migrate --seed
 ```
 
-7. **Start the development server**
+The seeder will create default users for each role with the following credentials:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@taskflow.com | password |
+| Project Manager | manager@taskflow.com | password |
+| Project Member | member@taskflow.com | password |
+| User | user@taskflow.com | password |
+
+> ⚠️ **Important**: Change these default passwords in production!
+
+---
+
+## 🎮 Usage
+
+### Starting the Development Server
+
 ```bash
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
-php artisan config:clear
-php artisan optimize
-php artisan optimize:clear
 php artisan serve
 ```
 
-Visit `http://localhost:8000` to access the application.
+Access the application at: **http://127.0.0.1:8000**
 
-## Usage
+### Default Login
 
-### User Roles
+Use the seeded credentials above to log in and explore different role capabilities.
 
-**Admin**
-- Full system access
-- User management (CRUD operations)
-- Task creation and assignment
-- System configuration
-- Analytics and reporting
+### Creating Your First Project
 
-**Project Manager**
-- Manage assigned projects
-- Create projects
-- View team member activity
+1. Log in as Admin or Project Manager
+2. Navigate to "Projects" in the sidebar
+3. Click "Create New Project"
+4. Fill in project details and assign team members
+5. Start creating tasks!
 
-**Project Member**
-- View assigned tasks
-- Update task status
+### Managing Tasks
 
-**User**
-- View and manage assigned tasks
-- Update task status
-- Basic collaboration features
+1. Go to the "Tasks" section
+2. Click "Create Task" and fill in details
+3. Assign priority, status, and tags
+4. Use inline editing to quickly update task properties
+5. Add comments for team collaboration
 
-### Getting Started
+### Using the Calendar
 
-1. **Create an Account** - Sign up using email or Google authentication
-2. **Set Up Your Profile** - Complete your profile information
-3. **Join/Create Projects** - Get added to projects or create your own (based on role)
-4. **Start Managing Tasks** - Create, assign, and track tasks
-5. **Generate Reports** - Export data for presentations and record-keeping
+1. Navigate to the "Calendar" page
+2. Switch between Day, Week, and Month views
+3. Click on any date to see tasks due that day
+4. Color-coded badges indicate task status at a glance
 
-## Project Structure
+### Generating Reports
+
+1. Go to "Reports" section
+2. Select filters (date range, project, user, status, etc.)
+3. Choose export format (PDF, Excel, Word, PowerPoint)
+4. Click "Generate Report"
+
+---
+
+## 👤 Roles & Permissions
+
+TaskFlow implements a comprehensive role-based access control system:
+
+### 🔴 Admin
+- **Full System Access**: Complete CRUD operations on all entities
+- **User Management**: Create, edit, and soft delete users
+- **Project Oversight**: Manage all projects across the organization
+- **Task Control**: View and manage all tasks
+- **Reporting**: Generate and export all reports
+- **Calendar Access**: Full calendar view and management
+
+### 🟡 Project Manager
+- **Project Management**: Create and manage assigned projects
+- **Task Assignment**: Create tasks and assign to team members
+- **Team Coordination**: Manage project team members
+- **Progress Tracking**: Monitor project and task progress
+- **Reporting**: Generate project-specific reports
+- **Calendar**: View project deadlines and milestones
+
+### 🟢 Project Member
+- **Task Updates**: View and update assigned tasks
+- **Collaboration**: Comment on tasks and participate in discussions
+- **Status Reporting**: Update task progress and status
+- **Calendar View**: See personal task deadlines
+- **Limited Reporting**: View reports for assigned projects
+
+### 🔵 User
+- **Personal Tasks**: Create and manage own tasks
+- **Task Collaboration**: Comment on assigned tasks
+- **Calendar**: View personal task schedule
+- **Profile Management**: Update own profile information
+
+### ⚠️ Soft-Deleted Users
+- **View-Only Access**: Can log in but cannot perform CRUD operations
+- **Alert Notification**: Header displays deactivation status
+- **Data Preservation**: All historical data remains visible
+- **Read-Only Mode**: Cannot create, edit, or delete any content
+
+---
+
+## 📁 Project Structure
 
 ```
 task-management-system/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
+│   │   │   ├── Auth/
+│   │   │   ├── AdminController.php
+│   │   │   ├── ProjectController.php
+│   │   │   ├── TaskController.php
+│   │   │   ├── ReportController.php
+│   │   │   └── CalendarController.php
+│   │   ├── Middleware/
+│   │   └── Requests/
 │   ├── Models/
-│   
-├── config/
+│   │   ├── User.php
+│   │   ├── Project.php
+│   │   ├── Task.php
+│   │   ├── Comment.php
+│   │   └── Tag.php
+│   └── Services/
 ├── database/
 │   ├── migrations/
+│   │   ├── create_users_table.php
+│   │   ├── create_projects_table.php
+│   │   ├── create_tasks_table.php
+│   │   └── create_comments_table.php
 │   └── seeders/
+│       ├── DatabaseSeeder.php
+│       ├── RoleSeeder.php
+│       └── UserSeeder.php
 ├── public/
 │   ├── css/
+│   │   └── custom.css
 │   ├── js/
+│   │   └── app.js
 │   └── favicon.png
 ├── resources/
 │   ├── views/
-│   │   ├── welcome.blade.php
-|   |   ├── calender.blade.php
-│   │   ├── auth/
 │   │   ├── admin/
-│   │   ├── layouts/
-│   │   ├── partials/
+│   │   │   ├── dashboard.blade.php
+│   │   │   ├── users/
+│   │   │   └── reports/
 │   │   ├── projectmanager/
+│   │   │   ├── dashboard.blade.php
+│   │   │   └── projects/
 │   │   ├── projectmember/
+│   │   │   └── tasks/
 │   │   ├── user/
-│   └── css/
+│   │   │   └── dashboard.blade.php
+│   │   ├── layouts/
+│   │   │   ├── app.blade.php
+│   │   │   └── navigation.blade.php
+│   │   ├── partials/
+│   │   │   ├── header.blade.php
+│   │   │   └── footer.blade.php
+│   │   ├── calendar.blade.php
+│   │   └── auth/
+│   └── lang/
 ├── routes/
 │   ├── web.php
-│   └── api.php
-└── tests/
+│   ├── api.php
+│   └── auth.php
+├── tests/
+├── .env.example
+├── composer.json
+├── package.json
+└── README.md
 ```
 
-## Configuration
+---
 
-### Google OAuth Setup
+## 💰 Pricing Plans
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing one
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials
-5. Add authorized redirect URIs
-6. Copy Client ID and Client Secret to `.env` file
+TaskFlow offers flexible pricing to suit teams of all sizes:
 
-## API Documentation
+| Plan | Price | Features |
+|------|-------|----------|
+| **Starter** | **Free** | • Up to 5 tasks per month<br>• Email login<br>• Basic task management<br>• Single user |
+| **Professional** | **$19/user/month** | • Unlimited tasks<br>• Google OAuth integration<br>• Analytics & reporting<br>• Team collaboration<br>• Priority support |
+| **Enterprise** | **$49/user/month** | • Everything in Professional<br>• Custom branding<br>• Advanced permissions<br>• API access<br>• Dedicated support<br>• SLA guarantee |
 
-API endpoints are available for programmatic access. Contact your administrator for API key and documentation.
+> 💡 **Note**: This is a simulated SaaS pricing model for demonstration purposes.
 
-## Support & Documentation
+---
 
-- **Email Support**: adnapdwip@gmail.com
-- **Phone**: +91-8320036370
+## 📸 Screenshots
 
-## Pricing
+*(Add your application screenshots here)*
 
-### Starter (Free)
-- Up to 5 tasks per month
-- Basic task management
-- Email notifications
-- Mobile access
+### Dashboard
+![Dashboard Screenshot](screenshots/dashboard.png)
 
-### Professional ($19/user/month)
-- Unlimited tasks
-- Advanced task management
-- Team collaboration
-- Real-time notifications
-- Analytics dashboard
-- Google integration
+### Task Management
+![Task Management Screenshot](screenshots/tasks.png)
 
-### Enterprise ($49/user/month)
-- Everything in Professional
-- Advanced user management
-- Custom integrations
-- Priority support
-- Advanced security features
-- Custom branding
+### Calendar View
+![Calendar Screenshot](screenshots/calendar.png)
 
-## Contributing
+### Reports
+![Reports Screenshot](screenshots/reports.png)
 
-We welcome contributions! Please follow these steps:
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -222,35 +414,76 @@ We welcome contributions! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Security
+### Development Guidelines
 
-If you discover any security-related issues, please email us instead of using the issue tracker.
-
-## License
-
-This project is proprietary software. All rights reserved.
-
-## Credits
-
-- **Development Team**: Pandya Dwip
-- **Design**: Modern glassmorphism UI/UX
-- **Icons**: Font Awesome
-- **Framework**: Laravel 12
-
-## Changelog
-
-### Version 1.0.0 (Current)
-- Initial release
-- Basic task management
-- User authentication
-- Google OAuth integration
-- Role-based access control
-- Report generation
-- Calendar view
-- Admin dashboard
+- Follow PSR-12 coding standards
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting PR
 
 ---
 
-**Built with ❤️ by the  Pandya Dwip**
+## 📞 Support
 
-For more information, visit our website or contact our support team.
+Need help? We're here for you!
+
+- **Email**: aydnapdwip@gmail.com
+- **Phone**: +91-9429108956
+- **Documentation**: [Project Wiki](https://github.com/Dwip-Pandya/task-management-system/wiki)
+- **Issues**: [GitHub Issues](https://github.com/Dwip-Pandya/task-management-system/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Dwip-Pandya/task-management-system/discussions)
+
+---
+
+## 📄 License
+
+This project is proprietary software. All rights reserved © 2025 Pandya Dwip.
+
+Unauthorized copying, distribution, or modification of this software is strictly prohibited without prior written permission from the author.
+
+---
+
+## 🙏 Credits
+
+- **Developer**: Pandya Dwip
+- **Framework**: [Laravel](https://laravel.com)
+- **Design Theme**: Custom Glassmorphism
+- **Icons**: [Font Awesome](https://fontawesome.com)
+- **UI Framework**: [Bootstrap](https://getbootstrap.com)
+
+---
+
+## 📝 Changelog
+
+### Version 1.0.0 (Current)
+
+#### Features
+- ✅ Core CRUD operations for users, projects, and tasks
+- ✅ Google OAuth integration via Laravel Socialite
+- ✅ Role-based access control system (4 roles)
+- ✅ Interactive calendar with day/week/month views
+- ✅ Inline task editing functionality
+- ✅ Soft delete system with view-only mode
+- ✅ Comprehensive report generation module
+- ✅ Task tagging system
+- ✅ Threaded comments and replies
+- ✅ Advanced filtering and search
+- ✅ Email verification system
+- ✅ Export reports in multiple formats (PDF, Excel, Word, PowerPoint)
+
+#### Improvements
+- 🎨 Custom glassmorphism theme
+- ⚡ Optimized database queries
+- 🔒 Enhanced security measures
+- 📱 Responsive design for mobile devices
+
+---
+
+<div align="center">
+
+**Built with ❤️ by Pandya Dwip**
+
+[⬆ Back to Top](#taskflow-management-system)
+
+</div>

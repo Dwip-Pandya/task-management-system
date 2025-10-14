@@ -199,6 +199,12 @@ form.d-inline {
     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
 }
 
+.btn-info {
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.3), rgba(0, 123, 255, 0.1)) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
 .btn-warning:hover {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(245, 158, 11, 0.2)) !important;
     color: var(--text-primary) !important;
@@ -258,6 +264,12 @@ form.d-inline {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05)) !important;
     border: 1px solid rgba(16, 185, 129, 0.3) !important;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05)) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
 }
 
 /* Table Container */

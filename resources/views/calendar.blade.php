@@ -33,7 +33,10 @@
                 right: 'dayGridMonth,dayGridWeek,dayGridDay'
             },
             eventClick: function(info) {
-                alert('Task: ' + info.event.title + '\nDue: ' + info.event.startStr + '\nStatus: ' + info.event.extendedProps.status);
+                showEventInfo(info.event.title,
+                    `<p><strong>Due:</strong> ${info.event.startStr}</p>
+         <p><strong>Status:</strong> ${info.event.extendedProps.status}</p>`
+                );
             }
         });
         calendar.render();

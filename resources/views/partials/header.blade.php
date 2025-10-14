@@ -8,10 +8,17 @@
         </span>
 
         @if (session('is_deactivated'))
-            @include('partials.deactivate-message')
+        @include('partials.deactivate-message')
         @endif
-        
+
         <div class="d-flex">
+            @if(session()->has('admin_id'))
+            <a href="{{ route( 'users.switchBack') }}"
+                class="btn text-light switch-back float-end"
+                onclick="return confirm('Return to your admin account?')">
+                Switch Back to Admin
+            </a> &nbsp; &nbsp;
+            @endif
             <a href="{{ route('logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
         </div>
     </div>
