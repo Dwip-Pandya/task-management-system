@@ -1,41 +1,40 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const forms = document.querySelectorAll(".comment-form");
+$(document).ready(function () {
 
-    forms.forEach(form => {
-        form.addEventListener("submit", function (e) {
-            let valid = true;
+    $(".comment-form").each(function () {
+        const form = $(this);
 
-            const messageField = form.querySelector("textarea[name='message']");
-            const nextError = messageField.nextElementSibling;
-            if (nextError && nextError.classList.contains("validation-error")) {
-                nextError.remove();
-            }
+        form.validate({
+            rules: {
+                message: {
+                    required: form.find("#blank-comment").length ? true : false,
+                    maxlength: 1000,
+                    noHtml: true
+                }
+            },
+            messages: {},
 
-            const value = messageField.value.trim();
+            errorElement: "div",
+            errorClass: "text-danger small mt-1",
 
-            // HTML tag check
-            const htmlRegex = /<\/?[\w\s="/.':;#-\/]+>/gi;
-            if (htmlRegex.test(value)) {
-                valid = false;
-                const error = document.createElement("div");
-                error.className = "text-danger small mt-1 validation-error";
-                error.innerText = "HTML tags are not allowed.";
-                messageField.parentNode.appendChild(error);
-            }
-            
-            // Blank comment check (only for textarea with id="blank-comment")
-            if (messageField.id === "blank-comment" && value === "") {
-                valid = false;
-                const error = document.createElement("div");
-                error.className = "text-danger small mt-1 blank-error";
-                error.innerText = "Comment cannot be blank.";
-                messageField.parentNode.appendChild(error);
-            }
-
-            if (!valid) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
+            highlight: function (element) {
+                $(element).addClass("is-invalid");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-invalid");
+            },
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
             }
         });
+
+        $.validator.addMethod(
+            "noHtml",
+            function (value, element) {
+                const htmlRegex = /<\/?[\w\s="/.':;#-\/]+>/gi;
+                return !htmlRegex.test(value);
+            },
+            "no html allowed"
+        );
     });
+
 });

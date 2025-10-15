@@ -10,7 +10,7 @@
 <div class="flex-grow-1 p-4">
     <h2>Create Task</h2>
     @include('partials.Breadcrumbs')
-    <form action="{{ route('projectmanager.tasks.store') }}" method="POST">
+    <form action="{{ route('projectmanager.tasks.store') }}" method="POST" id="taskForm">
         @csrf
 
         <div class="mb-3">

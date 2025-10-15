@@ -10,7 +10,7 @@
 <div class="container">
     <h2>Edit Project</h2>
     @include('partials.Breadcrumbs')
-    <form action="{{ route('projectmanager.projects.update', $project) }}" method="POST">
+    <form action="{{ route('projectmanager.projects.update', $project) }}" method="POST" id="projectForm">
         @csrf
         @method('PUT')
 

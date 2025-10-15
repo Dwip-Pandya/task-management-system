@@ -3,35 +3,8 @@
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as Trail;
 
-/*
-|--------------------------------------------------------------------------
-| Default / Global
-|--------------------------------------------------------------------------
-*/
 
-Breadcrumbs::for(
-    'Login',
-    fn(Trail $trail) =>
-    $trail->push('Login', route('Login'))
-);
-
-Breadcrumbs::for(
-    'register',
-    fn(Trail $trail) =>
-    $trail->push('Register', route('register'))
-);
-
-Breadcrumbs::for(
-    'dashboard',
-    fn(Trail $trail) =>
-    $trail->push('Dashboard', route('admin.dashboard'))
-);
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN SECTION
-|--------------------------------------------------------------------------
-*/
+/* ADMIN  */
 
 // Dashboard
 Breadcrumbs::for(
@@ -120,11 +93,7 @@ Breadcrumbs::for(
     $trail->parent('admin.dashboard')->push('Reports', route('admin.reports.index'))
 );
 
-/*
-|--------------------------------------------------------------------------
-| USER SECTION
-|--------------------------------------------------------------------------
-*/
+/* USER */
 
 Breadcrumbs::for(
     'user.dashboard',
@@ -154,11 +123,7 @@ Breadcrumbs::for(
     $trail->parent('user.dashboard')->push('Calendar', route('user.calendar'))
 );
 
-/*
-|--------------------------------------------------------------------------
-| PROJECT MANAGER SECTION
-|--------------------------------------------------------------------------
-*/
+/* PROJECT MANAGER */
 
 Breadcrumbs::for(
     'projectmanager.dashboard',
@@ -216,11 +181,7 @@ Breadcrumbs::for(
     $trail->parent('projectmanager.dashboard')->push('Calendar', route('projectmanager.calendar'))
 );
 
-/*
-|--------------------------------------------------------------------------
-| PROJECT MEMBER SECTION
-|--------------------------------------------------------------------------
-*/
+/* PROJECT MEMBER */
 
 Breadcrumbs::for(
     'projectmember.dashboard',

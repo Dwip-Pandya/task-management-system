@@ -17,6 +17,8 @@
         @yield('content')
     </div>
 
+    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="{{ asset('assets/js/auth-validation.js') }}"></script>
 </body>
 

@@ -10,7 +10,7 @@
 <div class="container">
     <h2>Create New Project</h2>
     @include('partials.Breadcrumbs')
-    <form action="{{ route('projectmanager.projects.store') }}" method="POST">
+    <form action="{{ route('projectmanager.projects.store') }}" method="POST" id="projectForm">
         @csrf
         <div>
             <div class="mb-3">

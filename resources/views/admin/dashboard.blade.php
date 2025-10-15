@@ -8,7 +8,6 @@
 
 @section('content')
 <div class="flex-grow-1" id="dashboard-main">
-    @include('partials.Breadcrumbs')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Admin Dashboard</h2>
 
@@ -36,6 +35,7 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
     </div>
+    @include('partials.Breadcrumbs')
 
     <div class="total-tasks">
         <div class="text-secondary">Total : {{ $tasks->count() }} tasks</div>

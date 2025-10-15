@@ -1,41 +1,31 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form');
-    const nameInput = document.getElementById('name');
-    const descriptionInput = document.getElementById('description');
+$(document).ready(function () {
+    $("#projectForm").validate({
+        rules: {
+            name: {
+                required: true,
+                maxlength: 255
+            },
+            description: {
+                maxlength: 500
+            }
+        },
+        messages: {},
 
-    form.addEventListener('submit', function (e) {
-        let isValid = true;
+        errorElement: "div",
+        errorClass: "invalid-feedback",
 
-        // Clear previous errors
-        document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
-        nameInput.classList.remove('is-invalid');
-        descriptionInput.classList.remove('is-invalid');
-
-        // Validate Project Name
-        if (nameInput.value.trim() === '') {
-            showError(nameInput, 'Project Name is required.');
-            isValid = false;
-        } else if (nameInput.value.length > 255) {
-            showError(nameInput, 'Project Name must be less than 255 characters.');
-            isValid = false;
-        }
-
-        // Validate Description (optional, max length 500)
-        if (descriptionInput.value.length > 500) {
-            showError(descriptionInput, 'Description must be less than 500 characters.');
-            isValid = false;
-        }
-
-        if (!isValid) {
-            e.preventDefault(); // stop form submission
+        highlight: function (element) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid");
+        },
+        errorPlacement: function (error, element) {
+            if (element.parent(".input-group").length) {
+                error.insertAfter(element.parent());
+            } else {
+                error.insertAfter(element);
+            }
         }
     });
-
-    function showError(input, message) {
-        input.classList.add('is-invalid');
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'invalid-feedback';
-        errorDiv.textContent = message;
-        input.parentNode.appendChild(errorDiv);
-    }
 });
