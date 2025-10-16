@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\TaskManagementController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ChartsController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\TaskController as UserTaskController;
@@ -63,7 +64,7 @@ Route::prefix('admin')->middleware([CheckDeactivatedUser::class, CheckUserExists
 
     // Switch back
     Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->name('users.switchBack');
-    
+
     Route::resource('users', UserManagementController::class);
 
     // Task management
@@ -89,6 +90,15 @@ Route::prefix('admin')->middleware([CheckDeactivatedUser::class, CheckUserExists
 
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+
+    Route::prefix('charts')->name('admin.charts.')->group(function () {
+        Route::get('/', [ChartsController::class, 'index'])->name('index');
+        Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+        Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+        Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+        Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+        Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+    });
 });
 
 

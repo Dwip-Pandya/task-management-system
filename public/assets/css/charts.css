@@ -1,0 +1,410 @@
+/* ============================================
+   CSS Variables
+   ============================================ */
+:root {
+    --primary-color: #6366f1;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+    /* Glass Colors */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+    /* Background Gradients */
+    --bg-gradient-1: #1a1a2e;
+    --bg-gradient-2: #16213e;
+    --bg-gradient-3: #0f3460;
+    --bg-gradient-4: #533a7b;
+    /* Chart Variables */
+    --chart-border-radius: 16px;
+    --chart-padding: 24px;
+    --transition-speed: 0.3s;
+}
+
+/* ============================================
+   Analytics Wrapper
+   ============================================ */
+.analytics-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+/* ============================================
+   Dashboard Header
+   ============================================ */
+.dashboard-header {
+    margin-bottom: 48px;
+    text-align: center;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.dashboard-title {
+    font-size: 42px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.dashboard-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+/* ============================================
+   Charts Grid
+   ============================================ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    animation: fadeInUp 0.6s ease-out 0.2s backwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   Chart Cards
+   ============================================ */
+.chart-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--chart-border-radius);
+    padding: var(--chart-padding);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--info-color), var(--success-color));
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
+
+.chart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.chart-card:hover::before {
+    opacity: 1;
+}
+
+/* Half Chart Card (Bottom Row) */
+.chart-card-half {
+    grid-column: span 3;
+}
+
+@media (min-width: 769px) {
+    .chart-card-half:nth-last-child(-n+2) {
+        grid-column: span 3;
+    }
+}
+
+/* ============================================
+   Chart Header
+   ============================================ */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+    margin: 0;
+}
+
+/* ============================================
+   Chart Toggle Button
+   ============================================ */
+.chart-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    font-family: inherit;
+}
+
+.chart-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    transform: scale(1.02);
+}
+
+.chart-toggle-btn:active {
+    transform: scale(0.98);
+}
+
+.chart-toggle-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+}
+
+/* ============================================
+   Chart Body
+   ============================================ */
+.chart-body {
+    position: relative;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-body canvas {
+    max-height: 320px;
+    animation: chartFadeIn 0.6s ease-out;
+}
+
+@keyframes chartFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+/* Large Tablets (1200px and below) */
+@media (max-width: 1200px) {
+    .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .chart-card-half {
+        grid-column: span 1;
+    }
+
+    .dashboard-title {
+        font-size: 36px;
+    }
+}
+
+/* Tablets (768px and below) */
+@media (max-width: 768px) {
+    .analytics-wrapper {
+        padding: 24px 16px;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .chart-card-half {
+        grid-column: span 1;
+    }
+
+    .dashboard-header {
+        margin-bottom: 32px;
+    }
+
+    .header-content {
+        padding: 24px 32px;
+    }
+
+    .dashboard-title {
+        font-size: 32px;
+    }
+
+    .dashboard-subtitle {
+        font-size: 14px;
+    }
+
+    .chart-card {
+        padding: 20px;
+    }
+
+    .chart-title {
+        font-size: 16px;
+    }
+
+    .chart-body {
+        min-height: 240px;
+    }
+}
+
+/* Mobile Devices (480px and below) */
+@media (max-width: 480px) {
+    .analytics-wrapper {
+        padding: 20px 12px;
+    }
+
+    .header-content {
+        padding: 20px 24px;
+        border-radius: 16px;
+    }
+
+    .dashboard-title {
+        font-size: 28px;
+    }
+
+    .dashboard-subtitle {
+        font-size: 13px;
+    }
+
+    .chart-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .chart-toggle-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+    }
+
+    .chart-body {
+        min-height: 220px;
+    }
+
+    .chart-body canvas {
+        max-height: 260px;
+    }
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+.chart-body.loading {
+    position: relative;
+}
+
+.chart-body.loading::after {
+    content: '';
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+    body {
+        background: white;
+    }
+
+    body::before {
+        display: none;
+    }
+
+    .chart-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .chart-toggle-btn {
+        display: none;
+    }
+}

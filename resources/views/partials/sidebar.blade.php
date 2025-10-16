@@ -12,6 +12,7 @@
         <li class="nav-item"><a href="/admin/projects" class="nav-link">Projects</a></li>
         <li class="nav-item"><a href="/admin/reports" class="nav-link">Reports</a></li>
         <li class="nav-item"><a href="/admin/calendar" class="nav-link">Calendar</a></li>
+        <li class="nav-item"><a href="/admin/charts" class="nav-link">Charts</a></li>
 
         @elseif ($role === 'project manager')
         <li class="nav-item"><a href="/projectmanager/dashboard" class="nav-link">Home</a></li>

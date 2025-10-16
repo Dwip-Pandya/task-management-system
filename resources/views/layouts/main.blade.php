@@ -48,8 +48,14 @@
         });
     </script>
     @endif
+
+
+
     <!-- jQuery -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+
+    <!-- Chart  -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- jQuery Validation -->
     <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
