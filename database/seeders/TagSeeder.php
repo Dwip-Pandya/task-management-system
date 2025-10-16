@@ -28,6 +28,8 @@ class TagSeeder extends Seeder
             ['name' => 'optimization'],
             ['name' => 'training'],
             ['name' => 'planning'],
+            ['name' => 'development'],
+            ['name' => 'support'],
             ['name' => 'other'],
         ]);
     }

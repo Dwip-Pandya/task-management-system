@@ -79,7 +79,7 @@
 @push('scripts')
 <script>
     // ---- Chart 1: Task Status Overview ----
-    let chartType1 = 'pie';
+    let chartType1 = 'doughnut';
     let taskStatusChart;
     const ctx1 = document.getElementById('taskStatusChart').getContext('2d');
 
@@ -302,7 +302,7 @@
                 datasets: [{
                     label: 'Tasks per User',
                     data: values,
-                    backgroundColor: '#a855f7',
+                    backgroundColor: '#f59e0b',
                     borderRadius: 8,
                     borderSkipped: false
                 }]

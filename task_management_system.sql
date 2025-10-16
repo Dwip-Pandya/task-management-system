@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 08, 2025 at 10:11 AM
+-- Generation Time: Oct 16, 2025 at 01:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,8 +66,11 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`comment_id`, `task_id`, `user_id`, `message`, `parent_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 3, 'want this to be done be E.O.D', NULL, '2025-10-07 01:33:23', '2025-10-07 01:33:23'),
-(2, 1, 3, 'ok', 1, '2025-10-07 01:33:30', '2025-10-07 01:33:30');
+(1, 3, 6, 'This will be done on weekend.', NULL, '2025-10-10 00:25:03', '2025-10-10 00:25:03'),
+(2, 3, 3, 'Can\'t wait till the weekend ! complete it before the weekend.', 1, '2025-10-10 01:15:45', '2025-10-10 01:15:45'),
+(3, 22, 6, 'This will be done on weekend.', NULL, '2025-10-13 06:04:45', '2025-10-13 06:04:45'),
+(4, 30, 2, 'Results : \r\n1. Basic Crud implementation\r\n2. Code structure is not appropriate\r\n3. DB Schema Design is good.', NULL, '2025-10-14 00:38:41', '2025-10-14 00:38:41'),
+(5, 3, 6, 'Task Completed.', NULL, '2025-10-14 00:55:39', '2025-10-14 00:55:39');
 
 -- --------------------------------------------------------
 
@@ -148,7 +151,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (9, '2025_01_01_000500_create_projects_table', 1),
 (10, '2025_01_01_000600_create_tasks_table', 1),
 (11, '2025_01_01_000700_create_comments_table', 1),
-(14, '2025_10_07_055840_create_sessions_table', 2);
+(14, '2025_10_07_055840_create_sessions_table', 2),
+(15, '2025_10_07_081603_create_notifications_table', 3),
+(16, '2025_10_01_000800_create_notifications_table', 4);
 
 -- --------------------------------------------------------
 
@@ -193,14 +198,16 @@ CREATE TABLE `projects` (
 --
 
 INSERT INTO `projects` (`project_id`, `created_by`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Default Project', 'This project contains all existing tasks.', '2025-10-07 01:19:16', '2025-10-07 01:19:16'),
-(2, 1, 'Website Redesign', 'Revamp the company website for modern UI/UX and improved performance.\r\ncolor pallette has been shared over mail.', '2025-10-07 06:51:09', '2025-10-07 01:36:38'),
-(3, 1, 'Mobile App Development', 'Develop a cross-platform mobile app for customer engagement.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
-(4, 1, 'Inventory Management System', 'Create a system to track stock, suppliers, and orders efficiently.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
-(5, 1, 'Marketing Campaign Analysis', 'Analyze past marketing campaigns to improve ROI.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
-(6, 1, 'Customer Feedback Portal', 'Build a portal for collecting and managing customer feedback.', '2025-10-07 06:51:09', '2025-10-07 06:51:09'),
-(7, 3, 'PHP-Fresher interview', '- 6 months of experience\r\n- 2 projects (E-com & HMS)\r\n- 2 internships', '2025-10-07 03:08:35', '2025-10-07 03:08:35'),
-(8, 4, 'Nyka', 'Development Project', '2025-10-08 00:12:06', '2025-10-08 00:14:39');
+(1, 1, 'TaskFlow', 'A smart task management system for teams.', '2025-10-16 11:21:18', '2025-10-16 11:21:18'),
+(2, 4, 'MediTrack', 'A hospital management and record tracking system.', '2025-10-16 11:21:18', '2025-10-16 11:21:18'),
+(3, 1, 'FocusFlow', 'A productivity tool for micro-goal tracking and time focus.', '2025-10-16 11:21:18', '2025-10-16 11:21:18'),
+(4, 4, 'WriterVault', 'A content management system for writers and creators.', '2025-10-16 11:21:18', '2025-10-16 11:21:18'),
+(5, 1, 'EventHub', 'An event booking and seat management platform.', '2025-10-16 11:21:18', '2025-10-16 11:21:18'),
+(6, 4, 'EduTrack', 'An online learning progress tracker for students and mentors.', '2025-10-16 11:34:46', '2025-10-16 11:34:46'),
+(7, 1, 'ShopEase', 'A lightweight e-commerce management system for small businesses.', '2025-10-16 11:34:46', '2025-10-16 11:34:46'),
+(8, 4, 'CodeSync', 'A collaborative code versioning and feedback platform.', '2025-10-16 11:34:46', '2025-10-16 11:34:46'),
+(9, 1, 'FitPulse', 'A fitness activity tracker with daily logs and goals.', '2025-10-16 11:34:46', '2025-10-16 11:34:46'),
+(10, 4, 'ServeMate', 'A customer support and ticket management system.', '2025-10-16 11:34:46', '2025-10-16 11:34:46');
 
 -- --------------------------------------------------------
 
@@ -245,7 +252,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('XQbDdGZokCyU1mDuCfrq2wUZhM6NvnGxEvOqyubX', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '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', 1759911069);
+('aGLkV3DeadF8S8RXDlzoX4m3zJxvbB8Gf9k9syue', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiM3QwZ0xTVUZaT1J6R1Rpa1dPR21ZdElIUDhRME9ZdVVobHJ4dHRVViI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi91c2VycyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7czo3OiJ1c2VyX2lkIjtpOjE7czoxNDoiaXNfZGVhY3RpdmF0ZWQiO2I6MDt9', 1760615356),
+('ZjnBeseVSYlTFEDuah0HroSamhQBvxHpLleuKreE', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiYlRmeUY1MnhaeGhKZVlGd25md1pZcHN0bGZxdDJzWERzYlE1UWdqUiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9jaGFydHMvbW9udGhseSI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM7czo3OiJ1c2VyX2lkIjtpOjM7czoxNDoiaXNfZGVhY3RpdmF0ZWQiO2I6MDt9', 1760612839);
 
 -- --------------------------------------------------------
 
@@ -302,7 +310,24 @@ INSERT INTO `tags` (`tag_id`, `name`, `created_at`, `updated_at`) VALUES
 (12, 'optimization', NULL, NULL),
 (13, 'training', NULL, NULL),
 (14, 'planning', NULL, NULL),
-(15, 'other', NULL, NULL);
+(15, 'other', NULL, NULL),
+(16, 'meeting', NULL, NULL),
+(17, 'bug', NULL, NULL),
+(18, 'feature', NULL, NULL),
+(19, 'maintenance', NULL, NULL),
+(20, 'design', NULL, NULL),
+(21, 'testing', NULL, NULL),
+(22, 'documentation', NULL, NULL),
+(23, 'research', NULL, NULL),
+(24, 'deployment', NULL, NULL),
+(25, 'support', NULL, NULL),
+(26, 'review', NULL, NULL),
+(27, 'optimization', NULL, NULL),
+(28, 'training', NULL, NULL),
+(29, 'planning', NULL, NULL),
+(30, 'development', NULL, NULL),
+(31, 'support', NULL, NULL),
+(32, 'other', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -331,38 +356,56 @@ CREATE TABLE `tasks` (
 --
 
 INSERT INTO `tasks` (`task_id`, `title`, `description`, `assigned_to`, `created_by`, `status_id`, `priority_id`, `tag_id`, `project_id`, `due_date`, `completed_at`, `created_at`, `updated_at`) VALUES
-(1, 'Website Wireframe', 'Create wireframes for the new website layout.\r\nand add remarks about the changes.\r\nnew remarks.', 2, 4, 3, 4, 5, 1, '2025-10-15 00:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 04:51:16'),
-(3, 'Mobile App MVP', 'Develop minimum viable product for mobile app.', 6, 4, 1, 4, 3, 2, '2025-11-01 18:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 06:51:29'),
-(5, 'Customer Feedback Form', 'Design and implement feedback collection form.', 8, 4, 1, 2, 7, 5, '2025-10-18 14:00:00', NULL, '2025-10-07 06:51:29', '2025-10-07 06:51:29'),
-(6, 'Marketing Analysis', 'Analyze recent marketing campaigns.', 9, 4, 1, 2, 14, 4, '2025-10-25 15:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(7, 'Server Maintenance', 'Perform routine server maintenance and updates.', 2, 4, 1, 3, 4, 3, '2025-10-12 10:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(9, 'Bug Fix: Payment Gateway', 'Fix payment gateway timeout errors.', 5, 4, 2, 4, 2, 1, '2025-10-14 18:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(11, 'User Documentation', 'Prepare user documentation for new software release.', 8, 4, 1, 2, 7, 5, '2025-10-28 16:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(13, 'Deployment to Staging', 'Deploy latest build to staging environment.', 9, 4, 1, 4, 9, 3, '2025-10-17 09:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(15, 'Bug Fix: Profile Update', 'Fix issue with user profile update.', 5, 4, 2, 3, 2, 1, '2025-10-16 14:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(17, 'Feature: Export Reports', 'Add export functionality to reports section.', 6, 4, 1, 3, 3, 3, '2025-10-29 15:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(18, 'Client Meeting Preparation', 'Prepare slides and documents for client meeting.', 2, 4, 1, 2, 1, 4, '2025-10-15 09:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(20, 'Database Backup', 'Take full database backup before release.', 9, 4, 1, 3, 4, 3, '2025-10-12 20:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(22, 'Research: New Technologies', 'Research emerging technologies for product enhancement.', 6, 4, 1, 2, 8, 3, '2025-10-30 11:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(24, 'Support Ticket Handling', 'Handle high-priority support tickets.', 2, 4, 2, 4, 10, 5, '2025-10-17 12:00:00', NULL, '2025-10-07 06:51:57', '2025-10-07 06:51:57'),
-(26, 'Review of the Dashboard wire-frame', 'review the wire-frame', 2, 3, 3, 1, 11, 2, '2025-10-07 00:00:00', NULL, '2025-10-07 01:35:05', '2025-10-07 01:35:05');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_user`
---
-
-CREATE TABLE `tbl_user` (
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role_id` bigint(20) UNSIGNED NOT NULL DEFAULT 2,
-  `google_id` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+(1, 'Setup Project Structure', 'Initialize Laravel structure and configure base modules for TaskFlow.', 3, 1, 1, 2, 15, 1, '2025-10-25 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(2, 'Implement Role System', 'Develop role-based access for Admin, Manager, and User.', 6, 1, 2, 3, 15, 1, '2025-10-28 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(3, 'Fix Task Deletion Bug', 'Resolve issue causing incorrect cascade delete in task module.', 8, 1, 1, 4, 2, 1, '2025-10-30 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(4, 'Patient Record Module', 'Create CRUD for patient profiles with medical history.', 7, 4, 2, 3, 15, 2, '2025-10-24 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(5, 'Database Optimization', 'Optimize MySQL queries for faster patient search results.', 4, 4, 1, 4, 12, 2, '2025-10-27 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(6, 'Doctor Meeting Setup', 'Plan a meeting with doctors to gather requirements for appointment module.', 3, 4, 1, 2, 1, 2, '2025-10-22 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(7, 'Pomodoro Timer Integration', 'Integrate frontend timer with session tracking backend.', 6, 1, 2, 3, 15, 3, '2025-10-26 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(8, 'Add Goal Notes', 'Allow users to add personal notes to their micro-goals.', 7, 1, 1, 2, 3, 3, '2025-10-23 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(9, 'Performance Testing', 'Run tests to ensure timers sync correctly with goal completion data.', 8, 1, 1, 3, 6, 3, '2025-10-30 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(10, 'Design Dashboard UI', 'Create Bootstrap-based dashboard layout for project overview.', 3, 4, 2, 2, 5, 4, '2025-10-21 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(11, 'Add Tagging Feature', 'Implement tag-based categorization for notes and projects.', 6, 4, 1, 3, 15, 4, '2025-10-25 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(12, 'Fix Image Upload Error', 'Resolve file size validation bug during image uploads.', 7, 4, 1, 4, 2, 4, '2025-10-28 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(13, 'Seat Mapping System', 'Develop dynamic seat layout for events using JavaScript.', 8, 1, 2, 3, 15, 5, '2025-10-29 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(14, 'Payment Gateway Integration', 'Integrate Razorpay for secure ticket payments.', 4, 1, 1, 4, 9, 5, '2025-10-30 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(15, 'Client Review Meeting', 'Schedule review meeting with client to finalize event modules.', 3, 1, 1, 2, 1, 5, '2025-10-23 00:00:00', NULL, '2025-10-16 11:30:09', '2025-10-16 11:30:09'),
+(16, 'Setup Course Module', 'Create course listing and progress tracking structure.', 3, 4, 2, 3, 15, 6, '2025-10-24 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(17, 'Add Mentor Dashboard', 'Develop mentor view for student reports and analytics.', 6, 4, 1, 3, 5, 6, '2025-10-27 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(18, 'Fix Progress Update Bug', 'Resolve delayed sync issue in student progress API.', 8, 4, 2, 2, 2, 6, '2025-10-26 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(19, 'Prepare Documentation', 'Write initial API documentation for course endpoints.', 7, 4, 1, 1, 7, 6, '2025-10-29 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(20, 'Add Product Filters', 'Implement category and price filters in product listing page.', 4, 1, 2, 2, 15, 7, '2025-10-23 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(21, 'Bug Fix - Checkout', 'Fix issue with cart total mismatch in checkout summary.', 6, 1, 1, 4, 2, 7, '2025-10-24 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(22, 'Repository Module Setup', 'Build base module for project and branch creation.', 3, 4, 2, 3, 15, 8, '2025-10-25 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(23, 'Add Code Review Feature', 'Implement inline commenting and approval workflow.', 8, 4, 1, 4, 11, 8, '2025-10-28 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(24, 'UI Update', 'Redesign project list page for better user navigation.', 7, 4, 1, 2, 5, 8, '2025-10-30 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(25, 'Deploy Staging Server', 'Deploy initial version of CodeSync to staging environment.', 6, 4, 2, 3, 9, 8, '2025-10-31 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(26, 'Optimize Diff Loading', 'Improve performance of code diff rendering on large files.', 4, 4, 1, 4, 12, 8, '2025-10-27 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(27, 'Activity Tracker Module', 'Create backend logic for tracking daily steps and calories.', 8, 1, 2, 3, 15, 9, '2025-10-25 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(28, 'UI Design for Dashboard', 'Design summary screen with activity stats and goals.', 7, 1, 1, 2, 5, 9, '2025-10-26 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(29, 'Add Notification Alerts', 'Implement daily reminder notifications for users.', 3, 1, 1, 3, 3, 9, '2025-10-29 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(30, 'Setup Ticket Module', 'Develop base structure for customer issue tracking and responses.', 6, 4, 2, 3, 15, 10, '2025-10-24 00:00:00', NULL, '2025-10-16 11:36:34', '2025-10-16 11:36:34'),
+(31, 'Code Cleanup', 'Refactor controllers and remove unused imports.', 3, 1, 3, 1, 12, 1, '2025-10-10 00:00:00', '2025-10-09 00:00:00', '2025-10-16 11:39:05', '2025-10-16 11:39:05'),
+(32, 'Add Help Page', 'Create a help page explaining basic navigation and features.', 7, 4, 3, 1, 7, 4, '2025-10-08 00:00:00', '2025-10-07 00:00:00', '2025-10-16 11:39:05', '2025-10-16 11:39:05'),
+(33, 'Grammar Correction', 'Proofread text content in dashboard and reports.', 8, 4, 3, 1, 7, 6, '2025-10-11 00:00:00', '2025-10-11 00:00:00', '2025-10-16 11:39:05', '2025-10-16 11:39:05'),
+(34, 'Design Update', 'Tweak product card layout and spacing for better readability.', 4, 1, 3, 1, 5, 7, '2025-10-12 00:00:00', '2025-10-12 00:00:00', '2025-10-16 11:39:05', '2025-10-16 11:39:05'),
+(35, 'Update Logo', 'Replace placeholder logo with final approved design.', 6, 1, 3, 1, 5, 9, '2025-10-09 00:00:00', '2025-10-09 00:00:00', '2025-10-16 11:39:05', '2025-10-16 11:39:05'),
+(36, 'Update User Permissions', 'Adjust role access for new user type in TaskFlow.', 3, 1, 3, 2, 15, 1, '2025-10-10 00:00:00', '2025-10-09 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(37, 'Fix Appointment Overlap', 'Prevent overlapping appointments in MediTrack scheduling.', 4, 4, 3, 3, 2, 2, '2025-10-11 00:00:00', '2025-10-10 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(38, 'Goal History Feature', 'Implement logging of user goal updates in FocusFlow.', 9, 1, 3, 2, 3, 3, '2025-10-12 00:00:00', '2025-10-12 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(39, 'Search Optimization', 'Improve keyword search performance in WriterVault.', 3, 4, 3, 3, 12, 4, '2025-10-13 00:00:00', '2025-10-12 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(40, 'Seat Auto Allocation', 'Implement automatic seat allocation during booking.', 9, 1, 3, 3, 15, 5, '2025-10-14 00:00:00', '2025-10-14 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(41, 'Student Analytics', 'Add performance chart for mentors in EduTrack dashboard.', 4, 4, 3, 2, 8, 6, '2025-10-13 00:00:00', '2025-10-13 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(42, 'Cart Coupon Logic', 'Add discount coupon logic in ShopEase checkout.', 3, 1, 3, 2, 15, 7, '2025-10-14 00:00:00', '2025-10-13 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(43, 'Branch Comparison Tool', 'Add diff comparison tool for branches in CodeSync.', 9, 4, 3, 3, 15, 8, '2025-10-11 00:00:00', '2025-10-11 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(44, 'Steps Data Sync', 'Fix delayed syncing issue with Fitbit API in FitPulse.', 4, 1, 3, 3, 2, 9, '2025-10-10 00:00:00', '2025-10-09 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(45, 'Ticket Priority Sorting', 'Allow users to sort tickets by urgency in ServeMate.', 3, 4, 3, 3, 15, 10, '2025-10-15 00:00:00', '2025-10-15 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(46, 'Course Reminder Emails', 'Add automated email reminders for course deadlines.', 9, 4, 3, 2, 9, 6, '2025-10-14 00:00:00', '2025-10-14 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(47, 'UI Bug Fixes', 'Fix minor layout issues across responsive breakpoints.', 4, 1, 3, 2, 5, 7, '2025-10-12 00:00:00', '2025-10-11 00:00:00', '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(48, 'Team Analytics Dashboard', 'Planned analytics screen pending design approval.', 3, 1, 4, 2, 5, 1, '2025-10-20 00:00:00', NULL, '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(49, 'Multi-Language Support', 'Localization and translation setup paused for next sprint.', 9, 4, 4, 3, 15, 8, '2025-10-22 00:00:00', NULL, '2025-10-16 11:47:10', '2025-10-16 11:47:10'),
+(50, 'Push Notification System', 'Awaiting backend updates for push message integration.', 4, 1, 4, 3, 3, 9, '2025-10-25 00:00:00', NULL, '2025-10-16 11:47:10', '2025-10-16 11:47:10');
 
 -- --------------------------------------------------------
 
@@ -389,17 +432,15 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role_id`, `google_id`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'admin', 'admin@gmail.com', NULL, '$2y$12$XYqp8ZFBKgDvm3RQ0hdyDuBvZZ2WsKIaLmJ1CufGuHlhehqQs5Kk6', 1, NULL, NULL, '2025-10-06 19:49:16', '2025-10-07 00:56:39', NULL),
-(2, 'Pandya Dwip', 'aydnapdwip@gmail.com', NULL, '$2y$12$lK2HKAnE2sHFb/T2WL4S7uAwqCGAyyou9W235q211ZKOzgpr/7EfG', 2, '116898354848865798613', NULL, '2025-10-06 13:34:51', '2025-10-06 13:51:33', NULL),
-(3, 'Trupti Pandya', 'trupti007@gmail.com', NULL, '$2y$12$z4V2h1QDnfl5StkJiQAma.9xvfQlL03mz3NxCLwLBtnZjln143cou', 1, NULL, NULL, '2025-10-06 13:39:19', '2025-10-06 13:39:19', NULL),
-(4, 'vrushabh Gajjar', 'vg@gmail.com', NULL, '$2y$12$cSJ4pLnGfxhD2nJ9z14Xx.g1ojSe5ALo67tfHoNkKfR1Pml/.ay/W', 4, NULL, NULL, '2025-10-06 13:52:23', '2025-10-08 01:56:49', NULL),
-(5, 'Vaishali Vala', 'vaishali@gmail.com', NULL, '$2y$12$lnB39lemTQ7pQTuOU8dSs.Oq7Awpo/c73c7mxfY47mwSc0/JhupXW', 2, NULL, NULL, '2025-10-06 14:09:04', '2025-10-06 14:09:04', NULL),
-(6, 'Sahil Sharma', 'sahilsharma@gmail.com', NULL, '$2y$12$gPja0GYQhPIgaCPAUWRGE.KfuXKyROs7bMIRdrxLONOjmdikjUdkW', 3, NULL, NULL, '2025-10-06 14:09:40', '2025-10-06 14:09:40', NULL),
-(7, 'Aruhi Patel', 'aruhi@gmail.com', NULL, '$2y$12$d8h17XaOkHrzyoegE8RAPOB4rat7cg8DB/8VwgghfgqresrMiKXWm', 2, NULL, NULL, '2025-10-06 14:10:04', '2025-10-06 14:10:04', NULL),
-(8, 'Vishwa pandya', 'vish@gmail.com', NULL, '$2y$12$GML.0bpSl7qO/URkfwD0xORqyPzdtSC9i23x01yukIoMySgiujBfC', 2, NULL, NULL, '2025-10-06 14:10:33', '2025-10-06 14:10:33', NULL),
-(9, 'Namrata Gohel', 'namrata.gohel@gmail.com', NULL, '$2y$12$G.w0u.BwNt8/12Ez2osqleHwq2PpkNngdxdXZK78bSTDQJ9RnOtO.', 4, NULL, NULL, '2025-10-06 14:10:47', '2025-10-06 14:10:47', NULL),
-(10, 'Prachi Anarkat', 'prachiank@gmail.com', NULL, '$2y$12$zxt/t4BNGJepubu6SsKlneN7EXrANgXfKtQDPj87nVKCX3ZO9TXgS', 4, NULL, NULL, '2025-10-06 14:11:05', '2025-10-06 14:11:05', NULL),
-(11, 'Prathmesh Pandya', 'prathmesh.pandya@gmail.com', NULL, '$2y$12$HP6Ss6z7TDitdP.5MeVwKuauKFIDz9VXuXdi2sE4eHR9TwRXMlow.', 2, NULL, NULL, '2025-10-06 14:11:20', '2025-10-06 14:11:20', NULL);
+(1, 'Trupti Pandya', 'trupti007@gmail.com', NULL, '$2y$12$UqfDX5L0m.jGKJfGW5b0.OulK2srvjQCddcJYC/efjIQNRyN2QFcS', 1, NULL, NULL, '2025-10-16 05:42:37', '2025-10-16 05:42:37', NULL),
+(2, 'vrushabh Gajjar', 'vg@gmail.com', NULL, '$2y$12$AsYeJmeFTV4v3Fx3TLeDH.rf6rPR9tjPUfyA3WFwPr1xmO.7jYfvq', 4, NULL, NULL, '2025-10-16 05:44:03', '2025-10-16 05:44:03', NULL),
+(3, 'Sahil Sharma', 'sahilsharma@gmail.com', NULL, '$2y$12$29vB72qhvW7FVrXwJ4HL/OZjxfma2QL1dFz54hjU0hh6k9oj6k/0u', 3, NULL, NULL, '2025-10-16 05:44:21', '2025-10-16 05:44:21', NULL),
+(4, 'Pandya Dwip', 'aydnapdwip@gmail.com', NULL, '$2y$12$coE1U1on3Yvi3kql9fWdwueG/qpPzK5i/OBLqL6aga.xwL3yvczzq', 2, '116898354848865798613', NULL, '2025-10-16 05:44:38', '2025-10-16 05:44:38', NULL),
+(5, 'Namrata Gohel', 'namrata.gohel@gmail.com', NULL, '$2y$12$5REUcR5KfB1brHPnFxr6B.3b0Fd4O/05DLmdE37J0u.ikUvp2Tdai', 4, NULL, NULL, '2025-10-16 05:45:18', '2025-10-16 05:45:18', NULL),
+(6, 'Ananya Shah', 'ananyashah@gmail.com', NULL, '$2y$12$GGYuaB8ctsPv4NUIFSXl6OjqJkUlheVsAkEq6xNfp/i1NeFQCLdXO', 3, NULL, NULL, '2025-10-16 05:45:36', '2025-10-16 05:45:36', NULL),
+(7, 'Vaishali Vala', 'vaishali@gmail.com', NULL, '$2y$12$3TK53zvAQ86W7/A//Wyreuyqo8Z14KzzLhg5WMSsqHkMBwewYJSpu', 2, NULL, NULL, '2025-10-16 05:46:43', '2025-10-16 05:46:43', NULL),
+(8, 'Prachi Anarkat', 'prachiank@gmail.com', NULL, '$2y$12$5T4GaCrBtUokD2zvYO/EF..dy29KuXc60/8UHw3JawJJst.dE/c8S', 3, NULL, NULL, '2025-10-16 05:47:10', '2025-10-16 05:47:10', NULL),
+(9, 'Tishika Vachhani', 'tishika@gmail.com', NULL, '$2y$12$XnUsXKNp2hO0mFVOWaqbWut6qPHCm8JJPHE5QEOQk/M4ELjFRuilC', 2, NULL, NULL, '2025-10-16 06:09:57', '2025-10-16 06:19:15', NULL);
 
 --
 -- Indexes for dumped tables
@@ -503,15 +544,6 @@ ALTER TABLE `tasks`
   ADD KEY `tasks_project_id_foreign` (`project_id`);
 
 --
--- Indexes for table `tbl_user`
---
-ALTER TABLE `tbl_user`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `tbl_user_email_unique` (`email`),
-  ADD UNIQUE KEY `tbl_user_google_id_unique` (`google_id`),
-  ADD KEY `tbl_user_role_id_foreign` (`role_id`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -546,7 +578,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `priorities`
@@ -558,7 +590,7 @@ ALTER TABLE `priorities`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `project_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `project_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -576,25 +608,19 @@ ALTER TABLE `statuses`
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `tag_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `tag_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `task_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
-
---
--- AUTO_INCREMENT for table `tbl_user`
---
-ALTER TABLE `tbl_user`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `task_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -616,12 +642,6 @@ ALTER TABLE `tasks`
   ADD CONSTRAINT `tasks_project_id_foreign` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `tasks_status_id_foreign` FOREIGN KEY (`status_id`) REFERENCES `statuses` (`status_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `tasks_tag_id_foreign` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`tag_id`) ON DELETE SET NULL;
-
---
--- Constraints for table `tbl_user`
---
-ALTER TABLE `tbl_user`
-  ADD CONSTRAINT `tbl_user_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `users`
