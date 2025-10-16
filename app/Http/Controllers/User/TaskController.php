@@ -97,7 +97,10 @@ class TaskController extends Controller
     // Edit task
     public function edit($task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->id)->first();
         if (!$task) {
@@ -114,7 +117,10 @@ class TaskController extends Controller
     // Update task
     public function update(Request $request, $task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         try {
             $request->validate([

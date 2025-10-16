@@ -53,12 +53,12 @@
                         @endif
                     </td>
                     <td>
-                        @if(!$u->trashed())
-                        <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         <button type="button" class="btn btn-sm btn-info swal-switch-user"
                             data-url="{{ url('admin/users/' . $u->id . '/switch') }}">
                             Switch to user
                         </button>
+                        @if(!$u->trashed())
+                        <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         @if($u->id !== $user->id)
                         <button type="button" class="btn btn-sm btn-danger swal-delete-user"
                             data-userid="{{ $u->id }}">

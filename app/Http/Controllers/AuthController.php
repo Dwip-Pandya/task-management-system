@@ -58,6 +58,8 @@ class AuthController extends Controller
                 'email'    => 'required|email',
                 'password' => 'required',
             ]);
+            // Clear previous tmep session flags
+            session()->forget(['is_deactivated', 'user_id', 'admin_id']);
 
             $user = User::withTrashed()->where('email', $request->email)->first();
 
@@ -74,6 +76,8 @@ class AuthController extends Controller
 
             // Regenerate session to avoid CSRF token mismatch
             $request->session()->regenerate();
+            // Store current user id in session for middleware
+            session(['user_id' => $user->id]);
 
             // Set session flag for deactivated accounts
             if ($user->trashed()) {
@@ -87,13 +91,13 @@ class AuthController extends Controller
 
             switch ($roleName) {
                 case 'admin':
-                    return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
+                    return redirect()->route('admin.dashboard');
                 case 'project manager':
-                    return redirect()->route('projectmanager.dashboard')->with('success', 'Welcome Project Manager!');
+                    return redirect()->route('projectmanager.dashboard');
                 case 'project member':
-                    return redirect()->route('projectmember.dashboard')->with('success', 'Welcome Project Member!');
+                    return redirect()->route('projectmember.dashboard');
                 default:
-                    return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
+                    return redirect()->route('user.dashboard');
             }
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
@@ -107,6 +111,10 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
+        // Clear all temp session variables & regenerate session
+        session()->forget(['is_deactivated', 'user_id', 'admin_id']);
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
 }

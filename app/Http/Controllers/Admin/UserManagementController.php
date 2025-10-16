@@ -198,7 +198,7 @@ class UserManagementController extends Controller
     // Switch to user account
     public function switchToUser($id)
     {
-        $targetUser = User::findOrFail($id);
+        $targetUser = User::withTrashed()->findOrFail($id);
 
         // current admin id to switch back
         if (!session()->has('admin_id')) {
@@ -206,6 +206,13 @@ class UserManagementController extends Controller
         }
 
         Auth::login($targetUser);
+
+        // Store user id in session for middleware
+        session(['user_id' => $targetUser->id]);
+
+        // Check if user is soft-deleted
+        $isDeactivated = $targetUser->trashed();
+        session(['is_deactivated' => $isDeactivated]);
 
         // Regenerate session to avoid issues
         request()->session()->regenerate();
@@ -215,14 +222,20 @@ class UserManagementController extends Controller
 
         switch ($roleName) {
             case 'admin':
-                return redirect()->route('admin.dashboard')->with('success', 'Switched to user account.');
+                $route = 'admin.dashboard';
+                break;
             case 'project manager':
-                return redirect()->route('projectmanager.dashboard')->with('success', 'Switched to user account.');
+                $route = 'projectmanager.dashboard';
+                break;
             case 'project member':
-                return redirect()->route('projectmember.dashboard')->with('success', 'Switched to user account.');
+                $route = 'projectmember.dashboard';
+                break;
             default:
-                return redirect()->route('user.dashboard')->with('success', 'Switched to user account.');
+                $route = 'user.dashboard';
+                break;
         }
+        return redirect()->route($route)
+            ->with('is_deactivated', $isDeactivated);
     }
 
     // Switch back to original admin
@@ -237,10 +250,10 @@ class UserManagementController extends Controller
 
         Auth::login($admin);
 
-        // Clear the admin session
-        session()->forget('admin_id');
+        // Clear all temporary session flags
+        session()->forget(['admin_id', 'user_id', 'is_deactivated']);
 
-        // Regenerate session
+        // Regenerate session 
         request()->session()->regenerate();
 
         return redirect()->route('users.index')->with('success', 'Returned to your admin account.');
