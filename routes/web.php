@@ -54,7 +54,8 @@ Route::prefix('admin')->middleware([CheckDeactivatedUser::class, CheckUserExists
     Route::post('/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.updatePassword');
 
     // User management
-    Route::post('users/bulk/delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulkDelete');
+    Route::post('users/bulk/action', [UserManagementController::class, 'bulkAction'])->name('users.bulkAction');
+
     Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
     Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
     // Switch to user

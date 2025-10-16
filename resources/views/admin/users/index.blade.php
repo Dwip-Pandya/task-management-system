@@ -21,7 +21,7 @@
     @include('partials.flash-messages')
 
     {{-- Users Table --}}
-    <form method="POST" action="{{ route('users.bulkDelete') }}">
+    <form method="POST" action="{{ route('users.bulkAction') }}">
         @csrf
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
@@ -39,9 +39,7 @@
                 @forelse ($users as $u)
                 <tr>
                     <td>
-                        @if($u->id !== $user->id && !$u->trashed())
                         <input type="checkbox" name="user_ids[]" value="{{ $u->id }}">
-                        @endif
                     </td>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $u->name }}</td>
@@ -57,8 +55,7 @@
                     <td>
                         @if(!$u->trashed())
                         <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <button type="button"
-                            class="btn btn-sm btn-info swal-switch-user"
+                        <button type="button" class="btn btn-sm btn-info swal-switch-user"
                             data-url="{{ url('admin/users/' . $u->id . '/switch') }}">
                             Switch to user
                         </button>
@@ -76,7 +73,6 @@
                                 data-userid="{{ $u->id }}">
                                 Restore
                             </button>
-
                         </form>
                         @endif
                     </td>
@@ -90,7 +86,7 @@
         </table>
 
         <button type="button" class="btn btn-danger mt-2 deleted-user swal-bulk-delete">
-            Bulk Delete
+            Bulk Action
         </button>
 
     </form>

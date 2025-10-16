@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             swalDark.fire({
-                title: 'Are you sure you want to delete selected users?',
+                title: 'Are you sure you want to perform Bulk Action?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, delete',

@@ -141,28 +141,59 @@ class UserManagementController extends Controller
 
         return redirect()->back()->with('success', 'Password updated successfully!');
     }
-    public function bulkDelete(Request $request)
-    {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+    // In UserManagementController.php
 
+    public function bulkAction(Request $request)
+    {
+        $currentUser = User::withTrashed()->findOrFail(Auth::id());
         $ids = $request->input('user_ids', []);
 
         if (empty($ids)) {
-            return redirect()->route('users.index')->with('error', 'No users selected for deletion.');
+            return redirect()->route('users.index')->with('error', 'No users selected for action.');
         }
 
-        // Prevent deleting yourself
-        if (in_array($user->id, $ids)) {
-            return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');
+        // Prevent self-action
+        if (in_array($currentUser->id, $ids)) {
+            return redirect()->route('users.index')->with('error', 'You cannot perform bulk action on yourself.');
         }
 
-        // Soft delete selected users
-        User::whereIn('id', $ids)->delete();
+        // Separate active and deleted users
+        $activeUsers = User::whereIn('id', $ids)->get();
+        $deletedUsers = User::onlyTrashed()->whereIn('id', $ids)->get();
 
-        return redirect()->route('users.index')->with('success', 'Selected users deleted successfully.');
+        $activeCount = $activeUsers->count();
+        $deletedCount = $deletedUsers->count();
+
+        // Case 1: Mixed selection → delete active and restore deleted
+        if ($activeCount > 0 && $deletedCount > 0) {
+            foreach ($activeUsers as $user) {
+                $user->delete();
+            }
+            foreach ($deletedUsers as $user) {
+                $user->restore();
+            }
+            $message = 'Bulk action completed successfully.';
+        }
+        // Case 2: Only deleted users selected → restore them
+        elseif ($deletedCount > 0 && $activeCount === 0) {
+            foreach ($deletedUsers as $user) {
+                $user->restore();
+            }
+            $message = 'Selected deleted users restored successfully.';
+        }
+        // Case 3: Only active users selected → soft delete them
+        elseif ($activeCount > 0 && $deletedCount === 0) {
+            foreach ($activeUsers as $user) {
+                $user->delete();
+            }
+            $message = 'Selected users deleted successfully.';
+        }
+        // Case 4: None found (shouldn’t happen normally)
+        else {
+            $message = 'No valid users found for action.';
+        }
+
+        return redirect()->route('users.index')->with('success', $message);
     }
     // Switch to user account
     public function switchToUser($id)
