@@ -1,96 +1,65 @@
-🗂️ TaskFlow Management System
-<p align="center"> <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200" alt="Laravel Logo"> </p>
+<<<<<<< HEAD
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-TaskFlow Management System is a modern task and project management platform built with Laravel and MySQL, designed for teams to efficiently manage tasks, projects, and collaboration with advanced role-based access control.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-⚡ Features
-🧑‍💻 Authentication & Roles
+## About Laravel
 
-✅ Manual login/register + Google OAuth
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-🔐 Email verification & secure password encryption
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-👤 Roles: Admin, Project Manager, Project Member, User
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-🕵️ Admin can switch to any user to manage tasks on their behalf
+## Learning Laravel
 
-🛑 Soft-deleted users can log in view-only mode
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-📁 Projects & Tasks
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-Create, edit, delete projects
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-Assign tasks to users or project members
+## Laravel Sponsors
 
-Set priority & status (Pending, In-progress, Completed, On-Hold)
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-Inline editing of tasks (status, priority, assignee)
+### Premium Partners
 
-Tag tasks for quick classification (Bug, Meeting, Design, Review)
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-Filter tasks by project, user, status, priority, tag, or date
+## Contributing
 
-🗓️ Calendar & Deadlines
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-Interactive day/week/month view
+## Code of Conduct
 
-Task badges with color-coded status dots
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-Quick deadline tracking
+## Security Vulnerabilities
 
-📊 Analytics & Reports
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-Chart analytics: task status, total tasks per project, tasks per user, monthly completion trends
+## License
 
-Generate custom reports in PDF, Excel, Word, PPT
-
-🖌️ UI / UX
-
-Responsive layout for desktop, tablet, mobile
-
-Custom glassmorphism design for a modern interface
-
-🛠️ Tech Stack
-
-Backend: Laravel 12
-
-Frontend: Bootstrap 5.3.2, Font Awesome 6
-
-Database: MySQL
-
-Authentication: Laravel Socialite (Google OAuth)
-
-Styling: Custom CSS (Glassmorphism)
-
-🚀 Getting Started
-# Clone repo
-git clone https://github.com/Dwip-Pandya/task-management-system.git
-cd task-management-system
-
-# Install dependencies
-composer install
-
-# Configure environment
-cp .env.example .env
-php artisan key:generate
-
-# Run migrations and seeders
-php artisan migrate --seed
-
-# Start the server
-php artisan serve
-
-
-🏆 Highlights
-
-✅ Inline task editing & real-time updates
-
-📊 Analytics dashboards with charts
-
-👤 Role-based access with user switching
-
-📅 Interactive calendar with color-coded task deadlines
-
-<p align="center"> <a href="https://laravel.com" target="_blank"><img src="https://img.shields.io/badge/Laravel-8-red?logo=laravel&logoColor=white" alt="Laravel"></a> <a href="https://getbootstrap.com" target="_blank"><img src="https://img.shields.io/badge/Bootstrap-5.3.2-blue?logo=bootstrap&logoColor=white" alt="Bootstrap"></a> <a href="https://www.mysql.com" target="_blank"><img src="https://img.shields.io/badge/MySQL-8-blue?logo=mysql&logoColor=white" alt="MySQL"></a> </p>
-
-Built with ❤️ by Pandya Dwip
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+# task-management-system
+>>>>>>> 1830f6f9e2c73f6fa5fa35c50f3764cacfda5a4f
