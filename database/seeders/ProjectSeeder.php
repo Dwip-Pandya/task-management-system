@@ -17,6 +17,7 @@ class ProjectSeeder extends Seeder
         $defaultProjectId = DB::table('projects')->insertGetId([
             'name' => 'Default Project',
             'description' => 'This project contains all existing tasks.',
+            'created_by' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

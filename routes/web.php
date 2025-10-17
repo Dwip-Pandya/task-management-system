@@ -98,9 +98,6 @@ Route::prefix('admin')->middleware([CheckDeactivatedUser::class, CheckUserExists
         Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
         Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
         Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
-
-        Route::get('/completion-rate', [ChartsController::class, 'getTaskCompletionRateByUser'])->name('completionRate');
-        Route::get('/project-progress', [ChartsController::class, 'getProjectProgress'])->name('projectProgress');
     });
 });
 

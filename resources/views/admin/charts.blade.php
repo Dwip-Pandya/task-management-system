@@ -105,41 +105,6 @@
                 </svg>
             </button>
         </div>
-
-        <!-- Card 6: Task Completion Rate -->
-        <div class="chart-preview-card" data-chart="completionRate">
-            <div class="card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 20v-6M6 20v-2M18 20v-4M3 3h18v4H3z" />
-                </svg>
-            </div>
-            <h3 class="card-title">Task Completion Rate</h3>
-            <p class="card-description">Compare completed vs pending tasks per user</p>
-            <button class="view-chart-btn">
-                <span>View Chart</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
-
-        <!-- Card 7: Project Progress -->
-        <div class="chart-preview-card" data-chart="projectProgress">
-            <div class="card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <path d="M3 9h18M9 21V9" />
-                </svg>
-            </div>
-            <h3 class="card-title">Project Progress</h3>
-            <p class="card-description">Visualize completed vs pending tasks per project</p>
-            <button class="view-chart-btn">
-                <span>View Chart</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
     </div>
 </div>
 
@@ -194,8 +159,6 @@
         projects: 'Tasks by Project',
         users: 'Tasks by User',
         monthly: 'Monthly Task Trends',
-        completionRate: 'Task Completion Rate by User',
-        projectProgress: 'Project Progress Overview'
     };
 
     // Chart routes mapping
@@ -205,8 +168,6 @@
         projects: 'admin.charts.projects',
         users: 'admin.charts.users',
         monthly: 'admin.charts.monthly',
-        completionRate: 'admin.charts.completionRate',
-        projectProgress: 'admin.charts.projectProgress'
     };
 
     // Open modal and render chart
@@ -285,12 +246,6 @@
                 break;
             case 'completion':
                 chartConfig = getCompletionChartConfig(labels, values);
-                break;
-            case 'completionRate':
-                chartConfig = getCompletionRateChartConfig(data);
-                break;
-            case 'projectProgress':
-                chartConfig = getProjectProgressChartConfig(data);
                 break;
         }
 
@@ -549,122 +504,6 @@
                         grid: {
                             color: 'rgba(255, 255, 255, 0.05)',
                             drawBorder: false
-                        }
-                    }
-                }
-            }
-        };
-    }
-
-    function getCompletionRateChartConfig(data) {
-        return {
-            type: 'bar',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                        label: 'Completed Tasks',
-                        data: data.completed,
-                        backgroundColor: '#10b981'
-                    },
-                    {
-                        label: 'Pending Tasks',
-                        data: data.pending,
-                        backgroundColor: '#ef4444'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#ffffff',
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Task Completion Rate by User',
-                        color: '#ffffff'
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: 'rgba(255,255,255,0.8)'
-                        },
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: 'rgba(255,255,255,0.8)'
-                        },
-                        grid: {
-                            color: 'rgba(255,255,255,0.05)'
-                        }
-                    }
-                }
-            }
-        };
-    }
-
-    function getProjectProgressChartConfig(data) {
-        return {
-            type: 'bar',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                        label: 'Completed Tasks',
-                        data: data.completed,
-                        backgroundColor: '#3b82f6'
-                    },
-                    {
-                        label: 'Pending Tasks',
-                        data: data.pending,
-                        backgroundColor: '#f59e0b'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#ffffff',
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Project Progress Overview',
-                        color: '#ffffff'
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: 'rgba(255,255,255,0.8)'
-                        },
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: 'rgba(255,255,255,0.8)'
-                        },
-                        grid: {
-                            color: 'rgba(255,255,255,0.05)'
                         }
                     }
                 }
