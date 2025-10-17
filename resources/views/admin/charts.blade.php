@@ -87,24 +87,6 @@
                 </svg>
             </button>
         </div>
-
-        <!-- Card 5: Monthly Trends -->
-        <div class="chart-preview-card" data-chart="monthly">
-            <div class="card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18" />
-                    <path d="M18 17l-4-4-4 4-4-4" />
-                </svg>
-            </div>
-            <h3 class="card-title">Monthly Trends</h3>
-            <p class="card-description">Task creation trends and patterns over months</p>
-            <button class="view-chart-btn">
-                <span>View Chart</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
     </div>
 </div>
 
@@ -355,6 +337,7 @@
                 }]
             },
             options: {
+                indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
