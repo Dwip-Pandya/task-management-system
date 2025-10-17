@@ -148,16 +148,8 @@ Four predefined roles with specific permissions:
 After running the seeders, you can log in with these default accounts:
 
 - **Admin Account**
-  - Email: `admin@taskflow.com`
-  - Password: `password`
-
-- **Project Manager Account**
-  - Email: `manager@taskflow.com`
-  - Password: `password`
-
-- **User Account**
-  - Email: `user@taskflow.com`
-  - Password: `password`
+  - Email: `admin@gmail.com`
+  - Password: `admin123`
 
 > ⚠️ **Important:** Change these default passwords immediately in production environments.
 
@@ -207,10 +199,6 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - Laravel Framework - For the excellent PHP framework
@@ -220,18 +208,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Support
 
-For support, email support@taskflow.com or open an issue in the GitHub repository.
-
-## 🗺️ Roadmap
-
-- [ ] Real-time notifications
-- [ ] Mobile application (iOS/Android)
-- [ ] Kanban board view
-- [ ] Time tracking functionality
-- [ ] File attachments for tasks
-- [ ] Advanced project templates
-- [ ] Integration with third-party tools (Slack, Teams, etc.)
-- [ ] API documentation for external integrations
+For support, email aydnapdwip@gmail.com or open an issue in the GitHub repository.
 
 ---
 
