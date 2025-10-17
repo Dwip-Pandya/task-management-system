@@ -139,13 +139,24 @@ class TaskController extends Controller
             return redirect()->route('user.tasks.index')->with('error', 'Unauthorized update.');
         }
 
-        DB::table('tasks')->where('task_id', $task_id)->update([
+        $completedStatus = DB::table('statuses')->where('name', 'Completed')->value('status_id');
+
+        $updateData = [
             'title'       => $request->title,
             'description' => $request->description,
             'status_id'   => $request->status_id,
             'project_id'  => $request->project_id,
             'due_date'    => $request->due_date,
-        ]);
+            'updated_at'  => now(),
+        ];
+
+        if ($request->status_id == $completedStatus) {
+            $updateData['completed_at'] = now();
+        } else {
+            $updateData['completed_at'] = null;
+        }
+
+        DB::table('tasks')->where('task_id', $task_id)->update($updateData);
 
         return redirect()->route('user.tasks.index')->with('success', 'Task updated successfully.');
     }

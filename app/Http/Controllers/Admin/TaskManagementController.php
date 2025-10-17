@@ -293,10 +293,22 @@ class TaskManagementController extends Controller
             'status_id' => 'required|integer|exists:statuses,status_id',
         ]);
 
-        DB::table('tasks')->where('task_id', $id)->update([
-            'status_id' => $request->status_id,
+        $statusId = $request->status_id;
+        $completedStatus = DB::table('statuses')->where('name', 'Completed')->value('status_id');
+
+        $updateData = [
+            'status_id' => $statusId,
             'updated_at' => now(),
-        ]);
+        ];
+
+        // If task marked as completed → set timestamp
+        if ($statusId == $completedStatus) {
+            $updateData['completed_at'] = now();
+        } else {
+            $updateData['completed_at'] = null;
+        }
+
+        DB::table('tasks')->where('task_id', $id)->update($updateData);
 
         return response()->json(['success' => true]);
     }
