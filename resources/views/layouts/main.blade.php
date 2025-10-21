@@ -18,6 +18,7 @@
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/partials.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/breadcrumb.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/notification.css') }}">
 
     {{-- Page-Specific CSS --}}
     @stack('styles')
