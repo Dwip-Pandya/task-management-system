@@ -7,211 +7,198 @@ use App\Http\Controllers\Admin\TaskManagementController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ChartsController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\User\UserDashboardController;
 use App\Http\Controllers\User\TaskController as UserTaskController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\projectmanager\ProjectManagerDashboardController;
 use App\Http\Controllers\projectmanager\ProjectManagerProjectController;
 use App\Http\Controllers\projectmanager\ProjectManagerTaskController;
-use App\Http\Controllers\projectmember\projectmemberDashboardController;
+use App\Http\Controllers\projectmember\ProjectMemberDashboardController;
 use App\Http\Controllers\projectmember\ProjectMemberTaskController;
+use App\Http\Controllers\NotificationController;
 
-// middlewares
+// Middlewares
 use App\Http\Middleware\CheckUserExists;
 use App\Http\Middleware\ForceChangePassword;
 use App\Http\Middleware\CheckDeactivatedUser;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
-Route::get('/', [AuthController::class, 'showLogin'])->name('Login');
+/*
+|--------------------------------------------------------------------------
+| AUTH ROUTES
+|--------------------------------------------------------------------------
+*/
 
-// Manual Authentication
+Route::get('/', [AuthController::class, 'showLogin'])->name('login.form');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
 
 // Google OAuth
 Route::get('/auth/google', [GoogleController::class, 'googlelogin'])->name('auth.google');
 Route::get('/auth/google-callback', [GoogleController::class, 'googleauthentication'])->name('auth.google-callback');
 
 
-// ========================= ADMIN ROUTES =========================
-Route::prefix('admin')->middleware([CheckDeactivatedUser::class, CheckUserExists::class, ForceChangePassword::class])->group(function () {
+/*
+|--------------------------------------------------------------------------
+| ADMIN ROUTES
+|--------------------------------------------------------------------------
+*/
 
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::prefix('admin')
+    ->middleware([CheckDeactivatedUser::class, CheckUserExists::class, ForceChangePassword::class])
+    ->group(function () {
 
-    // Update default password
-    Route::post('/update-password', [UserManagementController::class, 'updatePassword'])->name('admin.updatePassword');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-    // User management
-    Route::post('users/bulk/action', [UserManagementController::class, 'bulkAction'])->name('users.bulkAction');
+        // User management
+        Route::resource('users', UserManagementController::class);
+        Route::post('users/bulk/action', [UserManagementController::class, 'bulkAction'])->name('users.bulkAction');
+        Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
+        Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
+        Route::get('users/{id}/switch', [UserManagementController::class, 'switchToUser'])->name('users.switch');
+        Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->name('users.switchBack');
 
-    Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
-    Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
-    // Switch to user
-    Route::get('users/{id}/switch', [UserManagementController::class, 'switchToUser'])->name('users.switch');
+        // Tasks
+        Route::resource('tasks', TaskManagementController::class);
+        Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->name('tasks.updateStatus');
+        Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->name('tasks.updatePriority');
+        Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->name('tasks.updateAssigned');
 
-    // Switch back
-    Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->name('users.switchBack');
+        // Comments
+        Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
+        Route::post('comments/store', [AdminCommentController::class, 'store'])->name('comments.store');
+        Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
+        Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+        Route::post('/comments/store-with-status', [AdminCommentController::class, 'storeWithStatus'])->name('comments.storeWithStatus');
 
-    Route::resource('users', UserManagementController::class);
+        // Projects
+        Route::resource('projects', ProjectController::class);
 
-    // Task management
-    Route::resource('tasks', TaskManagementController::class);
-    Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->name('tasks.updateStatus');
-    Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->name('tasks.updatePriority');
-    Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->name('tasks.updateAssigned');
+        // Reports
+        Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+        Route::get('reports/export/{format}', [ReportController::class, 'export'])->name('admin.reports.export');
 
-    // Comments
-    Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
-    Route::post('comments/store', [AdminCommentController::class, 'store'])->name('comments.store');
-    Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
-    Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
-    Route::get('comments/{task_id}', [AdminCommentController::class, 'getComments'])->name('comments.get');
-    // combined comment and status update
-    Route::post('/comments/store-with-status', [App\Http\Controllers\Admin\CommentController::class, 'storeWithStatus'])
-        ->name('comments.storeWithStatus');
+        // Charts
+        Route::prefix('charts')->name('admin.charts.')->group(function () {
+            Route::get('/', [ChartsController::class, 'index'])->name('index');
+            Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+            Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+            Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+            Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+            Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+        });
 
-
-    // Projects
-    Route::resource('projects', ProjectController::class)
-        ->parameters(['projects' => 'project']);
-
-    // Reports
-    Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
-
-    Route::prefix('charts')->name('admin.charts.')->group(function () {
-        Route::get('/', [ChartsController::class, 'index'])->name('index');
-        Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
-        Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
-        Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
-        Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
-        Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+        // ✅ Admin Notifications
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
+        Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
     });
-});
 
 
-// Export Reports
-Route::get('admin/reports/export/{format}', [App\Http\Controllers\Admin\ReportController::class, 'export'])
-    ->name('admin.reports.export');
+/*
+|--------------------------------------------------------------------------
+| PROJECT MANAGER ROUTES
+|--------------------------------------------------------------------------
+*/
 
-
-
-
-// ========================= USER ROUTES =========================
-// User Routes
-Route::prefix('user')->middleware([CheckDeactivatedUser::class, CheckUserExists::class])->group(function () {
-
-    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
-
-    // My Tasks
-    Route::get('tasks', [UserTaskController::class, 'index'])->name('user.tasks.index');
-    Route::get('tasks/{id}', [UserTaskController::class, 'show'])->name('user.tasks.show');
-    Route::get('tasks/{id}/edit', [UserTaskController::class, 'edit'])->name('user.tasks.edit');
-    Route::put('tasks/{id}', [UserTaskController::class, 'update'])->name('user.tasks.update');
-
-
-    // AJAX for status update
-    Route::post('tasks/{id}/update-status', [UserTaskController::class, 'updateStatus'])->name('user.tasks.updateStatus');
-});
-
-
-
-// ========================= CALENDAR ROUTES =========================
-Route::get('/admin/calendar', [CalendarController::class, 'index'])->name('admin.calendar');
-Route::get('/user/calendar', [CalendarController::class, 'index'])->name('user.calendar');
-
-// AJAX for events
-Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
-
-Route::prefix('projectmanager')->middleware(['auth', CheckUserExists::class])->group(function () {
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmanager.calendar');
-});
-
-Route::prefix('projectmember')->middleware(['auth', CheckUserExists::class])->group(function () {
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('projectmember.calendar');
-});
-
-// ========================= PROJECT MANAGER ROUTES =========================
 Route::prefix('projectmanager')
     ->middleware([CheckDeactivatedUser::class, CheckUserExists::class])
     ->group(function () {
 
-        Route::get('/dashboard', [ProjectManagerDashboardController::class, 'index'])
-            ->name('projectmanager.dashboard');
+        Route::get('/dashboard', [ProjectManagerDashboardController::class, 'index'])->name('projectmanager.dashboard');
 
-        // Projects (resource)
         Route::resource('projects', ProjectManagerProjectController::class)
-            ->names([
-                'index' => 'projectmanager.projects.index',
-                'create' => 'projectmanager.projects.create',
-                'store' => 'projectmanager.projects.store',
-                'show' => 'projectmanager.projects.show',
-                'edit' => 'projectmanager.projects.edit',
-                'update' => 'projectmanager.projects.update',
-                // No delete
-            ])
-            ->except(['destroy']);
+            ->except(['destroy'])
+            ->names('projectmanager.projects');
 
-        // Tasks (resource)
         Route::resource('tasks', ProjectManagerTaskController::class)
-            ->names([
-                'index' => 'projectmanager.tasks.index',
-                'create' => 'projectmanager.tasks.create',
-                'store' => 'projectmanager.tasks.store',
-                'show' => 'projectmanager.tasks.show',
-                'edit' => 'projectmanager.tasks.edit',
-                'update' => 'projectmanager.tasks.update',
-                // No delete
-            ])
-            ->except(['destroy']); //
+            ->except(['destroy'])
+            ->names('projectmanager.tasks');
 
-        // Optional: Comments on tasks
-        Route::post('tasks/comments', [ProjectManagerTaskController::class, 'storeComment'])
-            ->name('projectmanager.tasks.comments.store');
+        Route::post('tasks/comments', [ProjectManagerTaskController::class, 'storeComment'])->name('projectmanager.tasks.comments.store');
+
+        // ✅ Project Manager Notifications
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('projectmanager.notifications.index');
+        Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('projectmanager.notifications.destroy');
     });
 
-// ========================= PROJECT MEMBER ROUTES =========================
+
+/*
+|--------------------------------------------------------------------------
+| PROJECT MEMBER ROUTES
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('projectmember')
     ->middleware([CheckDeactivatedUser::class, CheckUserExists::class])
     ->group(function () {
 
-        Route::get('/dashboard', [ProjectMemberDashboardController::class, 'index'])
-            ->name('projectmember.dashboard');
+        Route::get('/dashboard', [ProjectMemberDashboardController::class, 'index'])->name('projectmember.dashboard');
 
-        // Tasks (only index & show)
         Route::resource('tasks', ProjectMemberTaskController::class)
             ->only(['index', 'show'])
-            ->names([
-                'index' => 'projectmember.tasks.index',
-                'show' => 'projectmember.tasks.show',
-            ]);
+            ->names('projectmember.tasks');
 
-        // Optional: Comments for member
-        Route::post('tasks/comments', [ProjectMemberTaskController::class, 'storeComment'])
-            ->name('projectmember.tasks.comments.store');
+        Route::post('tasks/comments', [ProjectMemberTaskController::class, 'storeComment'])->name('projectmember.tasks.comments.store');
+
+        // ✅ Project Member Notifications
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('projectmember.notifications.index');
+        Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('projectmember.notifications.destroy');
     });
 
 
-// log testing
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+/*
+|--------------------------------------------------------------------------
+| USER ROUTES
+|--------------------------------------------------------------------------
+*/
 
+Route::prefix('user')
+    ->middleware([CheckDeactivatedUser::class, CheckUserExists::class])
+    ->group(function () {
+
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+
+        Route::resource('tasks', UserTaskController::class)->names('user.tasks');
+
+        // ✅ User Notifications
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('user.notifications.index');
+        Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('user.notifications.destroy');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| CALENDAR ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/calendar', [CalendarController::class, 'index'])->name('admin.calendar');
+Route::get('/user/calendar', [CalendarController::class, 'index'])->name('user.calendar');
+Route::get('/projectmanager/calendar', [CalendarController::class, 'index'])->name('projectmanager.calendar');
+Route::get('/projectmember/calendar', [CalendarController::class, 'index'])->name('projectmember.calendar');
+Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+
+
+/*
+|--------------------------------------------------------------------------
+| LOG TEST
+|--------------------------------------------------------------------------
+*/
 Route::get('/test-logs', function () {
     Log::debug('Debug log at ' . Carbon::now());
     Log::info('Info log at ' . Carbon::now());
     Log::error('Error log at ' . Carbon::now());
-
     return 'Logs written! Check storage/logs folder.';
 });

@@ -31,4 +31,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id')
+            ->orderBy('created_at', 'desc');
+    }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Services\NotificationService;
 
 class ProjectManagerProjectController extends Controller
 {
@@ -63,11 +64,14 @@ class ProjectManagerProjectController extends Controller
                 ->withInput();
         }
 
-        Project::create([
+        $project = Project::create([
             'name' => $request->name,
             'description' => $request->description,
             'created_by' => $user->id,
         ]);
+
+        // Send notification
+        NotificationService::projectCreated($project);
 
         return redirect()->route('projectmanager.projects.index')
             ->with('success', 'Project created successfully.');
@@ -130,6 +134,9 @@ class ProjectManagerProjectController extends Controller
             'name' => $request->name,
             'description' => $request->description,
         ]);
+
+        // Send notification
+        NotificationService::dataUpdated($project, 'project');
 
         return redirect()->route('projectmanager.projects.index')
             ->with('success', 'Project updated successfully.');

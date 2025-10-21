@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Services\NotificationService;
 
 class projectmanagerTaskController extends Controller
 {
@@ -158,7 +159,7 @@ class projectmanagerTaskController extends Controller
             return redirect()->route('projectmanager.tasks.index')->with('error', 'Unauthorized project selection.');
         }
 
-        DB::table('tasks')->insert([
+        $taskId = DB::table('tasks')->insertGetId([
             'title'       => $request->title,
             'description' => $request->description,
             'assigned_to' => $request->assigned_to,
@@ -171,6 +172,12 @@ class projectmanagerTaskController extends Controller
             'created_at'  => now(),
             'updated_at'  => now(),
         ]);
+
+        // Send notification to assigned user
+        if ($request->assigned_to) {
+            $task = DB::table('tasks')->where('task_id', $taskId)->first();
+            NotificationService::taskAssigned($task);
+        }
 
         return redirect()->route('projectmanager.tasks.index')->with('success', 'Task created successfully.');
     }
@@ -234,6 +241,11 @@ class projectmanagerTaskController extends Controller
             'updated_at'  => now(),
         ]);
 
+        // Send notification for updated task
+        $updatedTask = DB::table('tasks')->where('task_id', $task_id)->first();
+        NotificationService::dataUpdated($updatedTask, 'task');
+
+
         return redirect()->route('projectmanager.tasks.index')->with('success', 'Task updated successfully.');
     }
 
@@ -274,6 +286,12 @@ class projectmanagerTaskController extends Controller
         }
 
         DB::table('tasks')->where('task_id', $task_id)->update($updateData);
+
+        // Send notification for status change
+        $updatedTask = DB::table('tasks')->where('task_id', $task_id)->first();
+        $newStatus = DB::table('statuses')->where('status_id', $statusId)->value('name');
+        NotificationService::statusChanged($updatedTask, $newStatus);
+
 
         return response()->json(['success' => true]);
     }

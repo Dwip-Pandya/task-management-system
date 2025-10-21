@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: 'Are you sure you want to perform Bulk Action?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, delete',
+                confirmButtonText: 'Yes',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {

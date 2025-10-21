@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Services\NotificationService;
 
 class ProjectController extends Controller
 {
@@ -91,7 +92,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Project $project, Request $request)
     {
         $user = User::withTrashed()
             ->with('role')
@@ -103,6 +104,15 @@ class ProjectController extends Controller
             ->select('name', 'role_id')
             ->where('id', $project->created_by)
             ->first();
+
+        $project = Project::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'created_by' => $user->id,
+        ]);
+
+        // Send project created notification
+        NotificationService::projectCreated($project);
 
         return view('admin.projects.show', compact('project', 'user', 'creator'));
     }
@@ -142,6 +152,9 @@ class ProjectController extends Controller
             'name' => $request->name,
             'description' => $request->description,
         ]);
+
+        // Send project updated notification
+        NotificationService::dataUpdated($project, 'project');
 
         return redirect()->route('projects.index', compact('user'))
             ->with('success', 'Project updated successfully.');

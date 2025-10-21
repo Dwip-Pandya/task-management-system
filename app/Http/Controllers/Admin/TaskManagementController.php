@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Services\NotificationService;
 
 class TaskManagementController extends Controller
 {
@@ -143,6 +144,14 @@ class TaskManagementController extends Controller
             'updated_at' => now(),
         ]);
 
+        $task = DB::table('tasks')
+            ->where('created_by', $user->id)
+            ->where('title', $request->title)
+            ->latest()
+            ->first();
+
+        NotificationService::taskAssigned($task);
+
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
 
@@ -259,6 +268,9 @@ class TaskManagementController extends Controller
             'updated_at' => now(),
         ]);
 
+        $task = DB::table('tasks')->where('task_id', $id)->first();
+        NotificationService::dataUpdated($task, 'task');
+
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 
@@ -282,6 +294,10 @@ class TaskManagementController extends Controller
             'assigned_to' => $request->assigned_to,
             'updated_at' => now(),
         ]);
+
+        // Send task assigned notification
+        $task = DB::table('tasks')->where('task_id', $id)->first();
+        NotificationService::taskAssigned($task);
 
         return response()->json(['success' => true]);
     }
@@ -309,6 +325,10 @@ class TaskManagementController extends Controller
         }
 
         DB::table('tasks')->where('task_id', $id)->update($updateData);
+
+        // Send status change notification
+        $task = DB::table('tasks')->where('task_id', $id)->first();
+        NotificationService::statusChanged($task, DB::table('statuses')->where('status_id', $request->status_id)->value('name'));
 
         return response()->json(['success' => true]);
     }

@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{-- Favicon --}}
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <!-- csrf token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -24,6 +27,9 @@
 
     {{-- Header --}}
     @include('partials.header', ['user' => $user ?? null])
+
+    {{-- Notification --}}
+    @include('partials.notification')
 
     <div class="d-flex flex-grow-1">
         {{-- Sidebar --}}
@@ -69,6 +75,8 @@
     <!-- Custom sweet alerts -->
     <script src="{{ asset('assets/js/sweet-alerts.js') }}"></script>
 
+    <!-- Notification JS -->
+    <script src="{{ asset('assets/js/notification.js') }}"></script>
 
     {{-- Page-Specific JS --}}
     @stack('scripts')

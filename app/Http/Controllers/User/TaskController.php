@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Services\NotificationService;
+
 
 class TaskController extends Controller
 {
@@ -157,6 +159,15 @@ class TaskController extends Controller
         }
 
         DB::table('tasks')->where('task_id', $task_id)->update($updateData);
+
+        $task = DB::table('tasks')->where('task_id', $task_id)->first();
+
+        // Send status change notification if status was updated
+        NotificationService::statusChanged($task, DB::table('statuses')->where('status_id', $request->status_id)->value('name'));
+
+        // Send task updated notification for admin/project manager (optional)
+        NotificationService::dataUpdated($task, 'task');
+
 
         return redirect()->route('user.tasks.index')->with('success', 'Task updated successfully.');
     }

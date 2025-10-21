@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Services\NotificationService;
+
 
 class projectmemberTaskController extends Controller
 {
@@ -17,8 +19,8 @@ class projectmemberTaskController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-            
-            $tasks = DB::table('tasks')
+
+        $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.priority_id')
             ->leftJoin('projects', 'tasks.project_id', '=', 'projects.project_id')
@@ -104,6 +106,12 @@ class projectmemberTaskController extends Controller
             'status_id' => $request->status_id,
             'updated_at' => now()
         ]);
+
+        $task = DB::table('tasks')->where('task_id', $task_id)->first();
+
+        // Send status changed notification to admin/project manager
+        NotificationService::statusChanged($task, DB::table('statuses')->where('status_id', $request->status_id)->value('name'));
+
 
         return response()->json(['success' => true]);
     }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\log;
-
+use App\Services\NotificationService;
 
 class CommentController extends Controller
 {
@@ -47,6 +47,13 @@ class CommentController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            $comment = DB::table('comments')->where('task_id', $request->task_id)
+                ->where('user_id', $user->id)
+                ->latest()
+                ->first();
+
+            NotificationService::commentAdded($comment);
 
             return redirect()->back()->with('success', 'Comment added successfully.');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -148,6 +155,8 @@ class CommentController extends Controller
                 'status_id' => $request->status_id
             ]);
         }
+        // Send status change notification
+        NotificationService::statusChanged($task, DB::table('statuses')->where('status_id', $request->status_id)->value('name'));
 
         // --- INSERT COMMENT IF PROVIDED ---
         if ($request->message) {
