@@ -60,12 +60,54 @@ Route::prefix('admin')
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
         // User management
-        Route::resource('users', UserManagementController::class)->middleware([CheckModulePermission::class . ':user management,view']);
-        Route::post('users/bulk/action', [UserManagementController::class, 'bulkAction'])->middleware([CheckModulePermission::class . ':user management,delete'])->name('users.bulkAction');
-        Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('users.restore');
-        Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('users.toggleRole');
-        Route::get('users/{id}/switch', [UserManagementController::class, 'switchToUser'])->middleware([CheckModulePermission::class . ':user management,view'])->name('users.switch');
-        Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->middleware([CheckModulePermission::class . ':user management,view'])->name('users.switchBack');
+        Route::get('users', [UserManagementController::class, 'index'])
+            ->middleware([CheckModulePermission::class . ':user management,view'])
+            ->name('users.index');
+
+        Route::get('users/create', [UserManagementController::class, 'create'])
+            ->middleware([CheckModulePermission::class . ':user management,add'])
+            ->name('users.create');
+
+        Route::post('users', [UserManagementController::class, 'store'])
+            ->middleware([CheckModulePermission::class . ':user management,add'])
+            ->name('users.store');
+
+        Route::get('users/{user}', [UserManagementController::class, 'show'])
+            ->middleware([CheckModulePermission::class . ':user management,view'])
+            ->name('users.show');
+
+        Route::get('users/{user}/edit', [UserManagementController::class, 'edit'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.edit');
+
+        Route::match(['put', 'patch'], 'users/{user}', [UserManagementController::class, 'update'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.update');
+
+        Route::delete('users/{user}', [UserManagementController::class, 'destroy'])
+            ->middleware([CheckModulePermission::class . ':user management,delete'])
+            ->name('users.destroy');
+
+        Route::post('users/bulk-action', [UserManagementController::class, 'bulkAction'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.bulkAction');
+
+        Route::post('users/{user}/update-permissions', [UserManagementController::class, 'rolePermissions'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.updatePermissions');
+
+        Route::post('users/update-password', [UserManagementController::class, 'updatePassword'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.updatePassword');
+
+        Route::post('users/{user}/switch-to', [UserManagementController::class, 'switchToUser'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.switchTo');
+
+        Route::post('users/switch-back', [UserManagementController::class, 'switchBack'])
+            ->middleware([CheckModulePermission::class . ':user management,edit'])
+            ->name('users.switchBack');
+
         Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('admin.users.rolePermissions');
 
         // Tasks

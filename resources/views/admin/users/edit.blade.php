@@ -10,6 +10,8 @@
 <div class="flex-grow-1 p-4">
     <h2>Edit User</h2>
     @include('partials.Breadcrumbs')
+
+    @if($permissions['can_edit'])
     <form action="{{ route('users.update', $editUser->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -47,6 +49,12 @@
         <button class="btn btn-primary deleted-user">Update</button>
         <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to edit this user.
+    </div>
+    <a href="{{ route('users.index') }}" class="btn btn-secondary mt-2">Back to Users</a>
+    @endif
 </div>
 @endsection
 @push('scripts')

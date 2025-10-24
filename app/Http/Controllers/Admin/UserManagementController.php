@@ -13,6 +13,69 @@ use Illuminate\Support\Facades\DB;
 
 class UserManagementController extends Controller
 {
+
+    /**
+     * Utility: Check if the logged-in user has permission for the User module.
+     */
+    private function hasPermission($action)
+    {
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
+        if (!$user || !$user->role_id) {
+            return false;
+        }
+
+        $permission = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'user management') // ✅ Correct module name
+            ->first();
+
+        if (!$permission) {
+            return false;
+        }
+
+        $field = 'can_' . $action;
+
+        if (!property_exists($permission, $field)) {
+            return true;
+        }
+
+        return $permission->$field == 1;
+    }
+
+    /**
+     * Utility: Fetch all permissions for current user.
+     */
+    private function getAllPermissions()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->role_id) {
+            return [
+                'can_view' => false,
+                'can_add' => false,
+                'can_edit' => false,
+                'can_delete' => false,
+            ];
+        }
+
+        $perm = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'user management')
+            ->first();
+
+        return [
+            'can_view' => $perm->can_view ?? false,
+            'can_add' => $perm->can_add ?? false,
+            'can_edit' => $perm->can_edit ?? false,
+            'can_delete' => $perm->can_delete ?? false,
+        ];
+    }
+
+
     // Display all users
     public function index(Request $request)
     {
@@ -57,7 +120,15 @@ class UserManagementController extends Controller
     {
         $user = Auth::user();
         $roles = Role::all();
-        return view('admin.users.create', compact('user', 'roles'));
+
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_add']) {
+            return redirect()->route('users.index')
+                ->with('error', 'You do not have permission to create a user.');
+        }
+
+        return view('admin.users.create', compact('user', 'roles', 'permissions'));
     }
 
     // Store new user
@@ -96,7 +167,14 @@ class UserManagementController extends Controller
         $editUser = User::findOrFail($id);
         $roles = Role::all();
 
-        return view('admin.users.edit', compact('editUser', 'user', 'roles'));
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_edit']) {
+            return redirect()->route('users.index')
+                ->with('error', 'You do not have permission to edit a user.');
+        }
+
+        return view('admin.users.edit', compact('editUser', 'user', 'roles', 'permissions'));
     }
 
     // Update user
@@ -125,6 +203,11 @@ class UserManagementController extends Controller
     {
         $user = Auth::user();
         $deleteUser = User::findOrFail($id);
+
+        if (!$this->hasPermission('delete')) {
+            return redirect()->route('users.index')
+                ->with('error', 'You do not have permission to delete a user.');
+        }
 
         if ($deleteUser->id == $user->id) {
             return redirect()->route('users.index')->with('error', 'You cannot delete yourself.');

@@ -13,6 +13,7 @@
 
     @include('partials.flash-messages')
 
+    @if ($permissions['can_add'])
     <form action="{{ route('users.store') }}" method="POST">
         @csrf
 
@@ -20,7 +21,7 @@
             <label class="form-label">Name</label>
             <input type="text" name="name"
                 class="form-control @error('name') is-invalid @enderror"
-                value="{{ old('name') }}" >
+                value="{{ old('name') }}">
             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
@@ -28,21 +29,21 @@
             <label class="form-label">Email</label>
             <input type="email" name="email"
                 class="form-control @error('email') is-invalid @enderror"
-                value="{{ old('email') }}" >
+                value="{{ old('email') }}">
             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
         <div class="mb-3">
             <label class="form-label">Password</label>
             <input type="password" name="password"
-                class="form-control @error('password') is-invalid @enderror" >
+                class="form-control @error('password') is-invalid @enderror">
             @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
         <div class="mb-3">
             <label class="form-label">Role</label>
             <select name="role_id"
-                class="form-select @error('role_id') is-invalid @enderror" >
+                class="form-select @error('role_id') is-invalid @enderror">
                 <option class="text-dark" value="">-- Select Role --</option>
                 @foreach ($roles as $role)
                 <option class="text-dark" value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
@@ -56,6 +57,12 @@
         <button class="btn btn-success deleted-user">Create</button>
         <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to create a new user.
+    </div>
+    <a href="{{ route('users.index') }}" class="btn btn-secondary mt-2">Back to Users</a>
+    @endif
 </div>
 @endsection
 
