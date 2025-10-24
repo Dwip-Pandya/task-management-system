@@ -1,0 +1,329 @@
+/* Root Color Variables */
+:root {
+    --primary-color: #6366f1;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+
+    /* Glass Colors */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+
+    /* Background Gradients */
+    --bg-gradient-1: #1a1a2e;
+    --bg-gradient-2: #16213e;
+    --bg-gradient-3: #0f3460;
+    --bg-gradient-4: #533a7b;
+}
+
+/* Role Permission Offcanvas Styles */
+.role-permission-offcanvas {
+    width: 600px !important;
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: -10px 0 30px var(--glass-shadow);
+}
+
+.role-permission-offcanvas .offcanvas-header {
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    backdrop-filter: blur(20px);
+}
+
+.role-permission-offcanvas .offcanvas-title {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.role-permission-offcanvas .btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.role-permission-offcanvas .btn-close-white:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+.role-permission-offcanvas .offcanvas-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+/* User Info Section */
+.role-permission-offcanvas .user-info {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.role-permission-offcanvas .user-info p {
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.role-permission-offcanvas .user-info p:last-child {
+    margin-bottom: 0;
+}
+
+.role-permission-offcanvas .user-info strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Permissions Table Wrapper */
+.role-permission-offcanvas .permissions-table-wrapper {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+    overflow-x: auto;
+}
+
+/* Permissions Table */
+.role-permission-offcanvas .permissions-table {
+    margin-bottom: 0 !important;
+    background: transparent !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100%;
+}
+
+.role-permission-offcanvas .permissions-table thead th {
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 1rem 0.75rem !important;
+    border: 1px solid var(--glass-border) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+.role-permission-offcanvas .permissions-table thead th:first-child {
+    text-align: left !important;
+    border-top-left-radius: 8px;
+}
+
+.role-permission-offcanvas .permissions-table thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.role-permission-offcanvas .permissions-table tbody tr {
+    transition: background 0.3s ease;
+}
+
+.role-permission-offcanvas .permissions-table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.08) !important;
+}
+
+.role-permission-offcanvas .permissions-table tbody td {
+    color: var(--text-secondary) !important;
+    padding: 1rem 0.75rem !important;
+    border: 1px solid var(--glass-border) !important;
+    border-top: none !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    background: transparent !important;
+}
+
+.role-permission-offcanvas .permissions-table tbody td:first-child {
+    text-align: left !important;
+    font-weight: 500 !important;
+    color: var(--text-primary) !important;
+}
+
+.role-permission-offcanvas .permissions-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.role-permission-offcanvas .permissions-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+/* Override any striping from user.css */
+.role-permission-offcanvas .permissions-table tbody tr:nth-of-type(odd) {
+    background: transparent !important;
+}
+
+.role-permission-offcanvas .permissions-table tbody tr:nth-of-type(even) {
+    background: transparent !important;
+}
+
+/* Custom Checkbox Styles */
+.role-permission-offcanvas .permissions-table input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+    position: relative;
+}
+
+.role-permission-offcanvas .permissions-table input[type="checkbox"]:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+/* Save Button - Enhanced Specificity */
+.role-permission-offcanvas .offcanvas-body .save-btn {
+    width: 100% !important;
+    padding: 0.875rem !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.role-permission-offcanvas .offcanvas-body .save-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.role-permission-offcanvas .offcanvas-body .save-btn:hover {
+    background: linear-gradient(135deg, #059669 0%, var(--success-color) 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.role-permission-offcanvas .offcanvas-body .save-btn:hover::before {
+    left: 100%;
+}
+
+.role-permission-offcanvas .offcanvas-body .save-btn:active {
+    transform: translateY(0) !important;
+}
+
+.role-permission-offcanvas .offcanvas-body .save-btn:focus {
+    outline: 2px solid rgba(16, 185, 129, 0.5) !important;
+    outline-offset: 2px !important;
+}
+
+/* Scrollbar Styling */
+.role-permission-offcanvas .offcanvas-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.role-permission-offcanvas .offcanvas-body::-webkit-scrollbar-track {
+    background: var(--glass-bg);
+    border-radius: 10px;
+}
+
+.role-permission-offcanvas .offcanvas-body::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.role-permission-offcanvas .offcanvas-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar for table wrapper */
+.role-permission-offcanvas .permissions-table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.role-permission-offcanvas .permissions-table-wrapper::-webkit-scrollbar-track {
+    background: var(--glass-bg);
+    border-radius: 10px;
+}
+
+.role-permission-offcanvas .permissions-table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.role-permission-offcanvas .permissions-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .role-permission-offcanvas {
+        width: 100% !important;
+    }
+
+    .role-permission-offcanvas .permissions-table {
+        font-size: 0.85rem;
+    }
+
+    .role-permission-offcanvas .permissions-table thead th,
+    .role-permission-offcanvas .permissions-table tbody td {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .role-permission-offcanvas .permissions-table input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .role-permission-offcanvas .offcanvas-header {
+        padding: 1rem;
+    }
+
+    .role-permission-offcanvas .offcanvas-body {
+        padding: 1rem;
+    }
+
+    .role-permission-offcanvas .offcanvas-title {
+        font-size: 1.25rem;
+    }
+
+    .role-permission-offcanvas .permissions-table thead th,
+    .role-permission-offcanvas .permissions-table tbody td {
+        padding: 0.5rem 0.25rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .role-permission-offcanvas .permissions-table input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+
+    .role-permission-offcanvas .save-btn {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+}

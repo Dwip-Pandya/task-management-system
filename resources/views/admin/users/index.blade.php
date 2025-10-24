@@ -4,6 +4,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/css/user.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/role.css') }}">
 @endpush
 
 @section('content')
@@ -57,6 +58,12 @@
                             data-url="{{ url('admin/users/' . $u->id . '/switch') }}">
                             Switch to user
                         </button>
+                        <a href="#"
+                            class="btn btn-sm btn-primary"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#rolePermissionOffcanvas-{{ $u->id }}">
+                            Update Role Permission
+                        </a>
                         @if(!$u->trashed())
                         <a href="{{ route('users.edit', $u->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         @if($u->id !== $user->id)
@@ -75,6 +82,11 @@
                             </button>
                         </form>
                         @endif
+                        @include('partials.role-permission', [
+                        'user' => $u,
+                        'modules' => $modules,
+                        'rolePermissions' => $rolePermissions,
+                        ])
                     </td>
                 </tr>
                 @empty

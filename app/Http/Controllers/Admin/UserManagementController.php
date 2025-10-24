@@ -9,6 +9,7 @@ use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class UserManagementController extends Controller
 {
@@ -30,10 +31,25 @@ class UserManagementController extends Controller
                         ->orWhere('email', 'like', "%$search%");
                 });
             })
-            ->orderBy('deleted_at') // active first
+            ->orderBy('deleted_at')
             ->get();
 
-        return view('admin.users.index', compact('users', 'user', 'search'));
+        // Modules
+        $modules = [
+            'user management',
+            'project management',
+            'task management',
+            'report generation',
+            'calendar viewing',
+            'view chart analytics',
+        ];
+
+        // Fetch role permissions for all users
+        $rolePermissions = DB::table('role_permissions')
+            ->get()
+            ->groupBy('role_id');
+
+        return view('admin.users.index', compact('users', 'user', 'search', 'modules', 'rolePermissions'));
     }
 
     // Show create form
@@ -257,5 +273,36 @@ class UserManagementController extends Controller
         request()->session()->regenerate();
 
         return redirect()->route('users.index')->with('success', 'Returned to your admin account.');
+    }
+
+    public function rolePermissions(Request $request, $id)
+    {
+        $user = User::with('role')->findOrFail($id);
+
+        // Submitted permissions from form
+        $submittedPermissions = $request->input('permissions', []);
+
+        // Fetch existing permissions for user's role
+        $rolePermissions = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->get()
+            ->keyBy('module_name');
+
+        foreach ($rolePermissions as $moduleName => $perm) {
+            $data = $submittedPermissions[$moduleName] ?? [];
+
+            // Update DB: 1 if checked, 0 if unchecked
+            DB::table('role_permissions')
+                ->where('id', $perm->id)
+                ->update([
+                    'can_view'   => isset($data['can_view']) ? 1 : 0,
+                    'can_add'    => isset($data['can_add']) ? 1 : 0,
+                    'can_edit'   => isset($data['can_edit']) ? 1 : 0,
+                    'can_delete' => isset($data['can_delete']) ? 1 : 0,
+                    'updated_at' => now(),
+                ]);
+        }
+
+        return back()->with('success', 'Permissions updated successfully.');
     }
 }

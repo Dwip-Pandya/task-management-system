@@ -100,6 +100,10 @@ Route::prefix('admin')
         Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
         Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
+
+        // Role Permissions
+        Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])
+            ->name('admin.users.rolePermissions');
     });
 
 
