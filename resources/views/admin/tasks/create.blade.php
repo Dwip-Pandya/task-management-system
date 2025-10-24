@@ -14,6 +14,8 @@
 <div class="flex-grow-1 p-4">
     <h2>Create Task</h2>
     @include('partials.Breadcrumbs')
+
+    @if($permissions['can_add'])
     <form action="{{ route('tasks.store') }}" method="POST" id="taskForm">
         @csrf
 
@@ -102,6 +104,12 @@
         <button type="submit" class="btn btn-success deleted-user">Create</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to create tasks.
+    </div>
+    <a href="{{ route('tasks.index') }}" class="btn btn-secondary mt-2">Back to Tasks</a>
+    @endif
 </div>
 @endsection
 @push('scripts')

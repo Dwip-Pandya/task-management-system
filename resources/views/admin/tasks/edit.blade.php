@@ -10,6 +10,8 @@
 <div class="flex-grow-1 p-4">
     <h2>Edit Task</h2>
     @include('partials.Breadcrumbs')
+
+    @if($permissions['can_edit'])
     <form action="{{ route('tasks.update', $task->task_id) }}" method="POST" id="taskForm">
         @csrf
         @method('PUT')
@@ -116,6 +118,12 @@
         <button type="submit" class="btn btn-primary deleted-user">Update</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to view this task.
+    </div>
+    <a href="{{ route('tasks.index') }}" class="btn btn-secondary mt-2">Back to Tasks</a>
+    @endif
 </div>
 @endsection
 

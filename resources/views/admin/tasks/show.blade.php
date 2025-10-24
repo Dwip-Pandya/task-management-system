@@ -11,6 +11,7 @@
     <h2>Task Details</h2>
     @include('partials.Breadcrumbs')
 
+    @if($permissions['can_view'])
     <div class="mt-5">
         <p><strong>Project:</strong> {{ $task->project_name }}</p>
         <p><strong>Title:</strong> {{ $task->title }}</p>
@@ -88,7 +89,14 @@
         </div>
         @endforeach
     </div>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to view this task.
+    </div>
+    <a href="{{ route('tasks.index') }}" class="btn btn-secondary mt-2">Back to Tasks</a>
+    @endif
 </div>
+
 @endsection
 @push('scripts')
 <script src="{{ asset('assets/js/comment-validation.js') }}"></script>

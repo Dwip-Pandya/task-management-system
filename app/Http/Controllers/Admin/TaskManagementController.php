@@ -13,6 +13,67 @@ use App\Services\NotificationService;
 class TaskManagementController extends Controller
 {
     /**
+     * Utility: Check if the logged-in user has permission for the Task module.
+     */
+    private function hasPermission($action)
+    {
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
+        if (!$user || !$user->role_id) {
+            return false;
+        }
+
+        $permission = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'task management')
+            ->first();
+
+        if (!$permission) {
+            return false;
+        }
+
+        $field = 'can_' . $action;
+
+        if (!property_exists($permission, $field)) {
+            return true;
+        }
+
+        return $permission->$field == 1;
+    }
+
+    /**
+     * Utility: Fetch all permissions for current user.
+     */
+    private function getAllPermissions()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->role_id) {
+            return [
+                'can_view' => false,
+                'can_add' => false,
+                'can_edit' => false,
+                'can_delete' => false,
+            ];
+        }
+
+        $perm = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'task management')
+            ->first();
+
+        return [
+            'can_view' => $perm->can_view ?? false,
+            'can_add' => $perm->can_add ?? false,
+            'can_edit' => $perm->can_edit ?? false,
+            'can_delete' => $perm->can_delete ?? false,
+        ];
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
@@ -21,6 +82,7 @@ class TaskManagementController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
+
         // Start query
         $tasksQuery = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
@@ -74,7 +136,10 @@ class TaskManagementController extends Controller
         $priorities = DB::table('priorities')->get();
         $projects = DB::table('projects')->get();
 
-        return view('admin.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'usersList', 'projects', 'request', 'tasksQuery'));
+        // Permissions
+        $permissions = $this->getAllPermissions();
+
+        return view('admin.tasks.index', compact('tasks', 'user', 'statuses', 'priorities', 'usersList', 'projects', 'request', 'tasksQuery', 'permissions'));
     }
 
 
@@ -98,13 +163,21 @@ class TaskManagementController extends Controller
 
         $projects = DB::table('projects')->get();
 
+        // Permissions
+        $permissions = $this->getAllPermissions();
+        if (!$permissions['can_add']) {
+            return redirect()->route('tasks.index')
+                ->with('error', 'You do not have permission to create a task.');
+        }
+
         return view('admin.tasks.create', compact(
             'user',
             'statuses',
             'priorities',
             'tags',
             'users',
-            'projects'
+            'projects',
+            'permissions'
         ));
     }
 
@@ -113,6 +186,11 @@ class TaskManagementController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$this->hasPermission('add')) {
+            return redirect()->route('tasks.index')
+                ->with('error', 'You do not have permission to add a task.');
+        }
+
         try {
             $request->validate([
                 'title'       => 'required|max:255',
@@ -177,6 +255,13 @@ class TaskManagementController extends Controller
 
         $projects = DB::table('projects')->get();
 
+        // Permissions
+        $permissions = $this->getAllPermissions();
+        if (!$permissions['can_edit']) {
+            return redirect()->route('tasks.index')
+                ->with('error', 'You do not have permission to edit a task.');
+        }
+
         return view('admin.tasks.edit', compact(
             'task',
             'statuses',
@@ -184,7 +269,8 @@ class TaskManagementController extends Controller
             'tags',
             'users',
             'projects',
-            'user'
+            'user',
+            'permissions'
         ));
     }
 
@@ -233,7 +319,14 @@ class TaskManagementController extends Controller
             ->select('comments.*', 'users.name', 'roles.name as role_name')
             ->get();
 
-        return view('admin.tasks.show', compact('task', 'user', 'comments'));
+        // Permissions
+        $permissions = $this->getAllPermissions();
+        if (!$permissions['can_view']) {
+            return redirect()->route('tasks.index')
+                ->with('error', 'You do not have permission to view this task.');
+        }
+
+        return view('admin.tasks.show', compact('task', 'user', 'comments', 'permissions'));
     }
 
     /**

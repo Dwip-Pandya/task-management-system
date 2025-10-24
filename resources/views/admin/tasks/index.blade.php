@@ -119,8 +119,9 @@
 
                     <!-- Assigned User -->
                     <p><strong>Assigned To:</strong>
-                        {{-- Assigned User dropdown in cards --}}
-                        <select class="form-select form-select-sm change-assigned deleted-user" data-id="{{ $t->task_id }}">
+                        <select class="form-select form-select-sm change-assigned deleted-user"
+                            data-id="{{ $t->task_id }}"
+                            {{ $permissions['can_edit'] ? '' : 'disabled' }}>
                             <option class="text-dark" value="">Unassigned</option>
                             @foreach ($usersList as $u)
                             <option class="text-dark" value="{{ $u->id }}" {{ $u->id == $t->assigned_to ? 'selected' : '' }}>
@@ -133,7 +134,8 @@
                     <!-- Status -->
                     <p><strong>Status:</strong>
                         <select class="form-select form-select-sm change-status deleted-user"
-                            data-id="{{ $t->task_id }}">
+                            data-id="{{ $t->task_id }}"
+                            {{ $permissions['can_edit'] ? '' : 'disabled' }}>
                             @foreach (DB::table('statuses')->get() as $s)
                             <option class="text-dark" value="{{ $s->status_id }}"
                                 {{ $s->status_id == $t->status_id ? 'selected' : '' }}>
@@ -147,7 +149,8 @@
                     <!-- Priority -->
                     <p><strong>Priority:</strong>
                         <select class="form-select form-select-sm change-priority deleted-user"
-                            data-id="{{ $t->task_id }}">
+                            data-id="{{ $t->task_id }}"
+                            {{ $permissions['can_edit'] ? '' : 'disabled' }}>
                             @foreach (DB::table('priorities')->get() as $p)
                             <option class="text-dark" value="{{ $p->priority_id }}"
                                 {{ $p->priority_id == $t->priority_id ? 'selected' : '' }}>

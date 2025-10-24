@@ -69,7 +69,34 @@ Route::prefix('admin')
         Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('admin.users.rolePermissions');
 
         // Tasks
-        Route::resource('tasks', TaskManagementController::class)->middleware([CheckModulePermission::class . ':task management,view']);
+        Route::get('tasks', [TaskManagementController::class, 'index'])
+            ->middleware([CheckModulePermission::class . ':task management,view'])
+            ->name('tasks.index');
+
+        Route::get('tasks/create', [TaskManagementController::class, 'create'])
+            ->middleware([CheckModulePermission::class . ':task management,add'])
+            ->name('tasks.create');
+
+        Route::post('tasks', [TaskManagementController::class, 'store'])
+            ->middleware([CheckModulePermission::class . ':task management,add'])
+            ->name('tasks.store');
+
+        Route::get('tasks/{task}', [TaskManagementController::class, 'show'])
+            ->middleware([CheckModulePermission::class . ':task management,view'])
+            ->name('tasks.show');
+
+        Route::get('tasks/{task}/edit', [TaskManagementController::class, 'edit'])
+            ->middleware([CheckModulePermission::class . ':task management,edit'])
+            ->name('tasks.edit');
+
+        Route::match(['put', 'patch'], 'tasks/{task}', [TaskManagementController::class, 'update'])
+            ->middleware([CheckModulePermission::class . ':task management,edit'])
+            ->name('tasks.update');
+
+        Route::delete('tasks/{task}', [TaskManagementController::class, 'destroy'])
+            ->middleware([CheckModulePermission::class . ':task management,delete'])
+            ->name('tasks.destroy');
+
         Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->middleware([CheckModulePermission::class . ':task management,edit'])->name('tasks.updateStatus');
         Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->middleware([CheckModulePermission::class . ':task management,edit'])->name('tasks.updatePriority');
         Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->middleware([CheckModulePermission::class . ':task management,edit'])->name('tasks.updateAssigned');
