@@ -10,12 +10,71 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Services\NotificationService;
+use Mockery\Matcher\Not;
 
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Utility: Check if the logged-in user has permission for the Project module.
      */
+    private function hasPermission($action)
+    {
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
+        if (!$user || !$user->role_id) {
+            return false;
+        }
+
+        $permission = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'project management')
+            ->first();
+
+        if (!$permission) {
+            return false;
+        }
+
+        $field = 'can_' . $action;
+
+        if (!property_exists($permission, $field)) {
+            return true;
+        }
+
+        return $permission->$field == 1;
+    }
+
+    /**
+     * Utility: Fetch all permissions for current user.
+     */
+    private function getAllPermissions()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->role_id) {
+            return [
+                'can_view' => false,
+                'can_add' => false,
+                'can_edit' => false,
+                'can_delete' => false,
+            ];
+        }
+
+        $perm = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'project management')
+            ->first();
+
+        return [
+            'can_view' => $perm->can_view ?? false,
+            'can_add' => $perm->can_add ?? false,
+            'can_edit' => $perm->can_edit ?? false,
+            'can_delete' => $perm->can_delete ?? false,
+        ];
+    }
+
     public function index(Request $request)
     {
         $user = User::withTrashed()
@@ -27,19 +86,16 @@ class ProjectController extends Controller
         $projectsQuery = Project::leftJoin('users as creators', 'projects.created_by', '=', 'creators.id')
             ->select('projects.*', 'creators.name as creator_name', 'creators.role_id as creator_role_id');
 
-        // Apply filter if creator_role is selected
         if ($request->filled('creator_role')) {
             $projectsQuery->where('creators.role_id', $request->creator_role);
         }
 
-        // Filter by specific creator (user id)
         if ($request->filled('created_by')) {
             $projectsQuery->where('projects.created_by', $request->created_by);
         }
 
         $projects = $projectsQuery->orderBy('projects.created_at', 'desc')->get();
 
-        // Get list of creators (unique users who created projects)
         $creators = User::whereIn('id', Project::pluck('created_by')->unique())
             ->select('id', 'name')
             ->orderBy('name')
@@ -48,9 +104,6 @@ class ProjectController extends Controller
         return view('admin.projects.index', compact('projects', 'user', 'request', 'creators'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $user = User::withTrashed()
@@ -58,15 +111,24 @@ class ProjectController extends Controller
             ->where('id', Auth::id())
             ->first();
 
-        return view('admin.projects.create', compact('user'));
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_add']) {
+            return redirect()->route('projects.index')
+                ->with('error', 'You do not have permission to create a project.');
+        }
+
+        return view('admin.projects.create', compact('user', 'permissions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $user = Auth::user();
+
+        if (!$this->hasPermission('add')) {
+            return redirect()->route('projects.index')
+                ->with('error', 'You do not have permission to add a project.');
+        }
 
         try {
             $request->validate([
@@ -89,9 +151,6 @@ class ProjectController extends Controller
             ->with('success', 'Project created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Project $project, Request $request)
     {
         $user = User::withTrashed()
@@ -99,43 +158,46 @@ class ProjectController extends Controller
             ->where('id', Auth::id())
             ->first();
 
-        // Get creator info
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_view']) {
+            return redirect()->route('projects.index')
+                ->with('error', 'You do not have permission to view this project.');
+        }
+
         $creator = DB::table('users')
             ->select('name', 'role_id')
             ->where('id', $project->created_by)
             ->first();
 
-        $project = Project::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'created_by' => $user->id,
-        ]);
-
-        // Send project created notification
-        NotificationService::projectCreated($project);
-
-        return view('admin.projects.show', compact('project', 'user', 'creator'));
+        return view('admin.projects.show', compact('project', 'user', 'creator', 'permissions'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Project $project)
     {
         $user = User::withTrashed()
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-        return view('admin.projects.edit', compact('project', 'user'));
+
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_edit']) {
+            return redirect()->route('projects.index')
+                ->with('error', 'You do not have permission to edit a project.');
+        }
+
+        return view('admin.projects.edit', compact('project', 'user', 'permissions'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Project $project)
     {
         $user = Auth::user();
+
+        if (!$this->hasPermission('edit')) {
+            return redirect()->route('projects.index')
+                ->with('error', 'You do not have permission to update a project.');
+        }
 
         try {
             $request->validate([
@@ -153,19 +215,20 @@ class ProjectController extends Controller
             'description' => $request->description,
         ]);
 
-        // Send project updated notification
         NotificationService::dataUpdated($project, 'project');
 
         return redirect()->route('projects.index', compact('user'))
             ->with('success', 'Project updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Project $project)
     {
         $user = Auth::user();
+
+        if (!$this->hasPermission('delete')) {
+            return redirect()->route('projects.index')
+                ->with('error', 'You do not have permission to delete a project.');
+        }
 
         $project->delete();
         return redirect()->route('projects.index', compact('user'))

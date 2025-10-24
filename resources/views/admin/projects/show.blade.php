@@ -11,6 +11,8 @@
     <h2>Project Details</h2>
     @include('partials.Breadcrumbs')
 
+    @if($permissions['can_view'])
+
     <div class="card card-1 mt-3 text-light">
         <div class="card-body">
             <h4 class="card-title">{{ $project->name }}</h4>
@@ -26,5 +28,11 @@
             <a href="{{ route('projects.index') }}" class="btn btn-secondary">Back</a>
         </div>
     </div>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to edit this project.
+    </div>
+    <a href="{{ route('projects.index') }}" class="btn btn-secondary mt-2">Back to Projects</a>
+    @endif
 </div>
 @endsection

@@ -11,6 +11,7 @@
     <h2>Edit Project</h2>
     @include('partials.Breadcrumbs')
 
+    @if($permissions['can_edit'])
     <form action="{{ route('projects.update', $project) }}" method="POST" id="projectForm">
         @csrf
         @method('PUT')
@@ -39,6 +40,12 @@
         <button type="submit" class="btn btn-primary deleted-user">Update Project</button>
         <a href="{{ route('projects.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to edit this project.
+    </div>
+    <a href="{{ route('projects.index') }}" class="btn btn-secondary mt-2">Back to Projects</a>
+    @endif
 </div>
 @endsection
 

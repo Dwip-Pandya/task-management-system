@@ -24,6 +24,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Middleware\CheckUserExists;
 use App\Http\Middleware\ForceChangePassword;
 use App\Http\Middleware\CheckDeactivatedUser;
+use App\Http\Middleware\CheckModulePermission;
 
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -59,51 +60,76 @@ Route::prefix('admin')
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
         // User management
-        Route::resource('users', UserManagementController::class);
-        Route::post('users/bulk/action', [UserManagementController::class, 'bulkAction'])->name('users.bulkAction');
-        Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->name('users.restore');
-        Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->name('users.toggleRole');
-        Route::get('users/{id}/switch', [UserManagementController::class, 'switchToUser'])->name('users.switch');
-        Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->name('users.switchBack');
+        Route::resource('users', UserManagementController::class)->middleware([CheckModulePermission::class . ':user management,view']);
+        Route::post('users/bulk/action', [UserManagementController::class, 'bulkAction'])->middleware([CheckModulePermission::class . ':user management,delete'])->name('users.bulkAction');
+        Route::post('users/{id}/restore', [UserManagementController::class, 'restore'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('users.restore');
+        Route::patch('users/{id}/toggle-role', [UserManagementController::class, 'toggleRole'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('users.toggleRole');
+        Route::get('users/{id}/switch', [UserManagementController::class, 'switchToUser'])->middleware([CheckModulePermission::class . ':user management,view'])->name('users.switch');
+        Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])->middleware([CheckModulePermission::class . ':user management,view'])->name('users.switchBack');
+        Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('admin.users.rolePermissions');
 
         // Tasks
-        Route::resource('tasks', TaskManagementController::class);
-        Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->name('tasks.updateStatus');
-        Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->name('tasks.updatePriority');
-        Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->name('tasks.updateAssigned');
+        Route::resource('tasks', TaskManagementController::class)->middleware([CheckModulePermission::class . ':task management,view']);
+        Route::post('tasks/{id}/update-status', [TaskManagementController::class, 'updateStatus'])->middleware([CheckModulePermission::class . ':task management,edit'])->name('tasks.updateStatus');
+        Route::post('tasks/{id}/update-priority', [TaskManagementController::class, 'updatePriority'])->middleware([CheckModulePermission::class . ':task management,edit'])->name('tasks.updatePriority');
+        Route::post('tasks/{id}/update-assigned', [TaskManagementController::class, 'updateAssigned'])->middleware([CheckModulePermission::class . ':task management,edit'])->name('tasks.updateAssigned');
 
         // Comments
-        Route::get('comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
-        Route::post('comments/store', [AdminCommentController::class, 'store'])->name('comments.store');
-        Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->name('comments.update');
-        Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
-        Route::post('/comments/store-with-status', [AdminCommentController::class, 'storeWithStatus'])->name('comments.storeWithStatus');
+        Route::get('comments', [AdminCommentController::class, 'index'])->middleware([CheckModulePermission::class . ':comment management,view'])->name('admin.comments.index');
+        Route::post('comments/store', [AdminCommentController::class, 'store'])->middleware([CheckModulePermission::class . ':comment management,add'])->name('comments.store');
+        Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->middleware([CheckModulePermission::class . ':comment management,edit'])->name('comments.update');
+        Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->middleware([CheckModulePermission::class . ':comment management,delete'])->name('comments.destroy');
+        Route::post('/comments/store-with-status', [AdminCommentController::class, 'storeWithStatus'])->middleware([CheckModulePermission::class . ':comment management,add'])->name('comments.storeWithStatus');
 
         // Projects
-        Route::resource('projects', ProjectController::class);
+        Route::get('projects', [ProjectController::class, 'index'])
+            // ->middleware([CheckModulePermission::class . ':project management,view'])
+            ->name('projects.index');
+
+        Route::get('projects/create', [ProjectController::class, 'create'])
+            ->middleware([CheckModulePermission::class . ':project management,add'])
+            ->name('projects.create');
+
+        Route::post('projects', [ProjectController::class, 'store'])
+            ->middleware([CheckModulePermission::class . ':project management,add'])
+            ->name('projects.store');
+
+        Route::get('projects/{project}', [ProjectController::class, 'show'])
+            ->middleware([CheckModulePermission::class . ':project management,view'])
+            ->name('projects.show');
+
+        Route::get('projects/{project}/edit', [ProjectController::class, 'edit'])
+            ->middleware([CheckModulePermission::class . ':project management,edit'])
+            ->name('projects.edit');
+
+        Route::match(['put', 'patch'], 'projects/{project}', [ProjectController::class, 'update'])
+            ->middleware([CheckModulePermission::class . ':project management,edit'])
+            ->name('projects.update');
+
+        Route::delete('projects/{project}', [ProjectController::class, 'destroy'])
+            ->middleware([CheckModulePermission::class . ':project management,delete'])
+            ->name('projects.destroy');
+
 
         // Reports
-        Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports.index');
-        Route::get('reports/export/{format}', [ReportController::class, 'export'])->name('admin.reports.export');
+        Route::get('/reports', [ReportController::class, 'index'])->middleware([CheckModulePermission::class . ':reports,view'])->name('admin.reports.index');
+        Route::get('reports/export/{format}', [ReportController::class, 'export'])->middleware([CheckModulePermission::class . ':reports,view'])->name('admin.reports.export');
 
         // Charts
-        Route::prefix('charts')->name('admin.charts.')->group(function () {
-            Route::get('/', [ChartsController::class, 'index'])->name('index');
-            Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
-            Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
-            Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
-            Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
-            Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
-        });
+        Route::prefix('charts')->name('admin.charts.')->middleware([CheckModulePermission::class . ':charts,view'])
+            ->group(function () {
+                Route::get('/', [ChartsController::class, 'index'])->name('index');
+                Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+                Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+                Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+                Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+                Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+            });
 
-        // ✅ Admin Notifications
+        // Admin Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
         Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
-
-        // Role Permissions
-        Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])
-            ->name('admin.users.rolePermissions');
     });
 
 
