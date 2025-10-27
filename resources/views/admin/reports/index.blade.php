@@ -11,6 +11,8 @@
 <div class="container-fluid">
     <h2 class="mb-4 mt-3">All Tasks Report</h2>
     @include('partials.Breadcrumbs')
+
+    @if($permissions['can_view'])
     <!-- Filter Form -->
     <form method="GET" action="{{ route('admin.reports.index') }}" class="report-filters mb-4">
         <select name="project_id">
@@ -69,20 +71,15 @@
         <a href="{{ route('admin.reports.index') }}" class="btn btn-secondary">Reset</a>
     </form>
 
-
-    <!-- Export Buttons -->
-    <!-- <div class="mb-3">
-        <a href="{{ route('admin.reports.export', ['format' => 'pdf'] + request()->query()) }}" class="btn btn-danger deleted-user">Export PDF</a>
-        <a href="{{ route('admin.reports.export', ['format' => 'excel'] + request()->query()) }}" class="btn btn-success deleted-user">Export Excel</a>
-        <a href="{{ route('admin.reports.export', ['format' => 'word'] + request()->query()) }}" class="btn btn-primary deleted-user">Export Word</a>
-        <a href="{{ route('admin.reports.export', ['format' => 'ppt'] + request()->query()) }}" class="btn btn-warning deleted-user">Export PPT</a>
-    </div> -->
+    {{-- Export Buttons: Only visible if can_add or can_edit --}}
+    @if($permissions['can_add'] || $permissions['can_edit'])
     <div class="mb-3">
         <a href="{{ route('admin.reports.export', ['format' => 'pdf'] + request()->query()) }}" class="btn btn-danger">Export PDF</a>
         <a href="{{ route('admin.reports.export', ['format' => 'excel'] + request()->query()) }}" class="btn btn-success">Export Excel</a>
         <a href="{{ route('admin.reports.export', ['format' => 'word'] + request()->query()) }}" class="btn btn-primary">Export Word</a>
         <a href="{{ route('admin.reports.export', ['format' => 'ppt'] + request()->query()) }}" class="btn btn-warning">Export PPT</a>
     </div>
+    @endif
 
     <div class="table-responsive">
         <table class="reports-table table table-bordered table-striped align-middle">
@@ -121,5 +118,10 @@
     <div id="pagination-wrapper" class="d-flex justify-content-end mt-3">
         {{ $tasks->links('pagination::bootstrap-5') }}
     </div>
+    @else
+    <div class="alert alert-danger mt-3">
+        You do not have permission to view reports.
+    </div>
+    @endif
 </div>
 @endsection

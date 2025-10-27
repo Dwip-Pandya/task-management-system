@@ -9,6 +9,66 @@ use App\Models\User;
 
 class CalendarController extends Controller
 {
+    /**
+     * Utility: Check if the logged-in user has permission for the Project module.
+     */
+    private function hasPermission($action)
+    {
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
+        if (!$user || !$user->role_id) {
+            return false;
+        }
+
+        $permission = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'project management')
+            ->first();
+
+        if (!$permission) {
+            return false;
+        }
+
+        $field = 'can_' . $action;
+
+        if (!property_exists($permission, $field)) {
+            return true;
+        }
+
+        return $permission->$field == 1;
+    }
+
+    /**
+     * Utility: Fetch all permissions for current user.
+     */
+    private function getAllPermissions()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->role_id) {
+            return [
+                'can_view' => false,
+                'can_add' => false,
+                'can_edit' => false,
+                'can_delete' => false,
+            ];
+        }
+
+        $perm = DB::table('role_permissions')
+            ->where('role_id', $user->role_id)
+            ->where('module_name', 'project management')
+            ->first();
+
+        return [
+            'can_view' => $perm->can_view ?? false,
+            'can_add' => $perm->can_add ?? false,
+            'can_edit' => $perm->can_edit ?? false,
+            'can_delete' => $perm->can_delete ?? false,
+        ];
+    }
     // Show calendar view
     public function index()
     {
@@ -16,7 +76,15 @@ class CalendarController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-        return view('calendar', compact('user'));
+
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_view']) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'You do not have permission to view Calendar.');
+        }
+
+        return view('calendar', compact('user', 'permissions'));
     }
 
     // Return tasks as events for FullCalendar

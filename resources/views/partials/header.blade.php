@@ -26,8 +26,7 @@
             <button class="btn btn-outline-light btn-sm position-relative me-2" type="button"
                 data-bs-toggle="offcanvas" data-bs-target="#notificationOffcanvas" aria-controls="notificationOffcanvas">
                 <i class="bi bi-bell"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    id="notificationCount">0</span>
+                <span id="notificationCount">0</span>
             </button>
 
             &nbsp;

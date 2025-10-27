@@ -14,6 +14,7 @@
         <p class="dashboard-subtitle">Click on any card to view detailed analytics</p>
     </div>
 
+    @if($permissions['can_view'])
     <!-- Charts Grid -->
     <div class="charts-grid">
         <!-- Card 1: Task Status Overview -->
@@ -88,6 +89,11 @@
             </button>
         </div>
     </div>
+    @else
+    <div class="alert alert-danger mt-4 text-center">
+        You do not have permission to view charts and analytics.
+    </div>
+    @endif
 </div>
 
 <!-- Chart Modal -->
