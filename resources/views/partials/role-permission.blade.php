@@ -1,11 +1,11 @@
 @php
 $offcanvasId = 'rolePermissionOffcanvas-' . $user->id;
-$permissions = $rolePermissions[$user->role_id] ?? collect();
+$permissions = $rolePermissions[$user->id] ?? $rolePermissions['role_'.$user->role_id] ?? collect();
 @endphp
 
 <div class="offcanvas offcanvas-end role-permission-offcanvas" tabindex="-1" id="{{ $offcanvasId }}">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Role Permissions</h5>
+        <h5 class="offcanvas-title">User Permissions</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
 

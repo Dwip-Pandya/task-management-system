@@ -18,23 +18,25 @@ class ChartsController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = Auth::user();
+        if (!$user) return false;
 
-        if (!$user || !$user->role_id) {
-            return false;
-        }
-
+        // User-specific permissions first
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
 
+        // Fallback to role default
         if (!$permission) {
-            return false;
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
         }
+
+        if (!$permission) return false;
 
         $field = 'can_' . $action;
 
@@ -51,8 +53,7 @@ class ChartsController extends Controller
     private function getAllPermissions()
     {
         $user = Auth::user();
-
-        if (!$user || !$user->role_id) {
+        if (!$user) {
             return [
                 'can_view' => false,
                 'can_add' => false,
@@ -62,9 +63,17 @@ class ChartsController extends Controller
         }
 
         $perm = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
+
+        if (!$perm) {
+            $perm = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
+        }
 
         return [
             'can_view' => $perm->can_view ?? false,
@@ -76,12 +85,16 @@ class ChartsController extends Controller
 
     public function index()
     {
-        $user = User::withTrashed()->with('role')->where('id', Auth::id())->first();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $permissions = $this->getAllPermissions();
 
         if (!$permissions['can_view']) {
-            return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to view charts.');
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'You do not have permission to view charts.');
         }
 
         return view('admin.charts', compact('user', 'permissions'));

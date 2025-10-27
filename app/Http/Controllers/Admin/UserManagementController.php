@@ -24,25 +24,25 @@ class UserManagementController extends Controller
             ->where('id', Auth::id())
             ->first();
 
-        if (!$user || !$user->role_id) {
-            return false;
-        }
+        if (!$user) return false;
+
 
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
-            ->where('module_name', 'user management') // ✅ Correct module name
+            ->where('user_id', $user->id)
+            ->where('module_name', 'user management')
             ->first();
 
         if (!$permission) {
-            return false;
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'user management')
+                ->first();
         }
+
+        if (!$permission) return false;
 
         $field = 'can_' . $action;
-
-        if (!property_exists($permission, $field)) {
-            return true;
-        }
-
         return $permission->$field == 1;
     }
 
@@ -52,8 +52,7 @@ class UserManagementController extends Controller
     private function getAllPermissions()
     {
         $user = Auth::user();
-
-        if (!$user || !$user->role_id) {
+        if (!$user) {
             return [
                 'can_view' => false,
                 'can_add' => false,
@@ -63,9 +62,16 @@ class UserManagementController extends Controller
         }
 
         $perm = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
-            ->where('module_name', 'user management')
+            ->where('user_id', $user->id)
             ->first();
+
+        // Fallback to role defaults
+        if (!$perm) {
+            $perm = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->first();
+        }
 
         return [
             'can_view' => $perm->can_view ?? false,
@@ -110,7 +116,10 @@ class UserManagementController extends Controller
         // Fetch role permissions for all users
         $rolePermissions = DB::table('role_permissions')
             ->get()
-            ->groupBy('role_id');
+            ->groupBy(function ($item) {
+                return $item->user_id ?? 'role_' . $item->role_id;
+            });
+
 
         return view('admin.users.index', compact('users', 'user', 'search', 'modules', 'rolePermissions'));
     }
@@ -366,24 +375,35 @@ class UserManagementController extends Controller
         $submittedPermissions = $request->input('permissions', []);
 
         // Fetch existing permissions for user's role
-        $rolePermissions = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
-            ->get()
-            ->keyBy('module_name');
+        foreach ($submittedPermissions as $moduleName => $data) {
+            $updateData = [
+                'can_view'   => isset($data['can_view']) ? 1 : 0,
+                'can_add'    => isset($data['can_add']) ? 1 : 0,
+                'can_edit'   => isset($data['can_edit']) ? 1 : 0,
+                'can_delete' => isset($data['can_delete']) ? 1 : 0,
+                'updated_at' => now(),
+            ];
 
-        foreach ($rolePermissions as $moduleName => $perm) {
-            $data = $submittedPermissions[$moduleName] ?? [];
+            // Try to fetch existing user-specific permission
+            $perm = DB::table('role_permissions')
+                ->where('user_id', $user->id)
+                ->where('module_name', $moduleName)
+                ->first();
 
-            // Update DB: 1 if checked, 0 if unchecked
-            DB::table('role_permissions')
-                ->where('id', $perm->id)
-                ->update([
-                    'can_view'   => isset($data['can_view']) ? 1 : 0,
-                    'can_add'    => isset($data['can_add']) ? 1 : 0,
-                    'can_edit'   => isset($data['can_edit']) ? 1 : 0,
-                    'can_delete' => isset($data['can_delete']) ? 1 : 0,
-                    'updated_at' => now(),
-                ]);
+            if ($perm) {
+                // Update existing user-specific permission
+                DB::table('role_permissions')
+                    ->where('id', $perm->id)
+                    ->update($updateData);
+            } else {
+                // Create new user-specific permission row
+                DB::table('role_permissions')->insert(array_merge($updateData, [
+                    'user_id' => $user->id,
+                    'role_id' => null,
+                    'module_name' => $moduleName,
+                    'created_at' => now(),
+                ]));
+            }
         }
 
         return back()->with('success', 'Permissions updated successfully.');

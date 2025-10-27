@@ -37,23 +37,25 @@ class ReportController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = Auth::user();
+        if (!$user) return false;
 
-        if (!$user || !$user->role_id) {
-            return false;
-        }
-
+        // Check user-specific permissions first
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
 
+        // Fallback to role defaults
         if (!$permission) {
-            return false;
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
         }
+
+        if (!$permission) return false;
 
         $field = 'can_' . $action;
 
@@ -70,8 +72,7 @@ class ReportController extends Controller
     private function getAllPermissions()
     {
         $user = Auth::user();
-
-        if (!$user || !$user->role_id) {
+        if (!$user) {
             return [
                 'can_view' => false,
                 'can_add' => false,
@@ -80,10 +81,20 @@ class ReportController extends Controller
             ];
         }
 
+        // Fetch user-specific permissions first
         $perm = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
+
+        // Fallback to role defaults
+        if (!$perm) {
+            $perm = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
+        }
 
         return [
             'can_view' => $perm->can_view ?? false,
@@ -103,7 +114,7 @@ class ReportController extends Controller
         $permissions = $this->getAllPermissions();
 
         if (!$permissions['can_view']) {
-            return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to view reports.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         $query = DB::table('tasks')

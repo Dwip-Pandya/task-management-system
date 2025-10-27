@@ -28,6 +28,7 @@ class RolePermissionSeeder extends Seeder
         foreach ($modules as $module) {
             $rolePermissions[] = [
                 'role_id' => $roles['admin'],
+                'user_id' => null, // default role-level permission
                 'module_name' => $module,
                 'can_view' => 1,
                 'can_add' => 1,
@@ -42,6 +43,7 @@ class RolePermissionSeeder extends Seeder
         foreach ($modules as $module) {
             $rolePermissions[] = [
                 'role_id' => $roles['user'],
+                'user_id' => null,
                 'module_name' => $module,
                 'can_view' => ($module == 'task management' || $module == 'calendar viewing') ? 1 : 0,
                 'can_add' => ($module == 'task management') ? 1 : 0,
@@ -56,6 +58,7 @@ class RolePermissionSeeder extends Seeder
         foreach ($modules as $module) {
             $rolePermissions[] = [
                 'role_id' => $roles['project manager'],
+                'user_id' => null,
                 'module_name' => $module,
                 'can_view' => ($module == 'user management') ? 0 : 1,
                 'can_add' => ($module == 'user management') ? 0 : 1,
@@ -70,6 +73,7 @@ class RolePermissionSeeder extends Seeder
         foreach ($modules as $module) {
             $rolePermissions[] = [
                 'role_id' => $roles['project member'],
+                'user_id' => null,
                 'module_name' => $module,
                 'can_view' => ($module == 'task management' || $module == 'calendar viewing') ? 1 : 0,
                 'can_add' => 0,

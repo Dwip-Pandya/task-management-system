@@ -23,26 +23,24 @@ class ProjectController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-
-        if (!$user || !$user->role_id) {
-            return false;
-        }
+        if (!$user) return false;
 
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
 
         if (!$permission) {
-            return false;
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
         }
+
+        if (!$permission) return false;
 
         $field = 'can_' . $action;
-
-        if (!property_exists($permission, $field)) {
-            return true;
-        }
-
         return $permission->$field == 1;
     }
 
@@ -52,8 +50,7 @@ class ProjectController extends Controller
     private function getAllPermissions()
     {
         $user = Auth::user();
-
-        if (!$user || !$user->role_id) {
+        if (!$user) {
             return [
                 'can_view' => false,
                 'can_add' => false,
@@ -63,9 +60,18 @@ class ProjectController extends Controller
         }
 
         $perm = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
+
+        // Fallback to role defaults
+        if (!$perm) {
+            $perm = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
+        }
 
         return [
             'can_view' => $perm->can_view ?? false,
@@ -114,8 +120,7 @@ class ProjectController extends Controller
         $permissions = $this->getAllPermissions();
 
         if (!$permissions['can_add']) {
-            return redirect()->route('projects.index')
-                ->with('error', 'You do not have permission to create a project.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         return view('admin.projects.create', compact('user', 'permissions'));
@@ -126,8 +131,7 @@ class ProjectController extends Controller
         $user = Auth::user();
 
         if (!$this->hasPermission('add')) {
-            return redirect()->route('projects.index')
-                ->with('error', 'You do not have permission to add a project.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         try {
@@ -161,8 +165,7 @@ class ProjectController extends Controller
         $permissions = $this->getAllPermissions();
 
         if (!$permissions['can_view']) {
-            return redirect()->route('projects.index')
-                ->with('error', 'You do not have permission to view this project.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         $creator = DB::table('users')
@@ -183,8 +186,7 @@ class ProjectController extends Controller
         $permissions = $this->getAllPermissions();
 
         if (!$permissions['can_edit']) {
-            return redirect()->route('projects.index')
-                ->with('error', 'You do not have permission to edit a project.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         return view('admin.projects.edit', compact('project', 'user', 'permissions'));
@@ -226,8 +228,7 @@ class ProjectController extends Controller
         $user = Auth::user();
 
         if (!$this->hasPermission('delete')) {
-            return redirect()->route('projects.index')
-                ->with('error', 'You do not have permission to delete a project.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         $project->delete();

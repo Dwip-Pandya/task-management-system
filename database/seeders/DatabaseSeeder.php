@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             TagSeeder::class,
             ProjectSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

@@ -76,7 +76,7 @@
 <div class="modal fade show" id="forcePasswordModal" tabindex="-1" style="display:block;" aria-modal="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="{{ route('admin.updatePassword') }}" method="POST">
+            <form action="{{ route('users.updatePassword') }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Change Default Password</h5>

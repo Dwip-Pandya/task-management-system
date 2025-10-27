@@ -72,10 +72,6 @@ Route::prefix('admin')
             ->middleware([CheckModulePermission::class . ':user management,add'])
             ->name('users.store');
 
-        Route::get('users/{user}', [UserManagementController::class, 'show'])
-            ->middleware([CheckModulePermission::class . ':user management,view'])
-            ->name('users.show');
-
         Route::get('users/{user}/edit', [UserManagementController::class, 'edit'])
             ->middleware([CheckModulePermission::class . ':user management,edit'])
             ->name('users.edit');
@@ -92,20 +88,20 @@ Route::prefix('admin')
             ->middleware([CheckModulePermission::class . ':user management,edit'])
             ->name('users.bulkAction');
 
+        Route::post('users/{user}/restore', [UserManagementController::class, 'restore'])
+            ->name('users.restore');
+
         Route::post('users/{user}/update-permissions', [UserManagementController::class, 'rolePermissions'])
             ->middleware([CheckModulePermission::class . ':user management,edit'])
             ->name('users.updatePermissions');
 
         Route::post('users/update-password', [UserManagementController::class, 'updatePassword'])
-            ->middleware([CheckModulePermission::class . ':user management,edit'])
             ->name('users.updatePassword');
 
         Route::post('users/{user}/switch-to', [UserManagementController::class, 'switchToUser'])
-            ->middleware([CheckModulePermission::class . ':user management,edit'])
             ->name('users.switchTo');
 
         Route::post('users/switch-back', [UserManagementController::class, 'switchBack'])
-            ->middleware([CheckModulePermission::class . ':user management,edit'])
             ->name('users.switchBack');
 
         Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('admin.users.rolePermissions');
@@ -182,28 +178,28 @@ Route::prefix('admin')
 
         // Reports
         Route::get('/reports', [ReportController::class, 'index'])
-        ->middleware([CheckModulePermission::class . ':report generation,view'])
-        ->name('admin.reports.index');
+            ->middleware([CheckModulePermission::class . ':report generation,view'])
+            ->name('admin.reports.index');
 
         Route::get('reports/export/{format}', [ReportController::class, 'export'])
-        ->middleware([CheckModulePermission::class . ':report generation,view'])
-        ->name('admin.reports.export');
+            ->middleware([CheckModulePermission::class . ':report generation,view'])
+            ->name('admin.reports.export');
 
         // Charts
         Route::prefix('charts')->name('admin.charts.')->middleware([CheckModulePermission::class . ':view chart analytics,view'])
             ->group(function () {
                 Route::get('/', [ChartsController::class, 'index'])
-                ->name('index');
+                    ->name('index');
                 Route::get('/status', [ChartsController::class, 'getTaskStatusData'])
-                ->name('status');
+                    ->name('status');
                 Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])
-                ->name('priority');
+                    ->name('priority');
                 Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])
-                ->name('projects');
+                    ->name('projects');
                 Route::get('/users', [ChartsController::class, 'getTasksPerUser'])
-                ->name('users');
+                    ->name('users');
                 Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])
-                ->name('monthly');
+                    ->name('monthly');
             });
 
         // Admin Notifications
@@ -295,15 +291,15 @@ Route::prefix('user')
 */
 
 Route::get('/admin/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
-->name('admin.calendar');
+    ->name('admin.calendar');
 Route::get('/user/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
-->name('user.calendar');
+    ->name('user.calendar');
 Route::get('/projectmanager/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
-->name('projectmanager.calendar');
+    ->name('projectmanager.calendar');
 Route::get('/projectmember/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
-->name('projectmember.calendar');
+    ->name('projectmember.calendar');
 Route::get('/calendar/events', [CalendarController::class, 'events'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
-->name('calendar.events');
+    ->name('calendar.events');
 
 
 /*

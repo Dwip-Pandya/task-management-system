@@ -14,23 +14,25 @@ class CalendarController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = Auth::user();
+        if (!$user) return false;
 
-        if (!$user || !$user->role_id) {
-            return false;
-        }
-
+        // User-specific permissions first
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
 
+        // Fallback to role defaults
         if (!$permission) {
-            return false;
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
         }
+
+        if (!$permission) return false;
 
         $field = 'can_' . $action;
 
@@ -47,8 +49,7 @@ class CalendarController extends Controller
     private function getAllPermissions()
     {
         $user = Auth::user();
-
-        if (!$user || !$user->role_id) {
+        if (!$user) {
             return [
                 'can_view' => false,
                 'can_add' => false,
@@ -58,9 +59,17 @@ class CalendarController extends Controller
         }
 
         $perm = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'project management')
             ->first();
+
+        if (!$perm) {
+            $perm = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'project management')
+                ->first();
+        }
 
         return [
             'can_view' => $perm->can_view ?? false,
@@ -81,13 +90,12 @@ class CalendarController extends Controller
 
         if (!$permissions['can_view']) {
             return redirect()->route('admin.dashboard')
-                ->with('error', 'You do not have permission to view Calendar.');
+                ->with('error', 'You do not have permission to view the Calendar.');
         }
 
         return view('calendar', compact('user', 'permissions'));
     }
 
-    // Return tasks as events for FullCalendar
     public function events(Request $request)
     {
         $user = User::withTrashed()
@@ -95,49 +103,32 @@ class CalendarController extends Controller
             ->where('id', Auth::id())
             ->first();
 
+        $permissions = $this->getAllPermissions();
+
+        if (!$permissions['can_view']) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $user = Auth::user();
+
         $query = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
-            ->leftJoin('users as assigned_user', 'tasks.assigned_to', '=', 'assigned_user.id')
-            ->select(
-                'tasks.task_id',
-                'tasks.title',
-                'tasks.due_date',
-                'statuses.name as status_name',
-                'assigned_user.name as assigned_to_name',
-                'tasks.project_id'
-            );
+            ->select('tasks.task_id', 'tasks.title', 'tasks.due_date', 'statuses.name as status_name');
 
         // Role-based task visibility
         switch ($user->role_id) {
             case 1: // Admin → See all tasks
                 // No restrictions
                 break;
-
             case 2: // User → Only tasks assigned to them
                 $query->where('tasks.assigned_to', $user->id);
                 break;
-
             case 3: // Project Member → Only tasks in projects they belong to
-                $query->whereIn('tasks.project_id', function ($subquery) use ($user) {
-                    $subquery->select('project_id')
-                        ->from('project_members')
-                        ->where('user_id', $user->id);
+                $query->whereIn('tasks.project_id', function ($sub) use ($user) {
+                    $sub->select('project_id')->from('project_members')->where('user_id', $user->id);
                 });
                 break;
-
-            // case 4: // Project Manager → Tasks in their managed projects OR assigned to them
-            //     $query->where(function ($q) use ($user) {
-            //         $q->whereIn('tasks.project_id', function ($subquery) use ($user) {
-            //             $subquery->select('project_id')
-            //                 ->from('projects')
-            //                 ->where('created_by', $user->id); // Manager-created projects
-            //         })
-            //             ->orWhere('tasks.assigned_to', $user->id);
-            //     });
-            //     break;
-
             default:
-                // No tasks if role is unknown
                 $query->whereNull('tasks.task_id');
                 break;
         }

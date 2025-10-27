@@ -21,19 +21,24 @@ class TaskManagementController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
+        if (!$user) return false;
 
-        if (!$user || !$user->role_id) {
-            return false;
-        }
-
+        // Check user-specific permissions first
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'task management')
             ->first();
 
+        // Fallback to role default if no user override
         if (!$permission) {
-            return false;
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'task management')
+                ->first();
         }
+
+        if (!$permission) return false;
 
         $field = 'can_' . $action;
 
@@ -50,8 +55,7 @@ class TaskManagementController extends Controller
     private function getAllPermissions()
     {
         $user = Auth::user();
-
-        if (!$user || !$user->role_id) {
+        if (!$user) {
             return [
                 'can_view' => false,
                 'can_add' => false,
@@ -60,10 +64,20 @@ class TaskManagementController extends Controller
             ];
         }
 
+        // Fetch user-specific permissions first
         $perm = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', 'task management')
             ->first();
+
+        // Fallback to role defaults
+        if (!$perm) {
+            $perm = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', 'task management')
+                ->first();
+        }
 
         return [
             'can_view' => $perm->can_view ?? false,
@@ -166,8 +180,9 @@ class TaskManagementController extends Controller
         // Permissions
         $permissions = $this->getAllPermissions();
         if (!$permissions['can_add']) {
-            return redirect()->route('tasks.index')
-                ->with('error', 'You do not have permission to create a task.');
+            if (!$permissions['can_add']) {
+                return response()->view('errors.permission-denied', [], 403);
+            }
         }
 
         return view('admin.tasks.create', compact(
@@ -258,8 +273,7 @@ class TaskManagementController extends Controller
         // Permissions
         $permissions = $this->getAllPermissions();
         if (!$permissions['can_edit']) {
-            return redirect()->route('tasks.index')
-                ->with('error', 'You do not have permission to edit a task.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         return view('admin.tasks.edit', compact(
@@ -322,8 +336,7 @@ class TaskManagementController extends Controller
         // Permissions
         $permissions = $this->getAllPermissions();
         if (!$permissions['can_view']) {
-            return redirect()->route('tasks.index')
-                ->with('error', 'You do not have permission to view this task.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
         return view('admin.tasks.show', compact('task', 'user', 'comments', 'permissions'));
