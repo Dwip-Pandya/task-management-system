@@ -43,7 +43,7 @@ class ReportController extends Controller
         // Check user-specific permissions first
         $permission = DB::table('role_permissions')
             ->where('user_id', $user->id)
-            ->where('module_name', 'project management')
+            ->where('module_name', 'report generation')
             ->first();
 
         // Fallback to role defaults
@@ -51,7 +51,7 @@ class ReportController extends Controller
             $permission = DB::table('role_permissions')
                 ->where('role_id', $user->role_id)
                 ->whereNull('user_id')
-                ->where('module_name', 'project management')
+                ->where('module_name', 'report generation')
                 ->first();
         }
 
@@ -84,7 +84,7 @@ class ReportController extends Controller
         // Fetch user-specific permissions first
         $perm = DB::table('role_permissions')
             ->where('user_id', $user->id)
-            ->where('module_name', 'project management')
+            ->where('module_name', 'report generation')
             ->first();
 
         // Fallback to role defaults
@@ -92,7 +92,7 @@ class ReportController extends Controller
             $perm = DB::table('role_permissions')
                 ->where('role_id', $user->role_id)
                 ->whereNull('user_id')
-                ->where('module_name', 'project management')
+                ->where('module_name', 'report generation')
                 ->first();
         }
 

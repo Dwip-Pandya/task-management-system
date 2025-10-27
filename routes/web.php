@@ -292,12 +292,16 @@ Route::prefix('user')
 
 Route::get('/admin/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('admin.calendar');
+
 Route::get('/user/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('user.calendar');
+
 Route::get('/projectmanager/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('projectmanager.calendar');
+
 Route::get('/projectmember/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('projectmember.calendar');
+    
 Route::get('/calendar/events', [CalendarController::class, 'events'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('calendar.events');
 

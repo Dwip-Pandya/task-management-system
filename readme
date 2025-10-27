@@ -340,23 +340,36 @@ task-management-system/
 ├── resources/
 │   ├── views/
 │   │   ├── admin/
-│   │   │   ├── dashboard.blade.php
-│   │   │   ├── users/
+│   │   │   └── projects/
 │   │   │   └── reports/
+│   │   │   └── tasks/
+│   │   │   ├── users/
+│   │   │   └── charts.blade.php
+│   │   │   ├── dashboard.blade.php
 │   │   ├── projectmanager/
 │   │   │   ├── dashboard.blade.php
 │   │   │   └── projects/
+│   │   │   └── tasks/
 │   │   ├── projectmember/
 │   │   │   └── tasks/
+│   │   │   ├── dashboard.blade.php
 │   │   ├── user/
+│   │   │   └── tasks/
 │   │   │   └── dashboard.blade.php
 │   │   ├── layouts/
 │   │   │   ├── app.blade.php
-│   │   │   └── navigation.blade.php
+│   │   │   └── auth-main-layout.blade.php
 │   │   ├── partials/
-│   │   │   ├── header.blade.php
+│   │   │   └── breadcrumbs.blade.php
+│   │   │   └── deactivate-message.blade.php
+│   │   │   └── flash-messages.blade.php
 │   │   │   └── footer.blade.php
+│   │   │   ├── header.blade.php
+│   │   │   ├── notification.blade.php
+│   │   │   ├── role-permission.blade.php
+│   │   │   ├── sidebar.blade.php
 │   │   ├── calendar.blade.php
+│   │   ├── welcome.blade.php
 │   │   └── auth/
 │   └── lang/
 ├── routes/

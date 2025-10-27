@@ -18,13 +18,17 @@ class ChartsController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         if (!$user) return false;
 
         // User-specific permissions first
         $permission = DB::table('role_permissions')
             ->where('user_id', $user->id)
-            ->where('module_name', 'project management')
+            ->where('module_name', 'view chart analytics')
             ->first();
 
         // Fallback to role default
@@ -32,7 +36,7 @@ class ChartsController extends Controller
             $permission = DB::table('role_permissions')
                 ->where('role_id', $user->role_id)
                 ->whereNull('user_id')
-                ->where('module_name', 'project management')
+                ->where('module_name', 'view chart analytics')
                 ->first();
         }
 
@@ -52,7 +56,11 @@ class ChartsController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+            
         if (!$user) {
             return [
                 'can_view' => false,
@@ -64,14 +72,14 @@ class ChartsController extends Controller
 
         $perm = DB::table('role_permissions')
             ->where('user_id', $user->id)
-            ->where('module_name', 'project management')
+            ->where('module_name', 'view chart analytics')
             ->first();
 
         if (!$perm) {
             $perm = DB::table('role_permissions')
                 ->where('role_id', $user->role_id)
                 ->whereNull('user_id')
-                ->where('module_name', 'project management')
+                ->where('module_name', 'view chart analytics')
                 ->first();
         }
 
