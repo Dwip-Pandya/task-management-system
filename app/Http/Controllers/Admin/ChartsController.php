@@ -60,7 +60,7 @@ class ChartsController extends Controller
             ->with('role')
             ->where('id', Auth::id())
             ->first();
-            
+
         if (!$user) {
             return [
                 'can_view' => false,
@@ -101,11 +101,10 @@ class ChartsController extends Controller
         $permissions = $this->getAllPermissions();
 
         if (!$permissions['can_view']) {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'You do not have permission to view charts.');
+            return response()->view('errors.permission-denied', [], 403);
         }
 
-        return view('admin.charts', compact('user', 'permissions'));
+        return view('charts', compact('user', 'permissions'));
     }
 
     public function getTaskStatusData()
@@ -127,7 +126,7 @@ class ChartsController extends Controller
     // Chart 2 - Tasks per User
     public function getTasksPerUser()
     {
-        if (!$this->hasPermission('view')) return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$this->hasPermission('view')) return response()->view('errors.permission-denied', [], 403);
 
         $users = User::pluck('name', 'id');
         $taskCounts = Task::selectRaw('assigned_to, COUNT(*) as total')
@@ -145,7 +144,7 @@ class ChartsController extends Controller
     // Chart 3 - Tasks by Priority
     public function getTasksByPriority()
     {
-        if (!$this->hasPermission('view')) return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$this->hasPermission('view')) return response()->view('errors.permission-denied', [], 403);
 
         $priorities = Priority::pluck('name', 'priority_id');
         $taskCounts = Task::selectRaw('priority_id, COUNT(*) as total')
@@ -162,7 +161,7 @@ class ChartsController extends Controller
     // Chart 4 - Tasks per Project
     public function getTasksPerProject()
     {
-        if (!$this->hasPermission('view')) return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$this->hasPermission('view')) return response()->view('errors.permission-denied', [], 403);
 
         $projects = Project::pluck('name', 'project_id');
         $taskCounts = Task::selectRaw('project_id, COUNT(*) as total')
@@ -180,7 +179,7 @@ class ChartsController extends Controller
     // Chart 5 - Tasks Completed Over Time
     public function getTasksCompletedOverTime()
     {
-        if (!$this->hasPermission('view')) return response()->json(['error' => 'Unauthorized'], 403);
+        if (!$this->hasPermission('view')) return response()->view('errors.permission-denied', [], 403);
 
         $taskCounts = Task::selectRaw('DATE(completed_at) as date, COUNT(*) as total')
             ->whereNotNull('completed_at')

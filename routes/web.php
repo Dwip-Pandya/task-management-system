@@ -185,23 +185,6 @@ Route::prefix('admin')
             ->middleware([CheckModulePermission::class . ':report generation,view'])
             ->name('admin.reports.export');
 
-        // Charts
-        Route::prefix('charts')->name('admin.charts.')->middleware([CheckModulePermission::class . ':view chart analytics,view'])
-            ->group(function () {
-                Route::get('/', [ChartsController::class, 'index'])
-                    ->name('index');
-                Route::get('/status', [ChartsController::class, 'getTaskStatusData'])
-                    ->name('status');
-                Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])
-                    ->name('priority');
-                Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])
-                    ->name('projects');
-                Route::get('/users', [ChartsController::class, 'getTasksPerUser'])
-                    ->name('users');
-                Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])
-                    ->name('monthly');
-            });
-
         // Admin Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
         Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
@@ -305,6 +288,63 @@ Route::get('/projectmember/calendar', [CalendarController::class, 'index'])->mid
 Route::get('/calendar/events', [CalendarController::class, 'events'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('calendar.events');
 
+
+/*
+|--------------------------------------------------------------------------
+| ANALYTICS CHART ROUTES
+|--------------------------------------------------------------------------
+*/
+// Admin
+Route::prefix('admin/charts')
+    ->name('admin.charts.')
+    ->middleware([CheckModulePermission::class . ':view chart analytics,view'])
+    ->group(function () {
+        Route::get('/', [ChartsController::class, 'index'])->name('index');
+        Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+        Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+        Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+        Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+        Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+    });
+
+// Project Manager
+Route::prefix('projectmanager/charts')
+    ->name('projectmanager.charts.')
+    ->middleware([CheckModulePermission::class . ':view chart analytics,view'])
+    ->group(function () {
+        Route::get('/', [ChartsController::class, 'index'])->name('index');
+        Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+        Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+        Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+        Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+        Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+    });
+
+// Project Member
+Route::prefix('projectmember/charts')
+    ->name('projectmember.charts.')
+    ->middleware([CheckModulePermission::class . ':view chart analytics,view'])
+    ->group(function () {
+        Route::get('/', [ChartsController::class, 'index'])->name('index');
+        Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+        Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+        Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+        Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+        Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+    });
+
+// Regular User
+Route::prefix('user/charts')
+    ->name('user.charts.')
+    ->middleware([CheckModulePermission::class . ':view chart analytics,view'])
+    ->group(function () {
+        Route::get('/', [ChartsController::class, 'index'])->name('index');
+        Route::get('/status', [ChartsController::class, 'getTaskStatusData'])->name('status');
+        Route::get('/priority', [ChartsController::class, 'getTasksByPriority'])->name('priority');
+        Route::get('/projects', [ChartsController::class, 'getTasksPerProject'])->name('projects');
+        Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
+        Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
+    });
 
 /*
 |--------------------------------------------------------------------------

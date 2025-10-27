@@ -16,15 +16,31 @@ class CheckModulePermission
             abort(403, 'Unauthorized.');
         }
 
-        // Get the user's role permissions for the module
+        // First check if the user has custom (user-specific) permissions
         $permission = DB::table('role_permissions')
-            ->where('role_id', $user->role_id)
+            ->where('user_id', $user->id)
             ->where('module_name', $module)
             ->first();
 
-        // If permission not found or not allowed
-        if (!$permission || empty($permission->{'can_' . $action}) || $permission->{'can_' . $action} == 0) {
-            return response()->view('errors.permission-denied', ['module' => $module, 'action' => $action], 403);
+        // If not, fallback to the role-based default permissions
+        if (!$permission) {
+            $permission = DB::table('role_permissions')
+                ->where('role_id', $user->role_id)
+                ->whereNull('user_id')
+                ->where('module_name', $module)
+                ->first();
+        }
+
+        // If no permission found or the specific action (e.g., can_view) is 0 or null → deny
+        if (
+            !$permission ||
+            empty($permission->{'can_' . $action}) ||
+            $permission->{'can_' . $action} == 0
+        ) {
+            return response()->view('errors.permission-denied', [
+                'module' => $module,
+                'action' => $action
+            ], 403);
         }
 
         return $next($request);
