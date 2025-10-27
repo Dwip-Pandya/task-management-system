@@ -93,7 +93,17 @@ Breadcrumbs::for(
     $trail->parent('admin.dashboard')->push('Reports', route('admin.reports.index'))
 );
 
-/* USER */
+// Charts / Analytics
+Breadcrumbs::for(
+    'admin.charts.index',
+    fn(Trail $trail) =>
+    $trail->parent('admin.dashboard')->push('Chart Analytics', route('admin.charts.index'))
+);
+
+
+/* ======================================================
+|                       USER
+====================================================== */
 
 Breadcrumbs::for(
     'user.dashboard',
@@ -123,7 +133,24 @@ Breadcrumbs::for(
     $trail->parent('user.dashboard')->push('Calendar', route('user.calendar'))
 );
 
-/* PROJECT MANAGER */
+// Reports
+Breadcrumbs::for(
+    'user.reports.index',
+    fn(Trail $trail) =>
+    $trail->parent('user.dashboard')->push('Reports', route('user.reports.index'))
+);
+
+// Charts / Analytics
+Breadcrumbs::for(
+    'user.charts.index',
+    fn(Trail $trail) =>
+    $trail->parent('user.dashboard')->push('Chart Analytics', route('user.charts.index'))
+);
+
+
+/* ======================================================
+|                PROJECT MANAGER
+====================================================== */
 
 Breadcrumbs::for(
     'projectmanager.dashboard',
@@ -181,7 +208,24 @@ Breadcrumbs::for(
     $trail->parent('projectmanager.dashboard')->push('Calendar', route('projectmanager.calendar'))
 );
 
-/* PROJECT MEMBER */
+// Reports
+Breadcrumbs::for(
+    'projectmanager.reports.index',
+    fn(Trail $trail) =>
+    $trail->parent('projectmanager.dashboard')->push('Reports', route('projectmanager.reports.index'))
+);
+
+// Charts / Analytics
+Breadcrumbs::for(
+    'projectmanager.charts.index',
+    fn(Trail $trail) =>
+    $trail->parent('projectmanager.dashboard')->push('Chart Analytics', route('projectmanager.charts.index'))
+);
+
+
+/* ======================================================
+|                PROJECT MEMBER
+====================================================== */
 
 Breadcrumbs::for(
     'projectmember.dashboard',
@@ -204,4 +248,18 @@ Breadcrumbs::for(
     'projectmember.calendar',
     fn(Trail $trail) =>
     $trail->parent('projectmember.dashboard')->push('Calendar', route('projectmember.calendar'))
+);
+
+// Reports
+Breadcrumbs::for(
+    'projectmember.reports.index',
+    fn(Trail $trail) =>
+    $trail->parent('projectmember.dashboard')->push('Reports', route('projectmember.reports.index'))
+);
+
+// Charts / Analytics
+Breadcrumbs::for(
+    'projectmember.charts.index',
+    fn(Trail $trail) =>
+    $trail->parent('projectmember.dashboard')->push('Chart Analytics', route('projectmember.charts.index'))
 );

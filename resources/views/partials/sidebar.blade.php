@@ -18,18 +18,21 @@
         <li class="nav-item"><a href="/projectmanager/dashboard" class="nav-link">Home</a></li>
         <li class="nav-item"><a href="/projectmanager/projects" class="nav-link">Projects</a></li>
         <li class="nav-item"><a href="/projectmanager/tasks" class="nav-link">Tasks</a></li>
+        <li class="nav-item"><a href="/projectmanager/reports" class="nav-link">Reports</a></li>
         <li class="nav-item"><a href="/projectmanager/calendar" class="nav-link">Calendar</a></li>
         <li class="nav-item"><a href="/projectmanager/charts" class="nav-link">Analytics</a></li>
 
         @elseif ($role === 'project member')
         <li class="nav-item"><a href="/projectmember/dashboard" class="nav-link">Home</a></li>
         <li class="nav-item"><a href="/projectmember/tasks" class="nav-link">Tasks</a></li>
+        <li class="nav-item"><a href="/projectmember/reports" class="nav-link">Reports</a></li>
         <li class="nav-item"><a href="/projectmember/calendar" class="nav-link">Calendar</a></li>
         <li class="nav-item"><a href="/projectmember/charts" class="nav-link">Analytics</a></li>
 
         @else
         <li class="nav-item"><a href="/user/dashboard" class="nav-link">Home</a></li>
         <li class="nav-item"><a href="/user/tasks" class="nav-link">Tasks</a></li>
+        <li class="nav-item"><a href="/user/reports" class="nav-link">Reports</a></li>
         <li class="nav-item"><a href="/user/calendar" class="nav-link">Calendar</a></li>
         <li class="nav-item"><a href="/user/charts" class="nav-link">Analytics</a></li>
         @endif

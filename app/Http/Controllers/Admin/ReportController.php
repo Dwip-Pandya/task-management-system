@@ -149,7 +149,7 @@ class ReportController extends Controller
         // Columns selected by user (default: all)
         $selectedColumns = $request->input('columns', array_keys($this->allColumns));
 
-        return view('admin.reports.index', [
+        return view('reports.index', [
             'user' => $user,
             'tasks' => $tasks,
             'projects' => $projects,
@@ -226,7 +226,7 @@ class ReportController extends Controller
                     $filterDetails['Date Range'] = $request->from_date . ' to ' . $request->to_date;
                 }
 
-                return Pdf::loadView('admin.reports.export_pdf', [
+                return Pdf::loadView('reports.export_pdf', [
                     'tasks' => $tasks,
                     'projects' => $projects,
                     'selectedColumns' => $columns,

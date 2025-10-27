@@ -175,16 +175,6 @@ Route::prefix('admin')
             ->middleware([CheckModulePermission::class . ':project management,delete'])
             ->name('projects.destroy');
 
-
-        // Reports
-        Route::get('/reports', [ReportController::class, 'index'])
-            ->middleware([CheckModulePermission::class . ':report generation,view'])
-            ->name('admin.reports.index');
-
-        Route::get('reports/export/{format}', [ReportController::class, 'export'])
-            ->middleware([CheckModulePermission::class . ':report generation,view'])
-            ->name('admin.reports.export');
-
         // Admin Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
         Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead']);
@@ -284,7 +274,7 @@ Route::get('/projectmanager/calendar', [CalendarController::class, 'index'])->mi
 
 Route::get('/projectmember/calendar', [CalendarController::class, 'index'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('projectmember.calendar');
-    
+
 Route::get('/calendar/events', [CalendarController::class, 'events'])->middleware([CheckModulePermission::class . ':calendar viewing,view'])
     ->name('calendar.events');
 
@@ -345,6 +335,56 @@ Route::prefix('user/charts')
         Route::get('/users', [ChartsController::class, 'getTasksPerUser'])->name('users');
         Route::get('/monthly', [ChartsController::class, 'getTasksCompletedOverTime'])->name('monthly');
     });
+
+/*
+|--------------------------------------------------------------------------
+| REPORT ROUTES
+|--------------------------------------------------------------------------
+*/
+
+// ------------------------- ADMIN -------------------------
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('admin.reports.index');
+
+    Route::get('/reports/export/{format}', [ReportController::class, 'export'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('admin.reports.export');
+});
+
+// ------------------------- PROJECT MANAGER -------------------------
+Route::prefix('projectmanager')->middleware(['auth'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('projectmanager.reports.index');
+
+    Route::get('/reports/export/{format}', [ReportController::class, 'export'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('projectmanager.reports.export');
+});
+
+// ------------------------- PROJECT MEMBER -------------------------
+Route::prefix('projectmember')->middleware(['auth'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('projectmember.reports.index');
+
+    Route::get('/reports/export/{format}', [ReportController::class, 'export'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('projectmember.reports.export');
+});
+
+// ------------------------- USER -------------------------
+Route::prefix('user')->middleware(['auth'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('user.reports.index');
+
+    Route::get('/reports/export/{format}', [ReportController::class, 'export'])
+        ->middleware([CheckModulePermission::class . ':report generation,view'])
+        ->name('user.reports.export');
+});
 
 /*
 |--------------------------------------------------------------------------
