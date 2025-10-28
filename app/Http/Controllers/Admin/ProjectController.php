@@ -49,7 +49,11 @@ class ProjectController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         if (!$user) {
             return [
                 'can_view' => false,
@@ -128,7 +132,10 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         if (!$this->hasPermission('add')) {
             return response()->view('errors.permission-denied', [], 403);
@@ -194,7 +201,10 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         if (!$this->hasPermission('edit')) {
             return redirect()->route('projects.index')
@@ -225,7 +235,10 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         if (!$this->hasPermission('delete')) {
             return response()->view('errors.permission-denied', [], 403);

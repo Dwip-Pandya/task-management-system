@@ -6,12 +6,17 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class CheckModulePermission
 {
     public function handle(Request $request, Closure $next, $module, $action)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         if (!$user) {
             abort(403, 'Unauthorized.');
         }

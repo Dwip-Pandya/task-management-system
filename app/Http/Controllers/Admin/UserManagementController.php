@@ -51,7 +51,11 @@ class UserManagementController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         if (!$user) {
             return [
                 'can_view' => false,
@@ -127,7 +131,11 @@ class UserManagementController extends Controller
     // Show create form
     public function create()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         $roles = Role::all();
 
         $permissions = $this->getAllPermissions();
@@ -210,7 +218,10 @@ class UserManagementController extends Controller
     // Soft delete user
     public function destroy($id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         $deleteUser = User::findOrFail($id);
 
         if (!$this->hasPermission('delete')) {

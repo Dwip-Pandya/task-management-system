@@ -42,7 +42,11 @@ class ProjectManagerProjectController extends Controller
      */
     public function create()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+            
         return view('projectmanager.projects.create', compact('user'));
     }
 
@@ -51,7 +55,10 @@ class ProjectManagerProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         try {
             $request->validate([
@@ -82,7 +89,10 @@ class ProjectManagerProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // Ensure the manager can only view their own projects
         // if ($project->created_by !== $user->id) {
@@ -119,7 +129,10 @@ class ProjectManagerProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // if ($project->created_by !== $user->id) {
         //     abort(403);

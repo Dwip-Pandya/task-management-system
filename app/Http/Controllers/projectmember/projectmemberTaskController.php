@@ -94,7 +94,10 @@ class projectmemberTaskController extends Controller
     // Update status (AJAX)
     public function updateStatus(Request $request, $task_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $task = DB::table('tasks')->where('task_id', $task_id)->first();
 

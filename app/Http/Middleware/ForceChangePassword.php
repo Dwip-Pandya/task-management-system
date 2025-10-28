@@ -6,12 +6,16 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class ForceChangePassword
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         if ($user) {
             // Check if user is admin@gmail.com AND still using default password

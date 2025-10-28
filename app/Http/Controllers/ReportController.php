@@ -37,7 +37,10 @@ class ReportController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
         if (!$user) return false;
 
         // Check user-specific permissions first
@@ -71,7 +74,11 @@ class ReportController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+            
         if (!$user) {
             return [
                 'can_view' => false,

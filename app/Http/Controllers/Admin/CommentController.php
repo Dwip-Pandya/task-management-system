@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\log;
 use App\Services\NotificationService;
+use App\Models\User;
 
 class CommentController extends Controller
 {
@@ -26,7 +27,10 @@ class CommentController extends Controller
                 'parent_id' => 'nullable|integer',
             ]);
 
-            $user = Auth::user();
+            $user = User::withTrashed()
+                ->with('role')
+                ->where('id', Auth::id())
+                ->first();
             $task = DB::table('tasks')->where('task_id', $request->task_id)->first();
 
             if (!$task) {
@@ -81,7 +85,10 @@ class CommentController extends Controller
     public function update(Request $request, $comment_id)
     {
         $request->validate(['message' => 'required|string']);
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $comment = DB::table('comments')->where('comment_id', $comment_id)->first();
         if (!$comment || ($user->role_id != 1 && $comment->user_id != $user->id)) {
@@ -99,7 +106,10 @@ class CommentController extends Controller
     // Delete comment
     public function destroy($comment_id)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         $comment = DB::table('comments')->where('comment_id', $comment_id)->first();
         if (!$comment || ($user->role_id != 1 && $comment->user_id != $user->id)) {
@@ -117,7 +127,10 @@ class CommentController extends Controller
     // combined comment and status update
     public function storeWithStatus(Request $request)
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         // --- VALIDATE INPUT ---
         $validator = Validator::make($request->all(), [

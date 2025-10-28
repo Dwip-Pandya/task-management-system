@@ -54,7 +54,11 @@ class TaskManagementController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
+
         if (!$user) {
             return [
                 'can_view' => false,
@@ -221,7 +225,10 @@ class TaskManagementController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
-        $user = Auth::user();
+        $user = User::withTrashed()
+            ->with('role')
+            ->where('id', Auth::id())
+            ->first();
 
         DB::table('tasks')->insert([
             'title' => $request->title,
