@@ -144,7 +144,7 @@ Route::prefix('admin')
         Route::post('comments/store', [AdminCommentController::class, 'store'])->middleware([CheckModulePermission::class . ':comment management,add'])->name('comments.store');
         Route::post('comments/update/{comment_id}', [AdminCommentController::class, 'update'])->middleware([CheckModulePermission::class . ':comment management,edit'])->name('comments.update');
         Route::delete('comments/delete/{comment_id}', [AdminCommentController::class, 'destroy'])->middleware([CheckModulePermission::class . ':comment management,delete'])->name('comments.destroy');
-        Route::post('/comments/store-with-status', [AdminCommentController::class, 'storeWithStatus'])->middleware([CheckModulePermission::class . ':comment management,add'])->name('comments.storeWithStatus');
+        Route::post('/comments/store-with-status', [AdminCommentController::class, 'storeWithStatus'])->name('comments.storeWithStatus');
 
         // Projects
         Route::get('projects', [ProjectController::class, 'index'])

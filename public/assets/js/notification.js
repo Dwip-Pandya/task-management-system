@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     const notificationCountEl = document.getElementById('notificationCount');
     const notificationListEl = document.getElementById('notificationList');
+    const notificationButton = document.getElementById('notificationButton');
+    const tabNew = document.getElementById('tabNew');
+    const tabAll = document.getElementById('tabAll');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     let notifications = [];
+    let activeTab = 'new';
 
     // Auto-detect role and endpoint
     let baseUrl = window.location.pathname.includes('/admin/') ?
@@ -31,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!notifications.length) {
             notificationListEl.innerHTML = `<li class="list-group-item text-center py-3 text-muted">No notifications</li>`;
-            notificationCountEl.textContent = 0;
+            notificationCountEl.style.display = 'none';
             return;
         }
 
@@ -41,32 +45,44 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!n.is_read) unreadCount++;
 
             const li = document.createElement('li');
-            li.className = `list-group-item d-flex justify-content-between align-items-start notification-card ${n.is_read ? 'bg-light' : 'bg-white'}`;
+            li.className = `list-group-item d-flex justify-content-between align-items-start notification-card ${n.is_read ? 'bg-light text-muted' : ''}`;
             li.dataset.id = n.id;
 
             li.innerHTML = `
-                <div class="notification-content me-2" style="cursor:pointer;">
-                    <div class="fw-bold text-dark mb-1">${n.title}</div>
-                    <small class="text-muted d-block mb-1">${n.message}</small>
-                    <small class="text-dark fw-semibold">${new Date(n.created_at).toLocaleString()}</small>
-                </div>
-                <div class="d-flex flex-column align-items-end">
-                    <button class="btn btn-sm btn-outline-success mark-read-btn mb-1" title="Mark as read">
-                        <i class="bi bi-check-lg"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger remove-notification" title="Remove">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-            `;
+            <div class="notification-content me-2" style="cursor:pointer; border-left: ${n.is_read ? 'none' : '2px solid #dc3545'}; padding-left: 8px;">
+                <div class="fw-bold ${n.is_read ? 'text-secondary' : 'text-dark'} mb-1">${n.title}</div>
+                <small class="text-muted d-block mb-1">${n.message}</small>
+                <small class="text-dark fw-semibold">${new Date(n.created_at).toLocaleString()}</small>
+            </div>
+            <div class="d-flex flex-column align-items-end">
+                <button class="btn btn-sm btn-outline-success mark-read-btn mb-1" title="Mark as read" ${n.is_read ? 'disabled' : ''}>
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                <!-- <button class="btn btn-sm btn-outline-danger remove-notification" title="Remove">
+                    <i class="bi bi-x-lg"></i>
+                </button> -->
+            </div>
+        `;
+
+            if (n.is_read) {
+                li.style.opacity = "0.6";
+                li.style.pointerEvents = "none";
+            }
 
             notificationListEl.appendChild(li);
         });
 
-        notificationCountEl.textContent = unreadCount;
+        // Show red badge with count if unread exist
+        if (unreadCount > 0) {
+            notificationCountEl.style.display = 'inline';
+            notificationCountEl.textContent = unreadCount > 9 ? '9+' : unreadCount;
+        } else {
+            notificationCountEl.style.display = 'none';
+        }
     }
 
-    // Handle clicks for remove and mark-read
+
+    // Mark as read
     notificationListEl.addEventListener('click', function (e) {
         const card = e.target.closest('.notification-card');
         if (!card) return;
@@ -103,11 +119,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(() => {
                     const notif = notifications.find(n => n.id == id);
                     if (notif) notif.is_read = true;
+
+                    card.classList.remove('bg-white', 'new');
+                    card.classList.add('bg-light', 'read');
                     renderNotifications();
                 })
                 .catch(err => console.error('Error marking as read:', err));
-            return;
         }
+    });
+
+    // Tab switching
+    tabNew.addEventListener('click', () => {
+        activeTab = 'new';
+        tabNew.classList.add('btn-primary', 'active');
+        tabNew.classList.remove('btn-outline-secondary');
+        tabAll.classList.remove('btn-primary', 'active');
+        tabAll.classList.add('btn-outline-secondary');
+        renderNotifications();
+    });
+
+    tabAll.addEventListener('click', () => {
+        activeTab = 'all';
+        tabAll.classList.add('btn-primary', 'active');
+        tabAll.classList.remove('btn-outline-secondary');
+        tabNew.classList.remove('btn-primary', 'active');
+        tabNew.classList.add('btn-outline-secondary');
+        renderNotifications();
     });
 
     // Initial fetch

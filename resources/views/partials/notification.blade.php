@@ -7,6 +7,15 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
+    <!-- Tabs -->
+    <div class="offcanvas-header border-bottom d-flex justify-content-between align-items-center px-3">
+        <div class="btn-group w-100">
+            <button id="tabNew" class="btn btn-primary btn-sm w-50 active">Unread</button>
+            <button id="tabAll" class="btn btn-outline-secondary btn-sm w-50">Previous</button>
+        </div>
+    </div>
+
+    <!-- Body -->
     <div class="offcanvas-body p-0">
         <ul class="list-group list-group-flush" id="notificationList">
             <li class="list-group-item text-center py-3 text-muted">Loading...</li>

@@ -7,6 +7,7 @@
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
     --info-color: #3b82f6;
+    --cyan-color: #0dcaf0;
 
     /* Glass Colors */
     --glass-bg: rgba(255, 255, 255, 0.05);
@@ -24,6 +25,7 @@
     --bg-gradient-3: #0f3460;
     --bg-gradient-4: #533a7b;
 }
+
 /* Offcanvas Container */
 #notificationOffcanvas {
     background: linear-gradient(135deg, var(--bg-gradient-2), var(--bg-gradient-3));
@@ -59,6 +61,52 @@
     opacity: 1;
 }
 
+/* Tab Container */
+#notificationOffcanvas .offcanvas-header.border-bottom {
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border) !important;
+    padding: 1rem 1.5rem;
+}
+
+/* Tab Buttons */
+#notificationOffcanvas .btn-group {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid var(--glass-border);
+}
+
+#notificationOffcanvas .btn-group .btn {
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+/* Active Tab (Primary) */
+#notificationOffcanvas .btn-group .btn.btn-primary.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    transform: scale(1.02);
+}
+
+/* Inactive Tab (Outline Secondary) */
+#notificationOffcanvas .btn-group .btn.btn-outline-secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+}
+
+#notificationOffcanvas .btn-group .btn.btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+}
+
 /* Offcanvas Body */
 #notificationOffcanvas .offcanvas-body {
     padding: 0 !important;
@@ -85,16 +133,62 @@
 /* Notification Card */
 .notification-card {
     padding: 1rem !important;
+    position: relative;
 }
 
+/* New notification highlight */
+.notification-card.new {
+    background: rgba(13, 202, 240, 0.08) !important;
+    border-left: 4px solid var(--cyan-color) !important;
+}
+
+.notification-card.new::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--cyan-color);
+    box-shadow: 0 0 8px var(--cyan-color);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translateY(-50%) scale(1.2);
+    }
+}
+
+/* Read (inactive) state */
+.notification-card.read {
+    background: rgba(255, 255, 255, 0.03) !important;
+    opacity: 0.6;
+}
+
+.notification-card.read:hover {
+    opacity: 0.7;
+}
+
+/* Legacy support for bg-white and bg-light classes */
 .notification-card.bg-white {
-    background: rgba(99, 102, 241, 0.1) !important;
-    border-left: 3px solid var(--primary-color);
+    background: rgba(13, 202, 240, 0.08) !important;
+    border-left: 4px solid var(--cyan-color);
 }
 
 .notification-card.bg-light {
     background: rgba(255, 255, 255, 0.03) !important;
-    opacity: 0.8;
+    opacity: 0.6;
 }
 
 /* Notification Content */
@@ -152,6 +246,28 @@
     transform: scale(1.05);
 }
 
+/* Bell icon animation when new notifications arrive */
+#notificationButton.active i.bi-bell {
+    color: var(--cyan-color);
+    animation: bellSwing 1.2s ease-in-out infinite;
+}
+
+@keyframes bellSwing {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-10deg);
+    }
+
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
 /* Empty State */
 #notificationList .text-center {
     color: var(--text-muted) !important;
@@ -207,4 +323,29 @@
     .notification-content .fw-bold {
         font-size: 0.9rem;
     }
+
+    #notificationOffcanvas .btn-group .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}
+
+.btn-outline-light1 {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.btn-outline-light1:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: var(--text-primary) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
 }

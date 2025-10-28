@@ -23,10 +23,16 @@
             @endif
 
             <!-- Notification Button -->
-            <button class="btn btn-outline-light btn-sm position-relative me-2" type="button"
-                data-bs-toggle="offcanvas" data-bs-target="#notificationOffcanvas" aria-controls="notificationOffcanvas">
+            <button class="btn btn-outline-light1 btn-sm  position-relative me-2" type="button"
+                data-bs-toggle="offcanvas" data-bs-target="#notificationOffcanvas"
+                aria-controls="notificationOffcanvas">
                 <i class="bi bi-bell"></i>
-                <span id="notificationCount">0</span>
+
+                <!-- Red Dot with Count -->
+                <span id="notificationCount"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger text-white fw-bold">
+                    0
+                </span>
             </button>
 
             &nbsp;
