@@ -2,12 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const notificationCountEl = document.getElementById('notificationCount');
     const notificationListEl = document.getElementById('notificationList');
     const notificationButton = document.getElementById('notificationButton');
-    const tabNew = document.getElementById('tabNew');
-    const tabAll = document.getElementById('tabAll');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    notificationCountEl.style.display = 'none';
 
     let notifications = [];
-    let activeTab = 'new';
 
     // Auto-detect role and endpoint
     let baseUrl = window.location.pathname.includes('/admin/') ?
@@ -32,12 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Render notifications
     function renderNotifications() {
         notificationListEl.innerHTML = '';
-
-        if (!notifications.length) {
-            notificationListEl.innerHTML = `<li class="list-group-item text-center py-3 text-muted">No notifications</li>`;
-            notificationCountEl.style.display = 'none';
-            return;
-        }
 
         let unreadCount = 0;
 
@@ -88,24 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!card) return;
         const id = card.dataset.id;
 
-        // Remove notification
-        if (e.target.closest('.remove-notification')) {
-            fetch(`${baseUrl}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                }
-            })
-                .then(res => res.ok ? res.json() : Promise.reject('Failed'))
-                .then(() => {
-                    notifications = notifications.filter(n => n.id != id);
-                    renderNotifications();
-                })
-                .catch(err => console.error('Error removing notification:', err));
-            return;
-        }
-
         // Mark as read
         if (e.target.closest('.mark-read-btn')) {
             fetch(`${baseUrl}/${id}/mark-read`, {
@@ -127,28 +101,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(err => console.error('Error marking as read:', err));
         }
     });
-
-    // Tab switching
-    tabNew.addEventListener('click', () => {
-        activeTab = 'new';
-        tabNew.classList.add('btn-primary', 'active');
-        tabNew.classList.remove('btn-outline-secondary');
-        tabAll.classList.remove('btn-primary', 'active');
-        tabAll.classList.add('btn-outline-secondary');
-        renderNotifications();
-    });
-
-    tabAll.addEventListener('click', () => {
-        activeTab = 'all';
-        tabAll.classList.add('btn-primary', 'active');
-        tabAll.classList.remove('btn-outline-secondary');
-        tabNew.classList.remove('btn-primary', 'active');
-        tabNew.classList.add('btn-outline-secondary');
-        renderNotifications();
-    });
-
     // Initial fetch
     fetchNotifications();
     // Poll every 30s
     setInterval(fetchNotifications, 30000);
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const offcanvas = document.getElementById("notificationOffcanvas");
+    const resizeBtn = document.getElementById("resizeOffcanvasBtn");
+    const icon = resizeBtn.querySelector("i");
+
+    resizeBtn.addEventListener("click", () => {
+        if (offcanvas.classList.contains("fullscreen")) {
+            // Reset to default (25%)
+            offcanvas.classList.remove("fullscreen", "medium");
+            icon.className = "bi bi-arrows-angle-expand";
+        } else if (offcanvas.classList.contains("medium")) {
+            // Go fullscreen
+            offcanvas.classList.add("fullscreen");
+            offcanvas.classList.remove("medium");
+            icon.className = "bi bi-arrows-collapse";
+        } else {
+            // Go to 50%
+            offcanvas.classList.add("medium");
+            icon.className = "bi bi-arrows-expand";
+        }
+    });
 });

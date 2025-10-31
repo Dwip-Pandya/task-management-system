@@ -301,8 +301,11 @@
                 },
                 scales: {
                     y: {
+                        // min:0,
+                        // max:20,
                         beginAtZero: true,
                         ticks: {
+                            // stepSize:3,
                             color: 'rgba(255, 255, 255, 0.8)',
                             font: {
                                 size: 12

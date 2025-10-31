@@ -98,10 +98,10 @@ Route::prefix('admin')
         Route::post('users/update-password', [UserManagementController::class, 'updatePassword'])
             ->name('users.updatePassword');
 
-        Route::post('users/{user}/switch-to', [UserManagementController::class, 'switchToUser'])
-            ->name('users.switchTo');
+        Route::get('users/{user}/switch', [UserManagementController::class, 'switchToUser'])
+            ->name('users.switch');
 
-        Route::post('users/switch-back', [UserManagementController::class, 'switchBack'])
+        Route::get('users/switch-back', [UserManagementController::class, 'switchBack'])
             ->name('users.switchBack');
 
         Route::get('users/{id}/role-permissions', [UserManagementController::class, 'rolePermissions'])->middleware([CheckModulePermission::class . ':user management,edit'])->name('admin.users.rolePermissions');

@@ -19,7 +19,7 @@
                 data-confirm="Yes, switch back"
                 data-cancel="Cancel">
                 Switch Back to Admin
-            </a>
+            </a> &nbsp; &nbsp;
             @endif
 
             <!-- Notification Button -->

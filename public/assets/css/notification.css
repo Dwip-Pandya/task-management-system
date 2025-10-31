@@ -349,3 +349,20 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
 }
+
+/* resize */
+/* Default width */
+#notificationOffcanvas {
+    width: 25% !important;
+    transition: width 0.3s ease;
+}
+
+/* Medium (50%) */
+#notificationOffcanvas.medium {
+    width: 50% !important;
+}
+
+/* Fullscreen (100%) */
+#notificationOffcanvas.fullscreen {
+    width: 100% !important;
+}

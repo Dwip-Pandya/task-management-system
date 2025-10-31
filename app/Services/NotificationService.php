@@ -55,7 +55,7 @@ class NotificationService
      */
     public static function taskAssigned($task)
     {
-        $sender = auth()->user();
+        $sender = User::where('id', auth()->id())->first();
 
         // Get the assigned user details
         $assignedUser = User::find($task->assigned_to);
@@ -98,7 +98,7 @@ class NotificationService
      */
     public static function projectCreated($project)
     {
-        $sender = auth()->user();
+        $sender = User::where('id', auth()->id())->first();
 
         // Notify admins + project managers
         self::sendRoleNotification(
@@ -117,7 +117,7 @@ class NotificationService
      */
     public static function statusChanged($task, $newStatus)
     {
-        $sender = auth()->user();
+        $sender = User::where('id', auth()->id())->first();
 
         // Notify the assignee
         if ($task->assigned_to && $task->assigned_to != $sender->id) {
@@ -182,7 +182,7 @@ class NotificationService
      */
     public static function dataUpdated($entity, $entityType)
     {
-        $sender = auth()->user();
+        $sender = User::where('id', auth()->id())->first();
 
         // Notify admins + project managers
         self::sendRoleNotification(

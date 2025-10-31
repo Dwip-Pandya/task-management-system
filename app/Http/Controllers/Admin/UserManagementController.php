@@ -375,7 +375,7 @@ class UserManagementController extends Controller
         // Regenerate session 
         request()->session()->regenerate();
 
-        return redirect()->route('users.index')->with('success', 'Returned to your admin account.');
+        return redirect()->route('admin.dashboard')->with('success', 'Returned to your admin account.');
     }
 
     public function rolePermissions(Request $request, $id)
