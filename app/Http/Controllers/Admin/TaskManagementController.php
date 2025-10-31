@@ -17,10 +17,8 @@ class TaskManagementController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         if (!$user) return false;
 
         // Check user-specific permissions first
@@ -54,10 +52,7 @@ class TaskManagementController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$user) {
             return [
@@ -96,10 +91,7 @@ class TaskManagementController extends Controller
      */
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // Start query
         $tasksQuery = DB::table('tasks')
@@ -166,10 +158,8 @@ class TaskManagementController extends Controller
      */
     public function create()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         $statuses = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
         $tags = DB::table('tags')->get();
@@ -225,10 +215,7 @@ class TaskManagementController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         DB::table('tasks')->insert([
             'title' => $request->title,
@@ -260,10 +247,7 @@ class TaskManagementController extends Controller
      */
     public function edit($id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')->where('task_id', $id)->first();
         $statuses = DB::table('statuses')->get();
@@ -301,10 +285,7 @@ class TaskManagementController extends Controller
     // Show task details to admin
     public function show($task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')
             ->leftJoin('users as created_by_user', 'tasks.created_by', '=', 'created_by_user.id')

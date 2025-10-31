@@ -16,9 +16,13 @@ use PhpOffice\PhpPresentation\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Models\User;
+use App\Services\PermissionService;
 
 class ReportController extends Controller
 {
+    protected $permissions;
+    protected $module = 'report generation';
+
     protected $allColumns = [
         'task_id' => 'Task ID',
         'title' => 'Title',
@@ -32,93 +36,16 @@ class ReportController extends Controller
         'due_date' => 'Due Date',
     ];
 
-    /**
-     * Utility: Check if the logged-in user has permission for the Project module.
-     */
-    private function hasPermission($action)
+    public function __construct(PermissionService $permissions)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
-        if (!$user) return false;
-
-        // Check user-specific permissions first
-        $permission = DB::table('role_permissions')
-            ->where('user_id', $user->id)
-            ->where('module_name', 'report generation')
-            ->first();
-
-        // Fallback to role defaults
-        if (!$permission) {
-            $permission = DB::table('role_permissions')
-                ->where('role_id', $user->role_id)
-                ->whereNull('user_id')
-                ->where('module_name', 'report generation')
-                ->first();
-        }
-
-        if (!$permission) return false;
-
-        $field = 'can_' . $action;
-
-        if (!property_exists($permission, $field)) {
-            return true;
-        }
-
-        return $permission->$field == 1;
-    }
-
-    /**
-     * Utility: Fetch all permissions for current user.
-     */
-    private function getAllPermissions()
-    {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
-            
-        if (!$user) {
-            return [
-                'can_view' => false,
-                'can_add' => false,
-                'can_edit' => false,
-                'can_delete' => false,
-            ];
-        }
-
-        // Fetch user-specific permissions first
-        $perm = DB::table('role_permissions')
-            ->where('user_id', $user->id)
-            ->where('module_name', 'report generation')
-            ->first();
-
-        // Fallback to role defaults
-        if (!$perm) {
-            $perm = DB::table('role_permissions')
-                ->where('role_id', $user->role_id)
-                ->whereNull('user_id')
-                ->where('module_name', 'report generation')
-                ->first();
-        }
-
-        return [
-            'can_view' => $perm->can_view ?? false,
-            'can_add' => $perm->can_add ?? false,
-            'can_edit' => $perm->can_edit ?? false,
-            'can_delete' => $perm->can_delete ?? false,
-        ];
+        $this->permissions = $permissions;
     }
 
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
-        $permissions = $this->getAllPermissions();
+        $permissions = $this->permissions->getAllPermissions($this->module);
 
         if (!$permissions['can_view']) {
             return response()->view('errors.permission-denied', [], 403);

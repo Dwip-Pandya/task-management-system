@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -36,5 +37,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class, 'user_id')
             ->orderBy('created_at', 'desc');
+    }
+    public static function current()
+    {
+        return static::withTrashed()
+            ->with('role')
+            ->find(Auth::id());
     }
 }

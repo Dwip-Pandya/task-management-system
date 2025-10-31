@@ -12,10 +12,7 @@ class CheckModulePermission
 {
     public function handle(Request $request, Closure $next, $module, $action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$user) {
             abort(403, 'Unauthorized.');

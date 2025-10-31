@@ -17,10 +17,7 @@ class CheckUserExists
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if ($user) {
             // Check directly in the database if this user still exists

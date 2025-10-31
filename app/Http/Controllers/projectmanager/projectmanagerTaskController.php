@@ -16,10 +16,8 @@ class projectmanagerTaskController extends Controller
     public function index(Request $request)
     {
 
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         // Fetch tasks in projects managed by this PM
         $tasksQuery = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
@@ -76,10 +74,7 @@ class projectmanagerTaskController extends Controller
     // Show task details
     public function show($task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')
             ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')
@@ -119,10 +114,8 @@ class projectmanagerTaskController extends Controller
     // Create task
     public function create()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         $statuses   = DB::table('statuses')->get();
         $priorities = DB::table('priorities')->get();
         $tags       = DB::table('tags')->get();
@@ -136,10 +129,7 @@ class projectmanagerTaskController extends Controller
     // Store task
     public function store(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         try {
             $request->validate([
@@ -188,10 +178,7 @@ class projectmanagerTaskController extends Controller
     // Edit task
     public function edit($task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')->where('task_id', $task_id)
             ->whereIn('project_id', function ($q) use ($user) {
@@ -212,10 +199,7 @@ class projectmanagerTaskController extends Controller
     // Update task
     public function update(Request $request, $task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')->where('task_id', $task_id)
             ->whereIn('project_id', function ($q) use ($user) {
@@ -264,10 +248,7 @@ class projectmanagerTaskController extends Controller
     // AJAX: Update Status
     public function updateStatus(Request $request, $task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')->where('task_id', $task_id)
             ->whereIn('project_id', function ($q) use ($user) {

@@ -12,10 +12,7 @@ class ForceChangePassword
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if ($user) {
             // Check if user is admin@gmail.com AND still using default password

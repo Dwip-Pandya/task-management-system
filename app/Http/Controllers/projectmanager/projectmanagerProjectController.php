@@ -18,10 +18,7 @@ class ProjectManagerProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // Base query with creator info
         $projectsQuery = Project::leftJoin('users as creators', 'projects.created_by', '=', 'creators.id')
@@ -42,11 +39,8 @@ class ProjectManagerProjectController extends Controller
      */
     public function create()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
-            
+        $user = User::current();
+  
         return view('projectmanager.projects.create', compact('user'));
     }
 
@@ -55,10 +49,7 @@ class ProjectManagerProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         try {
             $request->validate([
@@ -89,10 +80,7 @@ class ProjectManagerProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // Ensure the manager can only view their own projects
         // if ($project->created_by !== $user->id) {
@@ -112,10 +100,7 @@ class ProjectManagerProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // if ($project->created_by !== $user->id) {
         //     abort(403);
@@ -129,10 +114,7 @@ class ProjectManagerProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // if ($project->created_by !== $user->id) {
         //     abort(403);

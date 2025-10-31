@@ -16,10 +16,7 @@ class TaskController extends Controller
     // List tasks assigned to this user
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // Fetch all projects for dropdown filter
         $projects = DB::table('projects')->get();
@@ -54,10 +51,7 @@ class TaskController extends Controller
     // Show single task
     public function show($task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')
             ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')
@@ -99,10 +93,7 @@ class TaskController extends Controller
     // Edit task
     public function edit($task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')->where('task_id', $task_id)->where('assigned_to', $user->id)->first();
         if (!$task) {
@@ -119,10 +110,7 @@ class TaskController extends Controller
     // Update task
     public function update(Request $request, $task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         try {
             $request->validate([

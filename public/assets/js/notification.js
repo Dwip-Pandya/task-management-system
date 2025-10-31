@@ -115,12 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (offcanvas.classList.contains("fullscreen")) {
             // Reset to default (25%)
             offcanvas.classList.remove("fullscreen", "medium");
-            icon.className = "bi bi-arrows-angle-expand";
         } else if (offcanvas.classList.contains("medium")) {
             // Go fullscreen
             offcanvas.classList.add("fullscreen");
             offcanvas.classList.remove("medium");
-            icon.className = "bi bi-arrows-collapse";
         } else {
             // Go to 50%
             offcanvas.classList.add("medium");

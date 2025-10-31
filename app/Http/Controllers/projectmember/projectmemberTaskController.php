@@ -15,10 +15,7 @@ class projectmemberTaskController extends Controller
     // List tasks assigned to this project member
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $tasks = DB::table('tasks')
             ->leftJoin('statuses', 'tasks.status_id', '=', 'statuses.status_id')
@@ -53,10 +50,7 @@ class projectmemberTaskController extends Controller
     // Show task details
     public function show($task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')
             ->leftJoin('users as assigner', 'tasks.created_by', '=', 'assigner.id')
@@ -94,10 +88,7 @@ class projectmemberTaskController extends Controller
     // Update status (AJAX)
     public function updateStatus(Request $request, $task_id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $task = DB::table('tasks')->where('task_id', $task_id)->first();
 

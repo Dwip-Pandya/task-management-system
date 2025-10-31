@@ -145,26 +145,34 @@ form.d-inline {
     font-weight: 600 !important;
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-right: 0.5rem;
     border: none !important;
 }
 
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
 .btn:hover::before {
     left: 100%;
+}
+
+.btn-outline-light {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.btn-outline-light:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: var(--text-primary) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
 }
 
 .btn-primary {

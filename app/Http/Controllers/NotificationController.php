@@ -14,10 +14,7 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // --- Step 1: Get all user-specific notifications ---
         $userNotifications = Notification::where('user_id', $user->id)->get();
@@ -50,10 +47,7 @@ class NotificationController extends Controller
      */
     public function markAsRead($id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $notification = Notification::find($id);
 

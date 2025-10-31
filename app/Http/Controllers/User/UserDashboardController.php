@@ -12,10 +12,7 @@ class UserDashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // Fetch tasks with creators, assigned users, statuses, projects
         $tasksQuery = DB::table('tasks')

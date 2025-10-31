@@ -12,10 +12,7 @@ class ProjectMemberDashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
 
         // Get all projects for filter dropdown

@@ -19,10 +19,7 @@ class UserManagementController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$user) return false;
 
@@ -51,10 +48,7 @@ class UserManagementController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$user) {
             return [
@@ -89,10 +83,7 @@ class UserManagementController extends Controller
     // Display all users
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $search = $request->input('search');
 
@@ -131,10 +122,7 @@ class UserManagementController extends Controller
     // Show create form
     public function create()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $roles = Role::all();
 
@@ -177,10 +165,8 @@ class UserManagementController extends Controller
     // Show edit form
     public function edit($id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         $editUser = User::findOrFail($id);
         $roles = Role::all();
 
@@ -218,10 +204,8 @@ class UserManagementController extends Controller
     // Soft delete user
     public function destroy($id)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         $deleteUser = User::findOrFail($id);
 
         if (!$this->hasPermission('delete')) {

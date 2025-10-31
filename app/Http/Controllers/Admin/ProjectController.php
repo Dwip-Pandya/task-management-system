@@ -19,10 +19,8 @@ class ProjectController extends Controller
      */
     private function hasPermission($action)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
+
         if (!$user) return false;
 
         $permission = DB::table('role_permissions')
@@ -49,10 +47,7 @@ class ProjectController extends Controller
      */
     private function getAllPermissions()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$user) {
             return [
@@ -87,10 +82,7 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         // Base query with creator info
         $projectsQuery = Project::leftJoin('users as creators', 'projects.created_by', '=', 'creators.id')
@@ -116,10 +108,7 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $permissions = $this->getAllPermissions();
 
@@ -132,10 +121,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$this->hasPermission('add')) {
             return response()->view('errors.permission-denied', [], 403);
@@ -164,10 +150,7 @@ class ProjectController extends Controller
 
     public function show(Project $project, Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $permissions = $this->getAllPermissions();
 
@@ -185,10 +168,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         $permissions = $this->getAllPermissions();
 
@@ -201,10 +181,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$this->hasPermission('edit')) {
             return redirect()->route('projects.index')
@@ -235,10 +212,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
         if (!$this->hasPermission('delete')) {
             return response()->view('errors.permission-denied', [], 403);

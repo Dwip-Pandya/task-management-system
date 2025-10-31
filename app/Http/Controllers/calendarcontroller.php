@@ -6,96 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Services\PermissionService;
 
 class CalendarController extends Controller
 {
-    /**
-     * Utility: Check if the logged-in user has permission for the Project module.
-     */
-    private function hasPermission($action)
+    protected $permissions;
+    protected $module = 'calendar viewing';
+
+    public function __construct(PermissionService $permissions)
     {
-
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
-
-        if (!$user) return false;
-
-        // User-specific permissions first
-        $permission = DB::table('role_permissions')
-            ->where('user_id', $user->id)
-            ->where('module_name', 'calendar viewing')
-            ->first();
-
-        // Fallback to role defaults
-        if (!$permission) {
-            $permission = DB::table('role_permissions')
-                ->where('role_id', $user->role_id)
-                ->whereNull('user_id')
-                ->where('module_name', 'calendar viewing')
-                ->first();
-        }
-
-        if (!$permission) return false;
-
-        $field = 'can_' . $action;
-
-        if (!property_exists($permission, $field)) {
-            return true;
-        }
-
-        return $permission->$field == 1;
-    }
-
-    /**
-     * Utility: Fetch all permissions for current user.
-     */
-    private function getAllPermissions()
-    {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
-
-        if (!$user) {
-            return [
-                'can_view' => false,
-                'can_add' => false,
-                'can_edit' => false,
-                'can_delete' => false,
-            ];
-        }
-
-        $perm = DB::table('role_permissions')
-            ->where('user_id', $user->id)
-            ->where('module_name', 'calendar viewing')
-            ->first();
-
-        if (!$perm) {
-            $perm = DB::table('role_permissions')
-                ->where('role_id', $user->role_id)
-                ->whereNull('user_id')
-                ->where('module_name', 'calendar viewing')
-                ->first();
-        }
-
-        return [
-            'can_view' => $perm->can_view ?? false,
-            'can_add' => $perm->can_add ?? false,
-            'can_edit' => $perm->can_edit ?? false,
-            'can_delete' => $perm->can_delete ?? false,
-        ];
+        $this->permissions = $permissions;
     }
     // Show calendar view
     public function index()
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
-        $permissions = $this->getAllPermissions();
+        $permissions = $this->permissions->getAllPermissions($this->module);
 
         if (!$permissions['can_view']) {
             return response()->view('errors.permission-denied', [], 403);
@@ -106,12 +33,9 @@ class CalendarController extends Controller
 
     public function events(Request $request)
     {
-        $user = User::withTrashed()
-            ->with('role')
-            ->where('id', Auth::id())
-            ->first();
+        $user = User::current();
 
-        $permissions = $this->getAllPermissions();
+        $permissions = $this->permissions->getAllPermissions($this->module);
 
         if (!$permissions['can_view']) {
             return response()->json(['error' => 'Unauthorized'], 403);

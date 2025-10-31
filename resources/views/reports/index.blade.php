@@ -72,7 +72,7 @@
     </form>
 
     {{-- Export Buttons: Only visible if can_add or can_edit --}}
-    @if($permissions['can_add'] || $permissions['can_edit'])
+    @if($permissions['can_add'])
     <div class="mb-3">
         <a href="{{ route('admin.reports.export', ['format' => 'pdf'] + request()->query()) }}" class="btn btn-danger">Export PDF</a>
         <a href="{{ route('admin.reports.export', ['format' => 'excel'] + request()->query()) }}" class="btn btn-success">Export Excel</a>
